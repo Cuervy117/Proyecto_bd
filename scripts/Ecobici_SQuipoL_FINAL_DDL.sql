@@ -124,7 +124,7 @@ CREATE TABLE personal.EMPLEADO(
         CHECK(sueldo > 0),
 
     CONSTRAINT CK_EMPLEADO_TIPO
-        CHECK(tipo_empleado IN ('A','R','M'))
+        CHECK(tipo_empleado IN ('AD', 'AG','R','M'))
 );
 GO
 
@@ -250,8 +250,8 @@ CREATE TABLE usuarios.USUARIO(
     nombre VARCHAR(40) NOT NULL,
     ap_paterno VARCHAR(40) NOT NULL,
     ap_materno VARCHAR(40),
-    codigoINE CHAR(18) NOT NULL,
-    fechaNacimiento DATE NOT NULL,
+    codigo_INE CHAR(18) NOT NULL,
+    fecha_nacimiento DATE NOT NULL,
     genero CHAR(1) NOT NULL,
 
     edad AS DATEDIFF(YEAR, fechaNacimiento, GETDATE()),
@@ -268,7 +268,7 @@ CREATE TABLE usuarios.USUARIO(
 GO
 
 CREATE TABLE usuarios.TELEFONO(
-    idTelefono INT PRIMARY KEY,
+    id_telefono INT PRIMARY KEY,
     id_usuario INT NOT NULL,
     telefono CHAR(10) NOT NULL,
 
@@ -284,13 +284,13 @@ GO
 /*==============================================================*/
 
 CREATE TABLE movilidad.METODO_PAGO(
-    idMetodoPago INT PRIMARY KEY,
-    fechaExp DATE NOT NULL,
-    fechaInicio DATE NOT NULL,
-    tipoPago CHAR(1) NOT NULL,
+    id_metodoPago INT PRIMARY KEY,
+    fecha_exp DATE NOT NULL,
+    fecha_inicio DATE NOT NULL,
+    tipo_pago CHAR(1) NOT NULL,
 
-    CHECK(tipoPago IN ('T','P')),
-    CHECK(fechaExp >= fechaInicio)
+    CHECK(tipo_pago IN ('T','P')),
+    CHECK(fecha_exp >= fecha_inicio)
 );
 GO
 
@@ -342,7 +342,7 @@ CREATE TABLE movilidad.TARJETA_MOVILIDAD(
     codigoQR VARBINARY(100) NOT NULL,
     fechaEmision DATE NOT NULL,
     activa BIT NOT NULL,
-    tipoEmision VARCHAR(20) NOT NULL,
+    tipoEmision VARCHAR(20) NOT NULL, 
 
     FOREIGN KEY(id_usuario)
         REFERENCES usuarios.USUARIO(id_usuario),
