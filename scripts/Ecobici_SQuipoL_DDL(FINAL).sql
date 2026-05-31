@@ -256,8 +256,6 @@ CREATE TABLE usuarios.USUARIO(
     CONSTRAINT CK_USUARIO_GENERO
         CHECK(genero IN ('M','F')),
 
-    CONSTRAINT CK_USUARIO_EDAD
-        CHECK(DATEDIFF(YEAR, fecha_Nacimiento, GETDATE()) >= 16)
 );
 GO
 
