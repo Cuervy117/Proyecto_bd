@@ -3,12 +3,12 @@ GO
 
 /*==============================================================
 Autor: Equipo SQuipoL
-Fecha de creaci髇: 31/05/2026
+Fecha de creaci贸n: 31/05/2026
 ==============================================================*/
 
-/*Descripci髇:
-Actualiza autom醫icamente la estaci髇 actual de una bicicleta
-cuando se registra la finalizaci髇 de un viaje.*/
+/*Descripci贸n:
+Actualiza autom谩ticamente la estaci贸n actual de una bicicleta
+cuando se registra la finalizaci贸n de un viaje.*/
 
 CREATE OR ALTER TRIGGER movilidad.trgViajeActualizaUbicacionBicicleta
 ON movilidad.VIAJE
@@ -19,17 +19,14 @@ BEGIN
     SET B.id_estacion = I.id_estacion_fin
     FROM movilidad.BICICLETA AS B
     INNER JOIN inserted AS I
-        ON B.idBicicleta = I.idBicicleta;
+        ON B.id_bicicleta = I.id_bicicleta;
 END;
 GO
 
-select * from movilidad.VIAJE
-select * from movilidad.BICICLETA
-
-/*Descripci髇
-Al eliminar un m閠odo de pago, cancela las suscripciones
-que lo utilizan, elimina la referencia al m閠odo y despu閟
-borra el m閠odo de pago.*/
+/*Descripci贸n
+Al eliminar un m茅todo de pago, cancela las suscripciones
+que lo utilizan, elimina la referencia al m茅todo y despu茅s
+borra el m茅todo de pago.*/
 
 CREATE OR ALTER TRIGGER movilidad.trgMetodoPagoCancelaSuscripcion
 ON movilidad.METODO_PAGO
@@ -38,21 +35,21 @@ AS
 BEGIN
     UPDATE S
     SET S.estado = 'C',
-        S.fechaFin = CAST(GETDATE() AS DATE),
-        S.idMetodoPago = NULL
+        S.fecha_fin = CAST(GETDATE() AS DATE),
+        S.id_metodo_pago = NULL
     FROM movilidad.SUSCRIPCION AS S
     INNER JOIN deleted AS D
-        ON S.idMetodoPago = D.id_metodoPago
+        ON S.id_metodo_pago = D.id_metodo_pago
     WHERE S.estado = 'A';
 
     DELETE MP
     FROM movilidad.METODO_PAGO AS MP
     INNER JOIN deleted AS D
-        ON MP.id_metodoPago = D.id_metodoPago;
+        ON MP.id_metodo_pago = D.id_metodo_pago;
 END;
 GO
 
-CREATE OR ALTER TRIGGER incidentes.trgIncidenteMarcaBicicletaDanada
+CREATE OR ALTER TRIGGER incidentes.trgIncidenteMarcaBicicleta
 ON incidentes.INCIDENTE
 AFTER INSERT
 AS
@@ -61,18 +58,15 @@ BEGIN
     SET B.id_estado_bici = 2
     FROM movilidad.BICICLETA AS B
     INNER JOIN movilidad.VIAJE AS V
-        ON B.idBicicleta = V.idBicicleta
+        ON B.id_bicicleta = V.id_bicicleta
     INNER JOIN inserted AS I
-        ON V.idViaje = I.idViaje
+        ON V.id_viaje = I.id_viaje
     WHERE I.id_tipo_incidente IN (4,5,6,7);
 END;
 GO
 
-USE Ecobici_SQuipoL;
-GO
-
-/*Descripci髇:
-Evita registrar viajes con bicicletas da馻das o dadas de baja.*/
+/*Descripci贸n:
+Evita registrar viajes con bicicletas da帽adas o dadas de baja.*/
 
 CREATE OR ALTER TRIGGER movilidad.trgViajeValidaBicicletaOperativa
 ON movilidad.VIAJE
@@ -85,7 +79,7 @@ BEGIN
         SELECT 1
         FROM inserted AS I
         INNER JOIN movilidad.BICICLETA AS B
-            ON I.idBicicleta = B.idBicicleta
+            ON I.id_bicicleta = B.id_bicicleta
         INNER JOIN catalogo.ESTADO_BICI AS EB
             ON B.id_estado_bici = EB.id_estado_bici
         WHERE EB.codigo <> 'F'
@@ -97,36 +91,36 @@ BEGIN
 
     INSERT INTO movilidad.VIAJE
     (
-        idViaje,
+        id_viaje,
         costo,
         fecha,
         ruta,
         hora_inicio,
         hora_fin,
         num_referencia,
-        idBicicleta,
+        id_bicicleta,
         id_estacion_inicio,
         id_estacion_fin,
-        idTarjetaMovilidad
+        id_tarjeta_movilidad
     )
     SELECT
-        idViaje,
+        id_viaje,
         costo,
         fecha,
         ruta,
         hora_inicio,
         hora_fin,
         num_referencia,
-        idBicicleta,
+        id_bicicleta,
         id_estacion_inicio,
         id_estacion_fin,
-        idTarjetaMovilidad
+        id_tarjeta_movilidad
     FROM inserted;
 END;
 GO
 
-/*Descripci髇:
-Desactiva automaticamente una tarjeta cuando se genero su reposici髇*/
+/*Descripci贸n:
+Desactiva automaticamente una tarjeta cuando se genero su reposici贸n*/
 
 CREATE OR ALTER TRIGGER movilidad.trgTarjetaDesactivaPorReposicion
 ON movilidad.TARJETA_MOVILIDAD
@@ -137,11 +131,11 @@ BEGIN
 
     UPDATE TAnterior
     SET TAnterior.activa = 0,
-        TAnterior.fechaBaja = CAST(GETDATE() AS DATE)
+        TAnterior.fecha_baja = CAST(GETDATE() AS DATE)
     FROM movilidad.TARJETA_MOVILIDAD AS TAnterior
     INNER JOIN inserted AS Nueva
-        ON TAnterior.idTarjetaMovilidad = Nueva.id_tarjeta_reposicion
-    WHERE Nueva.tipoEmision = 'Reposicion'
+        ON TAnterior.id_tarjeta_movilidad = Nueva.id_tarjeta_reposicion
+    WHERE Nueva.tipo_emision = 'Reposicion'
       AND Nueva.id_tarjeta_reposicion IS NOT NULL;
 END;
 GO
