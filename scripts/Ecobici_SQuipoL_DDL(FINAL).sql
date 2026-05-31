@@ -280,8 +280,10 @@ CREATE TABLE movilidad.METODO_PAGO(
     fecha_exp DATE NOT NULL,
     fecha_inicio DATE NOT NULL,
     tipo_pago CHAR(1) NOT NULL,
-
+	CONSTRAINT CK_TIPO_PAGO
     CHECK(tipo_pago IN ('D','C','P')),
+	
+	CONSTRAINT CK_TIPO_FECHA_METPAGO
     CHECK(fecha_exp >= fecha_inicio)
 );
 GO
@@ -301,9 +303,12 @@ CREATE TABLE movilidad.TIPO_MEMBRESIA(
 
     CONSTRAINT CK_TIPO_MEMBRESIA
         CHECK(tipoMembresia IN ('B','I','P')),
-
+	CONSTRAINT CK_COSTOBASE
     CHECK(costoBase >= 0),
+	
+	CONSTRAINT CK_TARIFA_EXECENTE
     CHECK(tarifaExcedente >= 0),
+	CONSTRAINT CK_DURACION_DIAS
     CHECK(duracionDias > 0)
 );
 GO
@@ -325,8 +330,10 @@ CREATE TABLE movilidad.SUSCRIPCION(
 
     FOREIGN KEY(idTipoMembresia)
         REFERENCES movilidad.TIPO_MEMBRESIA(idTipoMembresia),
-
+	CONSTRAINT CK_ESTADO_SUSCRIPCION
     CHECK(estado IN ('A','C','V')),
+
+	CONSTRAINT CK_FECHA_SUSCRIPCION
     CHECK(fechaFin >= fechaInicio)
 );
 GO
@@ -348,9 +355,11 @@ CREATE TABLE movilidad.TARJETA_MOVILIDAD(
     FOREIGN KEY(id_tarjeta_reposicion)
         REFERENCES movilidad.TARJETA_MOVILIDAD(idTarjetaMovilidad),
 
-    UNIQUE(codigoQR),
-
+    CONSTRAINT UQ_CODIGOQR UNIQUE(codigoQR),
+	CONSTRAINT CK_SALDO_TM
     CHECK(saldo >= 0),
+
+	CONSTRAINT CK_EMISION_TM
     CHECK(tipoEmision IN ('Primera','Reposicion'))
 );
 GO
@@ -364,7 +373,8 @@ CREATE TABLE movilidad.ESTACION(
 
     FOREIGN KEY(id_empleado)
         REFERENCES personal.RONDIN(id_empleado),
-
+	
+	CONSTRAINT CK_TERMINALES_ESTACION
     CHECK(
         terminales_disponibles >= 0
         AND terminales_totales >= 0
@@ -390,7 +400,7 @@ CREATE TABLE movilidad.BICICLETA(
     FOREIGN KEY(id_bicicletaColor)
         REFERENCES catalogo.BICICLETA_COLOR(id_bicicletaColor),
 
-    UNIQUE(num_serie),
+    CONSTRAINT UQ_NUMSERIE UNIQUE(num_serie),
 
      CONSTRAINT CK_BICICLETA_MODELO
         CHECK(modelo IN ('C','M','G'))
@@ -425,9 +435,12 @@ CREATE TABLE movilidad.VIAJE(
     FOREIGN KEY(idTarjetaMovilidad)
         REFERENCES movilidad.TARJETA_MOVILIDAD(idTarjetaMovilidad),
 
-    UNIQUE(num_referencia),
+    CONSTRAINT UQ_NUM_REFERENCIA UNIQUE(num_referencia),
 
+	CONSTRAINT CK_COSTO_VIAJE
     CHECK(costo >= 0),
+
+	CONSTRAINT CK_DURACION_VIAJE
     CHECK(hora_fin > hora_inicio)
 );
 GO
@@ -472,7 +485,7 @@ CREATE TABLE incidentes.ENCUESTA(
 
     FOREIGN KEY(id_incidente)
         REFERENCES incidentes.INCIDENTE(id_incidente),
-
+	CONSTRAINT CK_PUNTACION_ENCUESTA
     CHECK(puntuacion BETWEEN 1 AND 10)
 );
 GO
@@ -501,7 +514,7 @@ CREATE TABLE reportes.REPORTE(
 
     FOREIGN KEY(id_temporada)
         REFERENCES reportes.TEMPORADA(id_temporada),
-
+	CONSTRAINT CK_NUM_INCIDENTES
     CHECK(numero_incidentes >= 0)
 );
 GO
