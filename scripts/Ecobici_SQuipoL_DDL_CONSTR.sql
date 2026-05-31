@@ -6,9 +6,9 @@
 USE master;
 GO
 
-/*IF DB_ID('Ecobici_SQuipoL') IS NOT NULL
+IF DB_ID('Ecobici_SQuipoL') IS NOT NULL
     DROP DATABASE Ecobici_SQuipoL;
-GO*/
+GO
 
 CREATE DATABASE Ecobici_SQuipoL;
 GO
@@ -51,11 +51,11 @@ CREATE TABLE catalogo.ALCALDIA(
 GO
 
 CREATE TABLE catalogo.BICICLETA_COLOR(
-    id_bicicletaColor TINYINT NOT NULL,
+    id_bicicleta_color TINYINT NOT NULL,
     color VARCHAR(18) NOT NULL,
 
     CONSTRAINT pk_bicicleta_color 
-        PRIMARY KEY (id_bicicletaColor)
+        PRIMARY KEY (id_bicicleta_color)
 );
 GO
 
@@ -76,13 +76,13 @@ CREATE TABLE catalogo.ESTADO_BICI(
 GO
 
 CREATE TABLE catalogo.ESTADO_CIVIL(
-    id_estadoCivil INT NOT NULL,
+    id_estado_civil INT NOT NULL,
     codigo CHAR(1) NOT NULL,
     estado_civil VARCHAR(15) NOT NULL,
     vigente BIT NOT NULL,
 
     CONSTRAINT pk_estado_civil 
-        PRIMARY KEY (id_estadoCivil),
+        PRIMARY KEY (id_estado_civil),
 
     CONSTRAINT u_estado_civil_codigo 
         UNIQUE (codigo),
@@ -146,14 +146,14 @@ CREATE TABLE personal.EMPLEADO(
     nombre_pila VARCHAR(30) NOT NULL,
     ap_paterno VARCHAR(30) NOT NULL,
     ap_materno VARCHAR(30),
-    id_estadoCivil INT NOT NULL,
+    id_estado_civil INT NOT NULL,
 
     CONSTRAINT pk_empleado 
         PRIMARY KEY (id_empleado),
 
-    CONSTRAINT fk_empleado_estadoCivil
-        FOREIGN KEY (id_estadoCivil)
-        REFERENCES catalogo.ESTADO_CIVIL(id_estadoCivil),
+    CONSTRAINT fk_empleado_estado_civil
+        FOREIGN KEY (id_estado_civil)
+        REFERENCES catalogo.ESTADO_CIVIL(id_estado_civil),
 
     CONSTRAINT u_empleado_rfc 
         UNIQUE (RFC),
@@ -373,13 +373,13 @@ GO
 /*==============================================================*/
 
 CREATE TABLE movilidad.METODO_PAGO(
-    id_metodoPago INT NOT NULL,
+    id_metodo_pago INT NOT NULL,
     fecha_exp DATE NOT NULL,
     fecha_inicio DATE NOT NULL,
     tipo_pago CHAR(1) NOT NULL,
 
     CONSTRAINT pk_metodo_pago 
-        PRIMARY KEY (id_metodoPago),
+        PRIMARY KEY (id_metodo_pago),
 
     CONSTRAINT ck_metodo_pago_tipo
         CHECK (tipo_pago IN ('D','C','P')),
@@ -390,78 +390,78 @@ CREATE TABLE movilidad.METODO_PAGO(
 GO
 
 CREATE TABLE movilidad.TIPO_MEMBRESIA(
-    idTipoMembresia INT NOT NULL,
-    tipoMembresia CHAR(1) NOT NULL,
+    id_tipo_membresia INT NOT NULL,
+    tipo_membresia CHAR(1) NOT NULL,
     descripcion VARCHAR(15) NOT NULL,
-    duracionDias NUMERIC(4,0) NOT NULL,
-    tipoSeguro CHAR(1) NOT NULL,
-    tiempoExcedente DECIMAL(18,0) NOT NULL,
-    costoBase DECIMAL(10,2) NOT NULL,
-    tarifaExcedente DECIMAL(10,2) NOT NULL,
-    tipoBeneficio CHAR(1) NOT NULL,
+    duracion_dias NUMERIC(4,0) NOT NULL,
+    tipo_seguro CHAR(1) NOT NULL,
+    tiempo_excedente DECIMAL(18,0) NOT NULL,
+    costo_base DECIMAL(10,2) NOT NULL,
+    tarifa_excedente DECIMAL(10,2) NOT NULL,
+    tipo_beneficio CHAR(1) NOT NULL,
 
     CONSTRAINT pk_tipo_membresia 
-        PRIMARY KEY (idTipoMembresia),
+        PRIMARY KEY (id_tipo_membresia),
 
     CONSTRAINT ck_tipo_membresia_tipo
-        CHECK (tipoMembresia IN ('B','I','P')),
+        CHECK (tipo_membresia IN ('B','I','P')),
 
     CONSTRAINT ck_tipo_membresia_costo
-        CHECK (costoBase >= 0),
+        CHECK (costo_base >= 0),
 
     CONSTRAINT ck_tipo_membresia_tarifa
-        CHECK (tarifaExcedente >= 0),
+        CHECK (tarifa_excedente >= 0),
 
     CONSTRAINT ck_tipo_membresia_duracion
-        CHECK (duracionDias > 0)
+        CHECK (duracion_dias > 0)
 );
 GO
 
 CREATE TABLE movilidad.SUSCRIPCION(
-    idSuscripcion INT NOT NULL,
+    id_suscripcion INT NOT NULL,
     estado CHAR(1) NOT NULL,
-    fechaFin DATE NOT NULL,
-    fechaInicio DATE NOT NULL,
+    fecha_fin DATE NOT NULL,
+    fecha_inicio DATE NOT NULL,
     id_usuario INT NOT NULL,
-    idMetodoPago INT NULL,
-    idTipoMembresia INT NOT NULL,
+    id_metodo_pago INT NULL,
+    id_tipo_membresia INT NOT NULL,
 
     CONSTRAINT pk_suscripcion 
-        PRIMARY KEY (idSuscripcion),
+        PRIMARY KEY (id_suscripcion),
 
     CONSTRAINT fk_suscripcion_usuario
         FOREIGN KEY (id_usuario)
         REFERENCES usuarios.USUARIO(id_usuario),
 
     CONSTRAINT fk_suscripcion_metodo_pago
-        FOREIGN KEY (idMetodoPago)
-        REFERENCES movilidad.METODO_PAGO(idMetodoPago),
+        FOREIGN KEY (id_metodo_pago)
+        REFERENCES movilidad.METODO_PAGO(id_metodo_pago),
 
     CONSTRAINT fk_suscripcion_tipo_membresia
-        FOREIGN KEY (idTipoMembresia)
-        REFERENCES movilidad.TIPO_MEMBRESIA(idTipoMembresia),
+        FOREIGN KEY (id_tipo_membresia)
+        REFERENCES movilidad.TIPO_MEMBRESIA(id_tipo_membresia),
 
     CONSTRAINT ck_suscripcion_estado
         CHECK (estado IN ('A','C','V')),
 
     CONSTRAINT ck_suscripcion_fecha
-        CHECK (fechaFin >= fechaInicio)
+        CHECK (fecha_fin >= fecha_inicio)
 );
 GO
 
 CREATE TABLE movilidad.TARJETA_MOVILIDAD(
-    idTarjetaMovilidad INT NOT NULL,
+    id_tarjeta_movilidad INT NOT NULL,
     id_tarjeta_reposicion INT,
     id_usuario INT NOT NULL,
-    fechaBaja DATE NOT NULL,
+    fecha_baja DATE NOT NULL,
     saldo DECIMAL(10,2) NOT NULL,
-    codigoQR VARBINARY(100) NOT NULL,
-    fechaEmision DATE NOT NULL,
+    codigo_QR VARBINARY(100) NOT NULL,
+    fecha_emision DATE NOT NULL,
     activa BIT NOT NULL,
-    tipoEmision VARCHAR(20) NOT NULL,
+    tipo_emision VARCHAR(20) NOT NULL,
 
     CONSTRAINT pk_tarjeta_movilidad 
-        PRIMARY KEY (idTarjetaMovilidad),
+        PRIMARY KEY (id_tarjeta_movilidad),
 
     CONSTRAINT fk_tarjeta_usuario
         FOREIGN KEY (id_usuario)
@@ -469,16 +469,16 @@ CREATE TABLE movilidad.TARJETA_MOVILIDAD(
 
     CONSTRAINT fk_tarjeta_reposicion
         FOREIGN KEY (id_tarjeta_reposicion)
-        REFERENCES movilidad.TARJETA_MOVILIDAD(idTarjetaMovilidad),
+        REFERENCES movilidad.TARJETA_MOVILIDAD(id_tarjeta_movilidad),
 
     CONSTRAINT u_tarjeta_codigoQR 
-        UNIQUE (codigoQR),
+        UNIQUE (codigo_QR),
 
     CONSTRAINT ck_tarjeta_saldo
         CHECK (saldo >= 0),
 
     CONSTRAINT ck_tarjeta_tipo_emision
-        CHECK (tipoEmision IN ('Primera','Reposicion'))
+        CHECK (tipo_emision IN ('Primera','Reposicion'))
 );
 GO
 
@@ -506,15 +506,15 @@ CREATE TABLE movilidad.ESTACION(
 GO
 
 CREATE TABLE movilidad.BICICLETA(
-    idBicicleta INT NOT NULL,
+    id_bicicleta INT NOT NULL,
     modelo CHAR(1) NOT NULL,
     num_serie NUMERIC(10,0) NOT NULL,
     id_estado_bici INT NOT NULL,
     id_estacion INT NOT NULL,
-    id_bicicletaColor TINYINT NOT NULL,
+    id_bicicleta_color TINYINT NOT NULL,
 
     CONSTRAINT pk_bicicleta 
-        PRIMARY KEY (idBicicleta),
+        PRIMARY KEY (id_bicicleta),
 
     CONSTRAINT fk_bicicleta_estado
         FOREIGN KEY (id_estado_bici)
@@ -525,8 +525,8 @@ CREATE TABLE movilidad.BICICLETA(
         REFERENCES movilidad.ESTACION(id_estacion),
 
     CONSTRAINT fk_bicicleta_color
-        FOREIGN KEY (id_bicicletaColor)
-        REFERENCES catalogo.BICICLETA_COLOR(id_bicicletaColor),
+        FOREIGN KEY (id_bicicleta_color)
+        REFERENCES catalogo.BICICLETA_COLOR(id_bicicleta_color),
 
     CONSTRAINT u_bicicleta_num_serie 
         UNIQUE (num_serie),
@@ -537,7 +537,7 @@ CREATE TABLE movilidad.BICICLETA(
 GO
 
 CREATE TABLE movilidad.VIAJE(
-    idViaje INT NOT NULL,
+    id_viaje INT NOT NULL,
     costo DECIMAL(10,2) NOT NULL,
     fecha DATE NOT NULL,
     ruta VARCHAR(60) NOT NULL,
@@ -547,17 +547,17 @@ CREATE TABLE movilidad.VIAJE(
     duracion AS DATEDIFF(MINUTE, hora_inicio, hora_fin),
 
     num_referencia VARCHAR(20) NOT NULL,
-    idBicicleta INT NOT NULL,
+    id_bicicleta INT NOT NULL,
     id_estacion_inicio INT NOT NULL,
     id_estacion_fin INT NOT NULL,
-    idTarjetaMovilidad INT NOT NULL,
+    id_tarjeta_movilidad INT NOT NULL,
 
     CONSTRAINT pk_viaje 
-        PRIMARY KEY (idViaje),
+        PRIMARY KEY (id_viaje),
 
     CONSTRAINT fk_viaje_bicicleta
-        FOREIGN KEY (idBicicleta)
-        REFERENCES movilidad.BICICLETA(idBicicleta),
+        FOREIGN KEY (id_bicicleta)
+        REFERENCES movilidad.BICICLETA(id_bicicleta),
 
     CONSTRAINT fk_viaje_estacion_inicio
         FOREIGN KEY (id_estacion_inicio)
@@ -568,8 +568,8 @@ CREATE TABLE movilidad.VIAJE(
         REFERENCES movilidad.ESTACION(id_estacion),
 
     CONSTRAINT fk_viaje_tarjeta
-        FOREIGN KEY (idTarjetaMovilidad)
-        REFERENCES movilidad.TARJETA_MOVILIDAD(idTarjetaMovilidad),
+        FOREIGN KEY (id_tarjeta_movilidad)
+        REFERENCES movilidad.TARJETA_MOVILIDAD(id_tarjeta_movilidad),
 
     CONSTRAINT u_viaje_referencia 
         UNIQUE (num_referencia),
@@ -595,7 +595,7 @@ CREATE TABLE incidentes.INCIDENTE(
     fecha DATE NOT NULL,
     latitud VARCHAR(20) NOT NULL,
     longitud VARCHAR(20) NOT NULL,
-    idViaje INT NOT NULL,
+    id_viaje INT NOT NULL,
     id_tipo_incidente INT NOT NULL,
     id_empleado INT NOT NULL,
     id_colonia INT NOT NULL,
@@ -604,8 +604,8 @@ CREATE TABLE incidentes.INCIDENTE(
         PRIMARY KEY (id_incidente),
 
     CONSTRAINT fk_incidente_viaje
-        FOREIGN KEY (idViaje)
-        REFERENCES movilidad.VIAJE(idViaje),
+        FOREIGN KEY (id_viaje)
+        REFERENCES movilidad.VIAJE(id_viaje),
 
     CONSTRAINT fk_incidente_tipo
         FOREIGN KEY (id_tipo_incidente)
@@ -704,25 +704,26 @@ GO
 CREATE OR ALTER VIEW movilidad.VW_VIAJE_TARIFA_ADICIONAL
 AS
 SELECT
-    V.idViaje,
+    V.id_viaje,
     V.duracion,
-    TM.tiempoExcedente,
+    TM.tiempo_excedente,
 
     CASE
-        WHEN V.duracion > TM.tiempoExcedente
-        THEN (V.duracion - TM.tiempoExcedente)
-             * TM.tarifaExcedente
+        WHEN V.duracion > TM.tiempo_excedente
+        THEN (V.duracion - TM.tiempo_excedente)
+             * TM.tarifa_excedente
         ELSE 0
-    END AS tarifaAdicional
+    END AS tarifa_adicional
 
 FROM movilidad.VIAJE V
 INNER JOIN movilidad.TARJETA_MOVILIDAD T
-    ON V.idTarjetaMovilidad = T.idTarjetaMovilidad
+    ON V.id_tarjeta_movilidad = T.id_tarjeta_movilidad
 INNER JOIN movilidad.SUSCRIPCION S
     ON T.id_usuario = S.id_usuario
 INNER JOIN movilidad.TIPO_MEMBRESIA TM
-    ON S.idTipoMembresia = TM.idTipoMembresia;
+    ON S.id_tipo_membresia = TM.id_tipo_membresia;
 GO
 
 PRINT 'BASE DE DATOS CON ESQUEMAS CREADA CORRECTAMENTE';
 GO
+
