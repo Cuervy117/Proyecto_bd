@@ -341,7 +341,7 @@ CREATE OR ALTER PROCEDURE usuarios.sp_RegistrarUsuario
     @nombre VARCHAR(50),
     @ap_paterno VARCHAR(50),
     @ap_materno VARCHAR(50) = NULL,
-    @CURP CHAR(18),
+    @codigo_ine CHAR(18),
     @fecha_nacimiento DATE,
     @genero CHAR(1),
     @telefono VARCHAR(15) = NULL
@@ -352,12 +352,12 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        INSERT INTO usuarios.usuario (id_usuario, correo, nombre, ap_paterno, ap_materno, CURP, fecha_nacimiento, genero, edad)
-        VALUES (@id_usuario, @correo, @nombre, @ap_paterno, @ap_materno, @CURP, @fecha_nacimiento, @genero, usuarios.fn_calcular_edad(@fecha_nacimiento));
+        INSERT INTO usuarios.usuario (id_usuario, correo, nombre, ap_paterno, ap_materno, codigo_ine, fecha_nacimiento, genero)
+        VALUES (@id_usuario, @correo, @nombre, @ap_paterno, @ap_materno, @codigo_ine, @fecha_nacimiento, @genero);
 
         IF @telefono IS NOT NULL
         BEGIN
-            INSERT INTO usuarios.telefono (id_telefono, id_usuario, numero)
+            INSERT INTO usuarios.telefono (id_telefono, id_usuario, telefono)
             VALUES (@id_usuario, @id_usuario, @telefono);
         END
 
@@ -721,7 +721,7 @@ CREATE OR ALTER PROCEDURE usuarios.sp_BuscarUsuarioPorNombre
 AS
 BEGIN
     SET NOCOUNT ON;
-    SELECT id_usuario, correo, CONCAT(nombre, ' ', ap_paterno, ' ', ISNULL(ap_materno, '')) AS nombre_completo, CURP, edad, genero
+    SELECT id_usuario, correo, CONCAT(nombre, ' ', ap_paterno, ' ', ISNULL(ap_materno, '')) AS nombre_completo, codigo_ine, edad, genero
     FROM usuarios.usuario
     WHERE nombre LIKE '%' + @nombre_busqueda + '%'
        OR ap_paterno LIKE '%' + @nombre_busqueda + '%'
