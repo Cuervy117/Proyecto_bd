@@ -1,19 +1,19 @@
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : Díaz Núñez David
-             Hernández Acosta Mauricio Gabriel
-             Sánchez Luján César Ricardo
+  AUTORES  : DÃ­az NÃºÃ±ez David
+             HernÃ¡ndez Acosta Mauricio Gabriel
+             SÃ¡nchez LujÃ¡n CÃ©sar Ricardo
 
   FECHA    : 01/06/2026
-  VERSIÓN  : 1.0 FINAL
+  VERSIÃ“N  : 1.0 FINAL
 
-  DESCRIPCIÓN:
-  Script de creación de la base de datos ECOBICI.
-  Incluye la definición de tablas, claves primarias,
-  claves foráneas, restricciones, valores por defecto
+  DESCRIPCIÃ“N:
+  Script de creaciÃ³n de la base de datos ECOBICI.
+  Incluye la definiciÃ³n de tablas, claves primarias,
+  claves forÃ¡neas, restricciones, valores por defecto
   y carga inicial de datos. El modelo relacional fue
   actualizado y validado para garantizar consistencia
-  con la implementación física en SQL Server.
+  con la implementaciÃ³n fÃ­sica en SQL Server.
 =========================================================*/
 
 USE [Ecobici_SQuipoL]
@@ -696,34 +696,6 @@ GO
 CREATE INDEX IDX_SUSCRIPCION_USUARIO
 ON movilidad.SUSCRIPCION(id_usuario);
 GO
-
-/*==============================================================*/
-/* VISTA                                                        */
-/*==============================================================*/
-
-CREATE OR ALTER VIEW movilidad.VW_VIAJE_TARIFA_ADICIONAL
-AS
-SELECT
-    V.id_viaje,
-    V.duracion,
-    TM.tiempo_excedente,
-
-    CASE
-        WHEN V.duracion > TM.tiempo_excedente
-        THEN (V.duracion - TM.tiempo_excedente)
-             * TM.tarifa_excedente
-        ELSE 0
-    END AS tarifa_adicional
-
-FROM movilidad.VIAJE V
-INNER JOIN movilidad.TARJETA_MOVILIDAD T
-    ON V.id_tarjeta_movilidad = T.id_tarjeta_movilidad
-INNER JOIN movilidad.SUSCRIPCION S
-    ON T.id_usuario = S.id_usuario
-INNER JOIN movilidad.TIPO_MEMBRESIA TM
-    ON S.id_tipo_membresia = TM.id_tipo_membresia;
-GO
-
 
 
 PRINT 'BASE DE DATOS CON ESQUEMAS CREADA CORRECTAMENTE';
