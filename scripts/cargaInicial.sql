@@ -1,16 +1,16 @@
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : DÃ­az NÃºÃ±ez David
-             HernÃ¡ndez Acosta Mauricio Gabriel
-             SÃ¡nchez LujÃ¡n CÃ©sar Ricardo
+  AUTORES  : Díaz Núñez David
+             Hernández Acosta Mauricio Gabriel
+             Sánchez Luján César Ricardo
 
   FECHA    : 01/06/2026
-  VERSIÃ?N  : 1.0 FINAL
+  VERSIÓN  : 1.0 FINAL
 
-  DESCRIPCIÃ?N:
+  DESCRIPCIÓN:
   Script de carga inicial de datos. El modelo relacional fue
   actualizado y validado para garantizar consistencia
-  con la implementaciÃ³n fÃ­sica en SQL Server.
+  con la implementación física en SQL Server.
 =========================================================*/
 
 USE Ecobici_SQuipoL;
@@ -48,12 +48,12 @@ GO
 INSERT INTO catalogo.estado_bici
 VALUES
 (1,'F','Funcionando'),
-(2,'D','DaÃ±ada'),
+(2,'D','Dañada'),
 (3,'B','Baja');
 GO
 
 INSERT INTO catalogo.catalogo_idiomas VALUES
-(1,'EspaÃ±ol'),
+(1,'Español'),
 (2,'Ingles'),
 (3,'Frances');
 GO
@@ -75,7 +75,7 @@ INSERT INTO catalogo.tipo_incidente VALUES
 (2,'Caida','Caida del usuario'),
 (3,'Robo','Intento de robo'),
 (4,'Falla mecanica','Problema con bicicleta'),
-(5,'Vandalismo','DaÃ±os por vandalismo'),
+(5,'Vandalismo','Daños por vandalismo'),
 (6,'Pinchadura','Ponchadura de llanta'),
 (7,'Desgaste','Desgaste de componentes');
 GO
@@ -246,7 +246,7 @@ INSERT INTO usuarios.usuario VALUES
 (26,'u26@mail.com','Patricia','Ortega','Luna','INE000000000000026','1982-11-27','F'),
 (27,'u27@mail.com','Hector','Acosta','Mora','INE000000000000027','1979-08-30','M'),
 (28,'u28@mail.com','Norma','Delgado','Cruz','INE000000000000028','1975-02-20','F'),
-(29,'u29@mail.com','Miguel','PeÃ±a','Soto','INE000000000000029','1970-10-14','M'),
+(29,'u29@mail.com','Miguel','Peña','Soto','INE000000000000029','1970-10-14','M'),
 (30,'u30@mail.com','Rosa','Aguilar','Lopez','INE000000000000030','1965-07-08','F');
 GO
 
@@ -473,7 +473,7 @@ GO
 INSERT INTO reportes.temporada VALUES
 (1,'Primavera'),
 (2,'Verano'),
-(3,'OtoÃ±o'),
+(3,'Otoño'),
 (4,'Invierno');
 GO
 
@@ -496,7 +496,7 @@ INSERT INTO reportes.reporte VALUES
 (11,'2026-04-01','Inspeccion general de infraestructura',0,0,1,1),
 (12,'2026-04-02','Atencion a reporte de robo',1,1,2,1),
 (13,'2026-04-03','Supervision operativa de estacion',0,0,3,1),
-(14,'2026-04-04','Revision de daÃ±os reportados',1,2,4,1),
+(14,'2026-04-04','Revision de daños reportados',1,2,4,1),
 (15,'2026-04-05','Verificacion de terminales de anclaje',0,0,5,1),
 
 (16,'2026-05-01','Inspeccion preventiva de infraestructura',0,0,1,1),
@@ -507,7 +507,7 @@ INSERT INTO reportes.reporte VALUES
 
 (21,'2026-06-01','Seguimiento de accidente reportado',1,2,1,2),
 (22,'2026-06-02','Inspeccion rutinaria de estacion',0,0,2,2),
-(23,'2026-06-03','Revision de daÃ±os reportados',1,1,3,2),
+(23,'2026-06-03','Revision de daños reportados',1,1,3,2),
 (24,'2026-06-04','Atencion a incidente durante recorrido',1,3,4,2),
 (25,'2026-06-05','Monitoreo de flujo de usuarios',0,0,5,2),
 
@@ -519,7 +519,7 @@ INSERT INTO reportes.reporte VALUES
 
 (31,'2026-07-01','Inspeccion derivada de incidente',1,1,1,2),
 (32,'2026-07-02','Verificacion de disponibilidad de bicicletas',0,0,2,2),
-(33,'2026-07-03','Revision de daÃ±os reportados',1,2,3,2),
+(33,'2026-07-03','Revision de daños reportados',1,2,3,2),
 (34,'2026-07-04','Seguimiento de incidente en trayecto',1,3,4,2),
 (35,'2026-07-05','Recorrido de vigilancia programado',0,0,5,2),
 
@@ -531,7 +531,7 @@ INSERT INTO reportes.reporte VALUES
 
 (41,'2026-09-01','Seguimiento de accidente reportado',1,2,1,3),
 (42,'2026-09-02','Inspeccion rutinaria de estacion',0,0,2,3),
-(43,'2026-09-03','Revision de daÃ±os reportados',1,1,3,3),
+(43,'2026-09-03','Revision de daños reportados',1,1,3,3),
 (44,'2026-09-04','Atencion a incidente durante recorrido',1,2,4,3),
 (45,'2026-09-05','Monitoreo de flujo de usuarios',0,0,5,3),
 
@@ -543,7 +543,7 @@ INSERT INTO reportes.reporte VALUES
 
 (51,'2026-10-01','Inspeccion derivada de incidente',1,1,1,3),
 (52,'2026-10-02','Verificacion de disponibilidad de bicicletas',0,0,2,3),
-(53,'2026-10-03','Revision de daÃ±os reportados',1,2,3,3),
+(53,'2026-10-03','Revision de daños reportados',1,2,3,3),
 (54,'2026-10-04','Seguimiento de incidente en trayecto',1,2,4,3),
 (55,'2026-10-05','Recorrido de vigilancia programado',0,0,5,3),
 
@@ -555,7 +555,7 @@ INSERT INTO reportes.reporte VALUES
 
 (61,'2026-12-01','Seguimiento de accidente reportado',1,1,1,4),
 (62,'2026-12-02','Inspeccion rutinaria de estacion',0,0,2,4),
-(63,'2026-12-03','Revision de daÃ±os reportados',1,2,3,4),
+(63,'2026-12-03','Revision de daños reportados',1,2,3,4),
 (64,'2026-12-04','Atencion a incidente durante recorrido',1,2,4,4),
 (65,'2026-12-05','Monitoreo de flujo de usuarios',0,0,5,4),
 
@@ -567,7 +567,7 @@ INSERT INTO reportes.reporte VALUES
 
 (71,'2027-01-01','Inspeccion derivada de incidente',1,1,1,4),
 (72,'2027-01-02','Verificacion de disponibilidad de bicicletas',0,0,2,4),
-(73,'2027-01-03','Revision de daÃ±os reportados',1,2,3,4),
+(73,'2027-01-03','Revision de daños reportados',1,2,3,4),
 (74,'2027-01-04','Seguimiento de incidente en trayecto',1,3,4,4),
 (75,'2027-01-05','Recorrido de vigilancia programado',0,0,5,4),
 
