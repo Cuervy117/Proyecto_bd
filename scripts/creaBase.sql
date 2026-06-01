@@ -16,7 +16,24 @@
   con la implementación física en SQL Server.
 =========================================================*/
 
-USE [Ecobici_SQuipoL]
+USE master;
+GO
+
+-- Validar si la base de datos ya existe y borrarla
+IF EXISTS (SELECT * FROM sys.databases WHERE name = 'Ecobici_SQuipoL')
+BEGIN
+    ALTER DATABASE Ecobici_SQuipoL SET SINGLE_USER WITH ROLLBACK IMMEDIATE;
+    DROP DATABASE Ecobici_SQuipoL;
+    PRINT 'La base de datos existente ha sido eliminada con éxito.';
+END
+GO
+
+-- Crear la base de datos desde cero
+CREATE DATABASE Ecobici_SQuipoL;
+GO
+
+-- Cambiar al contexto de la base de datos recién creada
+USE Ecobici_SQuipoL;
 GO
 /*==============================================================*/
 /* CREACION DE ESQUEMAS                                         */
