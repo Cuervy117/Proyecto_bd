@@ -612,6 +612,7 @@ CREATE OR ALTER PROCEDURE incidentes.sp_RegistrarIncidente
     @id_incidente INT,
     @calle VARCHAR(50),
     @numero INT,
+    @codigo_postal NUMERIC(5,0),
     @id_colonia INT,
     @fecha DATE,
     @latitud VARCHAR(20),
@@ -626,8 +627,8 @@ BEGIN
     BEGIN TRY
         BEGIN TRANSACTION;
 
-        INSERT INTO incidentes.incidente (id_incidente, calle, numero, id_colonia, fecha, latitud, longitud, id_viaje, id_tipo_incidente, id_empleado)
-        VALUES (@id_incidente, @calle, @numero, @id_colonia, @fecha, @latitud, @longitud, @id_viaje, @id_tipo_incidente, @id_empleado);
+        INSERT INTO incidentes.incidente (id_incidente, calle, numero, codigo_postal, id_colonia, fecha, latitud, longitud, id_viaje, id_tipo_incidente, id_empleado)
+        VALUES (@id_incidente, @calle, @numero, @codigo_postal, @id_colonia, @fecha, @latitud, @longitud, @id_viaje, @id_tipo_incidente, @id_empleado);
 
         COMMIT TRANSACTION;
         PRINT 'Incidente registrado correctamente.';
