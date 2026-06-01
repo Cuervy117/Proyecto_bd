@@ -3,17 +3,17 @@ GO
 
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : Díaz Núñez David
-             Hernández Acosta Mauricio Gabriel
-             Sánchez Luján César Ricardo
+  AUTORES  : DÃ­az NÃºÃ±ez David
+             HernÃ¡ndez Acosta Mauricio Gabriel
+             SÃ¡nchez LujÃ¡n CÃ©sar Ricardo
 
   FECHA    : 01/06/2026
-  VERSIÓN  : 1.0 FINAL
+  VERSIÃ“N  : 1.0 FINAL
 
-  DESCRIPCIÓN:
+  DESCRIPCIÃ“N:
  
-	Actualiza automáticamente la estación actual de una bicicleta
-	cuando se registra la finalización de un viaje.*/
+	Actualiza automÃ¡ticamente la estaciÃ³n actual de una bicicleta
+	cuando se registra la finalizaciÃ³n de un viaje.*/
 =========================================================*/
 
 
@@ -31,10 +31,10 @@ BEGIN
 END;
 GO
 
-/*Descripción
-Al eliminar un método de pago, cancela las suscripciones
-que lo utilizan, elimina la referencia al método y después
-borra el método de pago.*/
+/*DescripciÃ³n
+Al eliminar un mÃ©todo de pago, cancela las suscripciones
+que lo utilizan, elimina la referencia al mÃ©todo y despuÃ©s
+borra el mÃ©todo de pago.*/
 
 CREATE OR ALTER TRIGGER movilidad.trgMetodoPagoCancelaSuscripcion
 ON movilidad.METODO_PAGO
@@ -73,8 +73,8 @@ BEGIN
 END;
 GO
 
-/*Descripción:
-Evita registrar viajes con bicicletas dañadas o dadas de baja.*/
+/*DescripciÃ³n:
+Evita registrar viajes con bicicletas daÃ±adas o dadas de baja.*/
 
 CREATE OR ALTER TRIGGER movilidad.trgViajeValidaBicicletaOperativa
 ON movilidad.VIAJE
@@ -127,8 +127,8 @@ BEGIN
 END;
 GO
 
-/*Descripción:
-Desactiva automaticamente una tarjeta cuando se genero su reposición*/
+/*DescripciÃ³n:
+Desactiva automaticamente una tarjeta cuando se genero su reposiciÃ³n*/
 
 CREATE OR ALTER TRIGGER movilidad.trgTarjetaDesactivaPorReposicion
 ON movilidad.TARJETA_MOVILIDAD
@@ -148,7 +148,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 1: trgViajeActualizaUbicacionBicicleta              */
-/* Al insertar un viaje, la bicicleta cambia a la estación fin. */
+/* Al insertar un viaje, la bicicleta cambia a la estaciÃ³n fin. */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -202,7 +202,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 2: trgMetodoPagoCancelaSuscripcion                   */
-/* Al eliminar el método, la suscripción queda cancelada.       */
+/* Al eliminar el mÃ©todo, la suscripciÃ³n queda cancelada.       */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -250,7 +250,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 3: trgIncidenteMarcaBicicleta                        */
-/* Al registrar ciertos incidentes, la bicicleta queda dañada.  */
+/* Al registrar ciertos incidentes, la bicicleta queda daÃ±ada.  */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -294,7 +294,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 4: trgViajeValidaBicicletaOperativa                  */
-/* Impide registrar viajes para bicicletas dañadas.             */
+/* Impide registrar viajes para bicicletas daÃ±adas.             */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -342,7 +342,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 5: trgTarjetaDesactivaPorReposicion                  */
-/* Al insertar una reposición, desactiva la tarjeta anterior.   */
+/* Al insertar una reposiciÃ³n, desactiva la tarjeta anterior.   */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -384,8 +384,8 @@ ROLLBACK TRANSACTION;
 GO
 
 /*
-Descripción:
-Funciones utilizadas para las edades de los usuarios y los meses de las membresías. 
+DescripciÃ³n:
+Funciones utilizadas para las edades de los usuarios y los meses de las membresÃ­as. 
 Y funciones para las estadisticas
 ==============================================================*/
 
@@ -554,3 +554,32 @@ FROM movilidad.fn_recorridos_periodo_estacion
     NULL
 );
 GO
+
+
+/*==============================================================*/
+/* VISTA                                                        */
+/*==============================================================*/
+
+CREATE OR ALTER VIEW movilidad.VW_VIAJE_TARIFA_ADICIONAL
+AS
+SELECT
+    V.id_viaje,
+    V.duracion,
+    TM.tiempo_excedente,
+
+    CASE
+        WHEN V.duracion > TM.tiempo_excedente
+        THEN (V.duracion - TM.tiempo_excedente)
+             * TM.tarifa_excedente
+        ELSE 0
+    END AS tarifa_adicional
+
+FROM movilidad.VIAJE V
+INNER JOIN movilidad.TARJETA_MOVILIDAD T
+    ON V.id_tarjeta_movilidad = T.id_tarjeta_movilidad
+INNER JOIN movilidad.SUSCRIPCION S
+    ON T.id_usuario = S.id_usuario
+INNER JOIN movilidad.TIPO_MEMBRESIA TM
+    ON S.id_tipo_membresia = TM.id_tipo_membresia;
+GO
+
