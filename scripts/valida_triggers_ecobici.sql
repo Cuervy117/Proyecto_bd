@@ -1,0 +1,249 @@
+USE Ecobici_SQuipoL;
+GO
+
+/*==============================================================
+Autor: Equipo SQuipoL
+Fecha de creación: 31/05/2026
+Archivo: validaTriggers.sql
+Descripción:
+Script DML para probar el funcionamiento de los triggers
+creados para la base de datos Ecobici_SQuipoL.
+==============================================================*/
+
+
+/*==============================================================*/
+/* TRIGGER 1: trgViajeActualizaUbicacionBicicleta              */
+/* Al insertar un viaje, la bicicleta cambia a la estación fin. */
+/*==============================================================*/
+
+BEGIN TRANSACTION;
+
+PRINT 'TRIGGER 1 - ANTES DE INSERTAR LOS VIAJES';
+
+SELECT id_bicicleta, id_estacion
+FROM movilidad.BICICLETA
+WHERE id_bicicleta IN (1,2,3,5,6);
+
+INSERT INTO movilidad.VIAJE VALUES
+(1001,25,'2027-02-01','CU-ROMA',
+ '2027-02-01 08:00','2027-02-01 08:30',
+ 'PRUEBA_V001',1,1,2,1);
+
+INSERT INTO movilidad.VIAJE VALUES
+(1002,25,'2027-02-01','ROMA-CONDESA',
+ '2027-02-01 09:00','2027-02-01 09:25',
+ 'PRUEBA_V002',2,2,3,2);
+
+INSERT INTO movilidad.VIAJE VALUES
+(1003,30,'2027-02-01','CONDESA-REFORMA',
+ '2027-02-01 10:00','2027-02-01 10:35',
+ 'PRUEBA_V003',3,3,4,3);
+
+INSERT INTO movilidad.VIAJE VALUES
+(1004,20,'2027-02-01','REFORMA-POLANCO',
+ '2027-02-01 11:00','2027-02-01 11:20',
+ 'PRUEBA_V004',5,4,5,5);
+
+INSERT INTO movilidad.VIAJE VALUES
+(1005,22,'2027-02-01','POLANCO-CU',
+ '2027-02-01 12:00','2027-02-01 12:25',
+ 'PRUEBA_V005',6,5,1,6);
+
+PRINT 'TRIGGER 1 - VIAJES INSERTADOS';
+
+SELECT id_viaje, id_bicicleta, id_estacion_inicio, id_estacion_fin
+FROM movilidad.VIAJE
+WHERE id_viaje BETWEEN 1001 AND 1005;
+
+PRINT 'TRIGGER 1 - DESPUES: LA BICICLETA DEBE ESTAR EN LA ESTACION FINAL';
+
+SELECT id_bicicleta, id_estacion
+FROM movilidad.BICICLETA
+WHERE id_bicicleta IN (1,2,3,5,6);
+
+ROLLBACK TRANSACTION;
+GO
+
+
+/*==============================================================*/
+/* TRIGGER 2: trgMetodoPagoCancelaSuscripcion                   */
+/* Al eliminar el método, la suscripción queda cancelada.       */
+/*==============================================================*/
+
+BEGIN TRANSACTION;
+
+PRINT 'TRIGGER 2 - ANTES DE ELIMINAR LOS METODOS DE PAGO';
+
+SELECT id_suscripcion, estado, id_metodo_pago, fecha_fin
+FROM movilidad.SUSCRIPCION
+WHERE id_metodo_pago IN (1,2,3,4,5);
+
+SELECT id_metodo_pago, tipo_pago
+FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago IN (1,2,3,4,5);
+
+DELETE FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago = 1;
+
+DELETE FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago = 2;
+
+DELETE FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago = 3;
+
+DELETE FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago = 4;
+
+DELETE FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago = 5;
+
+PRINT 'TRIGGER 2 - DESPUES: SUSCRIPCIONES CANCELADAS Y SIN METODO DE PAGO';
+
+SELECT id_suscripcion, estado, id_metodo_pago, fecha_fin
+FROM movilidad.SUSCRIPCION
+WHERE id_suscripcion IN (1,2,3,4,5);
+
+PRINT 'TRIGGER 2 - LOS METODOS YA NO DEBEN APARECER';
+
+SELECT id_metodo_pago, tipo_pago
+FROM movilidad.METODO_PAGO
+WHERE id_metodo_pago IN (1,2,3,4,5);
+
+ROLLBACK TRANSACTION;
+GO
+
+
+/*==============================================================*/
+/* TRIGGER 3: trgIncidenteMarcaBicicleta                        */
+/* Al registrar ciertos incidentes, la bicicleta queda dañada.  */
+/*==============================================================*/
+
+BEGIN TRANSACTION;
+
+PRINT 'TRIGGER 3 - ANTES DE INSERTAR INCIDENTES';
+
+SELECT id_bicicleta, id_estado_bici
+FROM movilidad.BICICLETA
+WHERE id_bicicleta IN (1,2,3,5,6);
+
+INSERT INTO incidentes.INCIDENTE VALUES
+(1001,'Insurgentes',101,31001,'2027-02-02','19.43','-99.13',1,4,6,1);
+
+INSERT INTO incidentes.INCIDENTE VALUES
+(1002,'Reforma',202,67002,'2027-02-02','19.42','-99.15',4,5,7,2);
+
+INSERT INTO incidentes.INCIDENTE VALUES
+(1003,'Universidad',303,45003,'2027-02-02','19.40','-99.17',7,6,8,3);
+
+INSERT INTO incidentes.INCIDENTE VALUES
+(1004,'Patriotismo',404,38004,'2027-02-02','19.44','-99.11',13,7,9,4);
+
+INSERT INTO incidentes.INCIDENTE VALUES
+(1005,'Chapultepec',505,61005,'2027-02-02','19.45','-99.18',16,4,10,5);
+
+PRINT 'TRIGGER 3 - INCIDENTES INSERTADOS';
+
+SELECT id_incidente, id_viaje, id_tipo_incidente
+FROM incidentes.INCIDENTE
+WHERE id_incidente BETWEEN 1001 AND 1005;
+
+PRINT 'TRIGGER 3 - DESPUES: LAS BICICLETAS DEBEN TENER ESTADO 2, DANADA';
+
+SELECT id_bicicleta, id_estado_bici
+FROM movilidad.BICICLETA
+WHERE id_bicicleta IN (1,2,3,5,6);
+
+ROLLBACK TRANSACTION;
+GO
+
+
+/*==============================================================*/
+/* TRIGGER 4: trgViajeValidaBicicletaOperativa                  */
+/* Impide registrar viajes para bicicletas dañadas.             */
+/*==============================================================*/
+
+BEGIN TRANSACTION;
+
+PRINT 'TRIGGER 4 - BICICLETAS DANADAS QUE SE INTENTARAN USAR';
+
+SELECT id_bicicleta, id_estado_bici
+FROM movilidad.BICICLETA
+WHERE id_bicicleta IN (4,9,14,19,24);
+
+INSERT INTO movilidad.VIAJE VALUES
+(2001,25,'2027-02-03','CU-ROMA',
+ '2027-02-03 08:00','2027-02-03 08:30',
+ 'PRUEBA_D001',4,1,2,1);
+
+INSERT INTO movilidad.VIAJE VALUES
+(2002,25,'2027-02-03','ROMA-CU',
+ '2027-02-03 09:00','2027-02-03 09:30',
+ 'PRUEBA_D002',9,2,1,2);
+
+INSERT INTO movilidad.VIAJE VALUES
+(2003,25,'2027-02-03','CONDESA-ROMA',
+ '2027-02-03 10:00','2027-02-03 10:30',
+ 'PRUEBA_D003',14,3,2,3);
+
+INSERT INTO movilidad.VIAJE VALUES
+(2004,25,'2027-02-03','REFORMA-CU',
+ '2027-02-03 11:00','2027-02-03 11:30',
+ 'PRUEBA_D004',19,4,1,4);
+
+INSERT INTO movilidad.VIAJE VALUES
+(2005,25,'2027-02-03','POLANCO-ROMA',
+ '2027-02-03 12:00','2027-02-03 12:30',
+ 'PRUEBA_D005',24,5,2,5);
+
+PRINT 'TRIGGER 4 - LOS VIAJES NO DEBEN HABER SIDO REGISTRADOS';
+
+SELECT id_viaje, id_bicicleta, num_referencia
+FROM movilidad.VIAJE
+WHERE id_viaje BETWEEN 2001 AND 2005;
+
+ROLLBACK TRANSACTION;
+GO
+
+
+/*==============================================================*/
+/* TRIGGER 5: trgTarjetaDesactivaPorReposicion                  */
+/* Al insertar una reposición, desactiva la tarjeta anterior.   */
+/*==============================================================*/
+
+BEGIN TRANSACTION;
+
+PRINT 'TRIGGER 5 - ANTES DE REGISTRAR REPOSICIONES';
+
+SELECT id_tarjeta_movilidad, id_usuario, activa, fecha_baja
+FROM movilidad.TARJETA_MOVILIDAD
+WHERE id_tarjeta_movilidad IN (1,2,3,4,5);
+
+INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+(1001,1,1,'2030-01-01',100,0x9001,'2027-02-04',1,'Reposicion');
+
+INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+(1002,2,2,'2030-01-01',100,0x9002,'2027-02-04',1,'Reposicion');
+
+INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+(1003,3,3,'2030-01-01',100,0x9003,'2027-02-04',1,'Reposicion');
+
+INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+(1004,4,4,'2030-01-01',100,0x9004,'2027-02-04',1,'Reposicion');
+
+INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+(1005,5,5,'2030-01-01',100,0x9005,'2027-02-04',1,'Reposicion');
+
+PRINT 'TRIGGER 5 - TARJETAS NUEVAS DE REPOSICION';
+
+SELECT id_tarjeta_movilidad, id_tarjeta_reposicion, id_usuario, activa, tipo_emision
+FROM movilidad.TARJETA_MOVILIDAD
+WHERE id_tarjeta_movilidad BETWEEN 1001 AND 1005;
+
+PRINT 'TRIGGER 5 - TARJETAS ANTERIORES DESACTIVADAS';
+
+SELECT id_tarjeta_movilidad, id_usuario, activa, fecha_baja
+FROM movilidad.TARJETA_MOVILIDAD
+WHERE id_tarjeta_movilidad IN (1,2,3,4,5);
+
+ROLLBACK TRANSACTION;
+GO
