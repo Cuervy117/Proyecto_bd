@@ -27,6 +27,8 @@ HAVING COUNT(i.id_incidente) > 0
 ORDER BY TotalDaños DESC;
 
 
+GO
+
 --2.     Top 5 de los accidentes más frecuentes (descripción del daño, cantidad)
 
 SELECT TOP 5
@@ -38,6 +40,8 @@ INNER JOIN catalogo.tipo_incidente ti
 GROUP BY ti.nombre_incidente
 ORDER BY Cantidad DESC;
 
+
+GO
 
 --3. Estaciones con más reportes de accidentes. Listado de estaciones con el número de accidentes en un periodo de tiempo (fecha inicio  fecha fin) ordenados de mayor a menor
 
@@ -59,6 +63,8 @@ GROUP BY
     YEAR(i.fecha),
     MONTH(i.fecha)
 ORDER BY TotalAccidentes DESC;
+
+GO
 
 --4.     Total de accidentes en un rango de fechas, listados de mayor a menor (fecha y tipo de accidente y número de accidentes)
 
@@ -87,6 +93,8 @@ GROUP BY
     ti.nombre_incidente
 ORDER BY NumeroAccidentes DESC;
 
+GO
+
 --5.     Total de usuarios por rangos de edades (10 a 15 años, 15-20 años, 20 a 30 años, más de 30 años)
 
 SELECT
@@ -113,10 +121,12 @@ GROUP BY
     tm.descripcion
 ORDER BY RangoEdad;
 
+GO
+
 --6.     Inventario de las bicicletas (todos los datos de las bicicletas) por estaciones con el número (total) de viajes, por un periodo de tiempo, incluir el número de accidentes si ha tenido
 
---DECLARE @FechaInicio DATE = '2026-01-01';
---DECLARE @FechaFin DATE = '2027-12-31';
+DECLARE @FechaInicio DATE = '2026-01-01';
+DECLARE @FechaFin DATE = '2027-12-31';
 
 SELECT
     e.nombre_estacion,
@@ -150,6 +160,8 @@ ORDER BY
     TotalViajes DESC,
     TotalAccidentes DESC;
 
+GO
+
 --7.     Listado de usuarios (datos generales), datos de su membresía y el tiempo en meses que tienen la membresía.
 
 SELECT
@@ -169,6 +181,8 @@ INNER JOIN movilidad.suscripcion s
 INNER JOIN movilidad.tipo_membresia tm
     ON s.id_tipo_membresia = tm.id_tipo_membresia
 ORDER BY MesesConMembresia DESC;
+
+GO
 
 --8.     Agentes mejor recocidos en un mes especifico, para eso cada agente auxilia a un usuario en algún incidente y el usuario llena una pequeña encuesta.
 
@@ -194,6 +208,8 @@ GROUP BY
 ORDER BY
     PromedioPuntuacion DESC,
     TotalEncuestas DESC;
+
+GO
 
 --9.     Reporte diario de los empleados que hacen rondines (fecha, descripción, si hubo incidentes o no, número de accidentes, estación donde se obtiene el reporte). 
 --		 Ellos cuentan a su vez con un supervisor que también es empleado que hace rondines, este dato también deberá aparecer en el informe.
@@ -234,6 +250,8 @@ LEFT JOIN movilidad.estacion est
 
 ORDER BY r.fecha DESC;
 
+GO
+
 --10.  Listado de empleados con su tipo, todos sus datos
 
 SELECT
@@ -250,11 +268,13 @@ LEFT JOIN personal.rondin r
     ON e.id_empleado = r.id_empleado
 ORDER BY e.id_empleado;
 
+GO
+
 --11.  Informe de los recorridos (viajes), por estación y/o por periodo de tiempo (fecha inicio y fecha fin); 
 --		nombre del usuario, estación de partida, lugar de llegada, tiempo en minutos del recorrido y costo.
 
---DECLARE @FechaInicio DATE = '2026-01-01';
---DECLARE @FechaFin DATE = '2027-12-31';
+DECLARE @FechaInicio DATE = '2026-01-01';
+DECLARE @FechaFin DATE = '2027-12-31';
 
 SELECT
     v.id_viaje,
@@ -287,6 +307,8 @@ INNER JOIN movilidad.estacion ef
 WHERE v.fecha BETWEEN @FechaInicio AND @FechaFin
 
 ORDER BY v.fecha DESC;
+
+GO
 
 --12.  Épocas del año con número de recorridos ordenados de mayor a menor
 
@@ -327,6 +349,8 @@ ORDER BY
     TotalRecorridos DESC,
     MONTH(v.fecha);
 
+GO
+
 --13.  Obtener pada cada agente sus datos personales y el listado de los accidentes que ha atendido (tipo de accidente, fecha, lugar)
 
 SELECT
@@ -366,6 +390,8 @@ ORDER BY
     a.id_empleado,
     i.fecha DESC;
 
+GO
+
 --14. Para el área de recursos humanos es importante un informe mensual de todos los empleados y sus datos: RFC, nombre completo y sueldo, 
 --asimismo nombre de los empleados y puesto de los que tengan un sueldo de 13000 mensuales y pertenezcan a la tercera edad.
 
@@ -374,10 +400,10 @@ SELECT
     e.nombre_pila + ' ' + e.ap_paterno + ' ' + e.ap_materno AS NombreCompleto,
 
     CASE e.tipo_empleado
-        WHEN 'AG' THEN 'Agente'
-        WHEN 'R'  THEN 'Empleado de Rondin'
-        WHEN 'M'  THEN 'Mantenimiento'
-        WHEN 'AD' THEN 'Administracion'
+        WHEN 'a' THEN 'Agente'
+        WHEN 'r' THEN 'Empleado de Rondin'
+        WHEN 'm' THEN 'Mantenimiento'
+        WHEN 'd' THEN 'Administracion'
         ELSE e.tipo_empleado
     END AS Puesto,
 
@@ -395,10 +421,12 @@ SELECT
 FROM personal.empleado e
 ORDER BY e.ap_paterno,e.ap_materno, e.nombre_pila desc;
 
+GO
+
 --15. Estadística de faltas de los empleados en un periodo de tiempo: tipo de falta, total de ese tipo de falta en el periodo elegido.
 
---DECLARE @FechaInicio DATE = '2026-06-01';
---DECLARE @FechaFin DATE = '2026-12-31';
+DECLARE @FechaInicio DATE = '2026-06-01';
+DECLARE @FechaFin DATE = '2026-12-31';
 
 SELECT
     YEAR(f.fecha) AS Anio,
