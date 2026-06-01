@@ -167,7 +167,7 @@ CREATE TABLE personal.empleado(
         CHECK (sueldo > 0),
 
     CONSTRAINT ck_empleado_tipo
-        CHECK (tipo_empleado IN ('AD','AG','R','M'))
+        CHECK (tipo_empleado IN ('a','r','d','m'))
 );
 GO
 
@@ -182,6 +182,7 @@ CREATE TABLE personal.administracion(
     CONSTRAINT fk_administracion_empleado
         FOREIGN KEY (id_empleado)
         REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE
 );
 GO
 
@@ -196,6 +197,7 @@ CREATE TABLE personal.agente(
     CONSTRAINT fk_agente_empleado
         FOREIGN KEY (id_empleado)
         REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE
 );
 GO
 
@@ -208,7 +210,8 @@ CREATE TABLE personal.rondin(
 
     CONSTRAINT fk_rondin_empleado
         FOREIGN KEY (id_empleado)
-        REFERENCES personal.empleado(id_empleado),
+        REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_rondin_supervisor
         FOREIGN KEY (id_empleado_supervisor)
@@ -225,7 +228,8 @@ CREATE TABLE personal.mantenimiento(
 
     CONSTRAINT fk_mantenimiento_empleado
         FOREIGN KEY (id_empleado)
-        REFERENCES personal.empleado(id_empleado),
+        REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_mantenimiento_especialidad
         FOREIGN KEY (id_especialidad)
@@ -260,7 +264,8 @@ CREATE TABLE personal.domicilio(
 
     CONSTRAINT fk_domicilio_empleado
         FOREIGN KEY (id_empleado)
-        REFERENCES personal.empleado(id_empleado),
+        REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_domicilio_colonia
         FOREIGN KEY (id_colonia)
@@ -277,7 +282,8 @@ CREATE TABLE personal.idiomas(
 
     CONSTRAINT fk_idiomas_empleado
         FOREIGN KEY (id_empleado)
-        REFERENCES personal.empleado(id_empleado),
+        REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_idiomas_catalogo
         FOREIGN KEY (id_idioma)
@@ -296,7 +302,8 @@ CREATE TABLE personal.falta(
 
     CONSTRAINT fk_falta_empleado
         FOREIGN KEY (id_empleado)
-        REFERENCES personal.empleado(id_empleado),
+        REFERENCES personal.empleado(id_empleado)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_falta_motivo
         FOREIGN KEY (id_motivo)
@@ -315,6 +322,7 @@ CREATE TABLE personal.funciones(
     CONSTRAINT fk_funciones_administracion
         FOREIGN KEY (id_empleado)
         REFERENCES personal.administracion(id_empleado)
+        ON DELETE CASCADE
 );
 GO
 
@@ -363,6 +371,7 @@ CREATE TABLE usuarios.telefono(
     CONSTRAINT fk_telefono_usuario
         FOREIGN KEY (id_usuario)
         REFERENCES usuarios.usuario(id_usuario)
+        ON DELETE CASCADE
 );
 GO
 
@@ -431,7 +440,8 @@ CREATE TABLE movilidad.suscripcion(
 
     CONSTRAINT fk_suscripcion_usuario
         FOREIGN KEY (id_usuario)
-        REFERENCES usuarios.usuario(id_usuario),
+        REFERENCES usuarios.usuario(id_usuario)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_suscripcion_metodo_pago
         FOREIGN KEY (id_metodo_pago)
@@ -465,7 +475,8 @@ CREATE TABLE movilidad.tarjeta_movilidad(
 
     CONSTRAINT fk_tarjeta_usuario
         FOREIGN KEY (id_usuario)
-        REFERENCES usuarios.usuario(id_usuario),
+        REFERENCES usuarios.usuario(id_usuario)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_tarjeta_reposicion
         FOREIGN KEY (id_tarjeta_reposicion)
@@ -569,7 +580,8 @@ CREATE TABLE movilidad.viaje(
 
     CONSTRAINT fk_viaje_tarjeta
         FOREIGN KEY (id_tarjeta_movilidad)
-        REFERENCES movilidad.tarjeta_movilidad(id_tarjeta_movilidad),
+        REFERENCES movilidad.tarjeta_movilidad(id_tarjeta_movilidad)
+        ON DELETE CASCADE,
 
     CONSTRAINT u_viaje_referencia 
         UNIQUE (num_referencia),
@@ -604,7 +616,8 @@ CREATE TABLE incidentes.incidente(
 
     CONSTRAINT fk_incidente_viaje
         FOREIGN KEY (id_viaje)
-        REFERENCES movilidad.viaje(id_viaje),
+        REFERENCES movilidad.viaje(id_viaje)
+        ON DELETE CASCADE,
 
     CONSTRAINT fk_incidente_tipo
         FOREIGN KEY (id_tipo_incidente)
@@ -632,7 +645,8 @@ CREATE TABLE incidentes.encuesta(
 
     CONSTRAINT fk_encuesta_incidente
         FOREIGN KEY (id_incidente)
-        REFERENCES incidentes.incidente(id_incidente),
+        REFERENCES incidentes.incidente(id_incidente)
+        ON DELETE CASCADE,
 
     CONSTRAINT ck_encuesta_puntuacion
         CHECK (puntuacion BETWEEN 1 AND 10)
@@ -685,20 +699,28 @@ GO
 /* INDICES                                                      */
 /*==============================================================*/
 
-CREATE INDEX idx_viaje_fecha
+CREATE NONCLUSTERED INDEX idx_viaje_fecha
 ON movilidad.viaje(fecha);
 GO
 
-CREATE INDEX idx_incidente_fecha
+CREATE NONCLUSTERED INDEX idx_incidente_fecha
 ON incidentes.incidente(fecha);
 GO
 
-CREATE INDEX idx_suscripcion_usuario
+CREATE NONCLUSTERED INDEX idx_suscripcion_usuario
 ON movilidad.suscripcion(id_usuario);
 GO
 
+CREATE NONCLUSTERED INDEX idx_usuario_nombre
+ON usuarios.usuario(nombre, ap_paterno);
+GO
+
+CREATE NONCLUSTERED INDEX idx_empleado_rfc
+ON personal.empleado(RFC);
+GO
+
 /*==============================================================*/
-/* VISTA                                                        */
+/* VISTAS                                                       */
 /*==============================================================*/
 
 CREATE OR ALTER VIEW movilidad.vw_viaje_tarifa_adicional
@@ -724,7 +746,47 @@ INNER JOIN movilidad.tipo_membresia TM
     ON S.id_tipo_membresia = TM.id_tipo_membresia;
 GO
 
+CREATE OR ALTER VIEW usuarios.vw_usuarios_planes_activos
+AS
+SELECT 
+    u.id_usuario,
+    u.nombre + ' ' + u.ap_paterno + ' ' + ISNULL(u.ap_materno, '') AS nombre_completo,
+    u.correo,
+    u.edad,
+    u.genero,
+    s.id_suscripcion,
+    tm.descripcion AS tipo_membresia,
+    s.fecha_inicio,
+    s.fecha_fin,
+    s.estado AS estado_suscripcion
+FROM usuarios.usuario u
+INNER JOIN movilidad.suscripcion s 
+    ON u.id_usuario = s.id_usuario
+INNER JOIN movilidad.tipo_membresia tm 
+    ON s.id_tipo_membresia = tm.id_tipo_membresia
+WHERE s.estado = 'A';
+GO
 
+CREATE OR ALTER VIEW incidentes.vw_resumen_incidentes
+AS
+SELECT 
+    i.id_incidente,
+    i.fecha AS fecha_incidente,
+    ti.nombre_incidente AS tipo_incidente,
+    i.calle + ' ' + CAST(i.numero AS VARCHAR(10)) + ', Col. ' + c.colonia AS ubicacion,
+    v.id_viaje,
+    v.ruta,
+    e.nombre_pila + ' ' + e.ap_paterno AS agente_atendio
+FROM incidentes.incidente i
+INNER JOIN catalogo.tipo_incidente ti 
+    ON i.id_tipo_incidente = ti.id_tipo_incidente
+INNER JOIN personal.colonia c 
+    ON i.id_colonia = c.id_colonia
+INNER JOIN movilidad.viaje v 
+    ON i.id_viaje = v.id_viaje
+INNER JOIN personal.empleado e 
+    ON i.id_empleado = e.id_empleado;
+GO
 
 PRINT 'BASE DE DATOS CON ESQUEMAS CREADA CORRECTAMENTE';
 GO
