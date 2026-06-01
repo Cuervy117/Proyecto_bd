@@ -471,8 +471,8 @@ BEGIN
             SET @costo = movilidad.fn_calcular_tarifa_excedente(@duracion, @tiempo_excedente, @tarifa_excedente);
         END
 
-        INSERT INTO movilidad.viaje (id_viaje, duracion, fecha, ruta, hora_inicio, hora_fin, num_referencia, id_bicicleta, id_estacion_inicio, id_estacion_fin, id_tarjeta_movilidad, costo)
-        VALUES (@id_viaje, @duracion, CAST(@hora_inicio AS DATE), 'RUTA_TRIP', @hora_inicio, @hora_fin, @num_referencia, @id_bicicleta, @id_estacion_inicio, @id_estacion_fin, @id_tarjeta_movilidad, @costo);
+        INSERT INTO movilidad.viaje (id_viaje, fecha, ruta, hora_inicio, hora_fin, num_referencia, id_bicicleta, id_estacion_inicio, id_estacion_fin, id_tarjeta_movilidad, costo)
+        VALUES (@id_viaje, CAST(@hora_inicio AS DATE), 'RUTA_TRIP', @hora_inicio, @hora_fin, @num_referencia, @id_bicicleta, @id_estacion_inicio, @id_estacion_fin, @id_tarjeta_movilidad, @costo);
 
         COMMIT TRANSACTION;
         PRINT 'Viaje registrado con éxito.';
