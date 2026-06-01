@@ -394,7 +394,7 @@ BEGIN
         DECLARE @costo_membresia DECIMAL(10,2);
         DECLARE @duracion_membresia INT;
         
-        SELECT @costo_membresia = costo, @duracion_membresia = duracion_dias
+        SELECT @costo_membresia = costo_base, @duracion_membresia = duracion_dias
         FROM movilidad.tipo_membresia
         WHERE id_tipo_membresia = @id_tipo_membresia;
 
@@ -407,7 +407,7 @@ BEGIN
         IF @tipo_emision = 'Primera'
             SET @costo_emision = 50.0;
 
-        INSERT INTO movilidad.tarjeta_movilidad (id_tarjeta_movilidad, fecha_baja, id_usuario, fecha_vigencia, saldo, codigo_QR, fecha_adquisicion, activa, tipo_emision)
+        INSERT INTO movilidad.tarjeta_movilidad (id_tarjeta_movilidad, id_tarjeta_reposicion, id_usuario, fecha_baja, saldo, codigo_QR, fecha_emision, activa, tipo_emision)
         VALUES (@id_tarjeta, NULL, @id_usuario, DATEADD(YEAR, 5, GETDATE()), @saldo_tarjeta, CAST(@id_tarjeta AS VARBINARY(100)), GETDATE(), 1, @tipo_emision);
 
         COMMIT TRANSACTION;
@@ -697,8 +697,8 @@ BEGIN
 
         -- El trigger trg_tarjeta_desactiva_por_reposicion se ejecutará tras el INSERT,
         -- desactivando la tarjeta anterior automáticamente.
-        INSERT INTO movilidad.tarjeta_movilidad (id_tarjeta_movilidad, fecha_baja, id_usuario, fecha_vigencia, saldo, codigo_QR, fecha_adquisicion, activa, tipo_emision, id_tarjeta_reposicion)
-        VALUES (@id_nueva_tarjeta, NULL, @id_usuario, DATEADD(YEAR, 5, GETDATE()), @saldo_final, CAST(@id_nueva_tarjeta AS VARBINARY(100)), GETDATE(), 1, 'Reposicion', @id_tarjeta_anterior);
+        INSERT INTO movilidad.tarjeta_movilidad (id_tarjeta_movilidad, id_tarjeta_reposicion, id_usuario, fecha_baja, saldo, codigo_QR, fecha_emision, activa, tipo_emision)
+        VALUES (@id_nueva_tarjeta, @id_tarjeta_anterior, @id_usuario, DATEADD(YEAR, 5, GETDATE()), @saldo_final, CAST(@id_nueva_tarjeta AS VARBINARY(100)), GETDATE(), 1, 'Reposicion');
 
         COMMIT TRANSACTION;
         PRINT 'Reposición de tarjeta registrada con costo de $80 aplicado.';
