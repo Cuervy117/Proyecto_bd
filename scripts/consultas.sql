@@ -2,30 +2,17 @@ USE Ecobici_SQuipoL;
 GO
 --1.     Estadísticas de los daños en las bicicletas con mayor frecuencia. 
 SELECT
-    b.idBicicleta,
-    COUNT(i.id_incidente) AS TotalDanios
+    b.id_bicicleta,
+    COUNT(i.id_incidente) AS TotalDaños
 FROM movilidad.BICICLETA b
 INNER JOIN movilidad.VIAJE v
-    ON b.idBicicleta = v.idBicicleta
+    ON b.id_bicicleta = v.id_bicicleta
 INNER JOIN incidentes.INCIDENTE i
-    ON v.idViaje = i.idViaje
-GROUP BY b.idBicicleta
+    ON v.id_viaje = i.id_viaje
+GROUP BY b.id_bicicleta
 HAVING COUNT(i.id_incidente) > 0
-ORDER BY TotalDanios DESC;
+ORDER BY TotalDaños DESC;
 
-SELECT
-    b.idBicicleta AS Bicicleta,
-    COUNT(i.id_incidente) AS TotalDanios,
-    RANK() OVER(
-        ORDER BY COUNT(i.id_incidente) DESC
-    ) AS Posicion
-FROM movilidad.BICICLETA b
-INNER JOIN movilidad.VIAJE v
-    ON b.idBicicleta = v.idBicicleta
-INNER JOIN incidentes.INCIDENTE i
-    ON v.idViaje = i.idViaje
-GROUP BY b.idBicicleta
-ORDER BY TotalDanios DESC;
 
 --2.     Top 5 de los accidentes más frecuentes (descripción del daño, cantidad)
 
@@ -46,12 +33,12 @@ DECLARE @FechaFin DATE = '2027-12-31';
 
 SELECT
     e.nombre_estacion,
-    YEAR(i.fecha) AS Anio,
+    YEAR(i.fecha) AS Año,
     MONTH(i.fecha) AS Mes,
     COUNT(*) AS TotalAccidentes
 FROM incidentes.INCIDENTE i
 JOIN movilidad.VIAJE v
-    ON i.idViaje = v.idViaje
+    ON i.id_viaje = v.id_viaje
 JOIN movilidad.ESTACION e
     ON v.id_estacion_inicio = e.id_estacion
 GROUP BY
@@ -102,7 +89,7 @@ FROM usuarios.USUARIO u
 JOIN movilidad.SUSCRIPCION s
     ON u.id_usuario = s.id_usuario
 JOIN movilidad.TIPO_MEMBRESIA tm
-    ON s.idTipoMembresia = tm.idTipoMembresia
+    ON s.id_tipo_membresia = tm.id_tipo_membresia
 GROUP BY
     CASE
         WHEN u.edad BETWEEN 10 AND 15 THEN '10-15'
@@ -115,17 +102,17 @@ ORDER BY RangoEdad;
 
 --6.     Inventario de las bicicletas (todos los datos de las bicicletas) por estaciones con el número (total) de viajes, por un periodo de tiempo, incluir el número de accidentes si ha tenido
 
-DECLARE @FechaInicio DATE = '2026-01-01';
-DECLARE @FechaFin DATE = '2027-12-31';
+--DECLARE @FechaInicio DATE = '2026-01-01';
+--DECLARE @FechaFin DATE = '2027-12-31';
 
 SELECT
     e.nombre_estacion,
-    b.idBicicleta,
+    b.id_bicicleta,
     b.modelo,
     b.num_serie,
     eb.descripcion AS EstadoBicicleta,
     bc.color,
-    COUNT(DISTINCT v.idViaje) AS TotalViajes,
+    COUNT(DISTINCT v.id_viaje) AS TotalViajes,
     COUNT(DISTINCT i.id_incidente) AS TotalAccidentes
 FROM movilidad.BICICLETA b
 INNER JOIN movilidad.ESTACION e
@@ -133,15 +120,15 @@ INNER JOIN movilidad.ESTACION e
 INNER JOIN catalogo.ESTADO_BICI eb
     ON b.id_estado_bici = eb.id_estado_bici
 INNER JOIN catalogo.BICICLETA_COLOR bc
-    ON b.id_bicicletaColor = bc.id_bicicletaColor
+    ON b.id_bicicleta_color = bc.id_bicicleta_color
 LEFT JOIN movilidad.VIAJE v
-    ON b.idBicicleta = v.idBicicleta
+    ON b.id_bicicleta = v.id_bicicleta
     AND v.fecha BETWEEN @FechaInicio AND @FechaFin
 LEFT JOIN incidentes.INCIDENTE i
-    ON v.idViaje = i.idViaje
+    ON v.id_viaje = i.id_viaje
 GROUP BY
     e.nombre_estacion,
-    b.idBicicleta,
+    b.id_bicicleta,
     b.modelo,
     b.num_serie,
     eb.descripcion,
@@ -160,14 +147,14 @@ SELECT
     u.correo,
     u.edad,
     tm.descripcion AS TipoMembresia,
-    s.fechaInicio,
-    s.fechaFin,
-    DATEDIFF(MONTH, s.fechaInicio, GETDATE()) AS MesesConMembresia
+    s.fecha_inicio,
+    s.fecha_fin,
+    DATEDIFF(MONTH, s.fecha_inicio, GETDATE()) AS MesesConMembresia
 FROM usuarios.USUARIO u
 INNER JOIN movilidad.SUSCRIPCION s
     ON u.id_usuario = s.id_usuario
 INNER JOIN movilidad.TIPO_MEMBRESIA tm
-    ON s.idTipoMembresia = tm.idTipoMembresia
+    ON s.id_tipo_membresia = tm.id_tipo_membresia
 ORDER BY MesesConMembresia DESC;
 
 --8.     Agentes mejor recocidos en un mes especifico, para eso cada agente auxilia a un usuario en algún incidente y el usuario llena una pequeña encuesta.
@@ -253,11 +240,11 @@ ORDER BY e.id_empleado;
 --11.  Informe de los recorridos (viajes), por estación y/o por periodo de tiempo (fecha inicio y fecha fin); 
 --		nombre del usuario, estación de partida, lugar de llegada, tiempo en minutos del recorrido y costo.
 
-DECLARE @FechaInicio DATE = '2026-01-01';
-DECLARE @FechaFin DATE = '2027-12-31';
+--DECLARE @FechaInicio DATE = '2026-01-01';
+--DECLARE @FechaFin DATE = '2027-12-31';
 
 SELECT
-    v.idViaje,
+    v.id_viaje,
     v.ruta,
     v.num_referencia,
 
@@ -273,7 +260,7 @@ SELECT
 FROM movilidad.VIAJE v
 
 INNER JOIN movilidad.TARJETA_MOVILIDAD tm
-    ON v.idTarjetaMovilidad = tm.idTarjetaMovilidad
+    ON v.id_tarjeta_movilidad = tm.id_tarjeta_movilidad
 
 INNER JOIN usuarios.USUARIO u
     ON tm.id_usuario = u.id_usuario
@@ -357,7 +344,7 @@ INNER JOIN catalogo.TIPO_INCIDENTE ti
     ON i.id_tipo_incidente = ti.id_tipo_incidente
 
 INNER JOIN movilidad.VIAJE v
-    ON i.idViaje = v.idViaje
+    ON i.id_viaje = v.id_Viaje
 
 INNER JOIN movilidad.ESTACION est
     ON v.id_estacion_inicio = est.id_estacion
@@ -397,8 +384,8 @@ ORDER BY e.ap_paterno,e.ap_materno, e.nombre_pila desc;
 
 --15. Estadística de faltas de los empleados en un periodo de tiempo: tipo de falta, total de ese tipo de falta en el periodo elegido.
 
-DECLARE @FechaInicio DATE = '2026-06-01';
-DECLARE @FechaFin DATE = '2026-12-31';
+--DECLARE @FechaInicio DATE = '2026-06-01';
+--DECLARE @FechaFin DATE = '2026-12-31';
 
 SELECT
     YEAR(f.fecha) AS Anio,
