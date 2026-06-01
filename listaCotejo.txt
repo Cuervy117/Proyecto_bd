@@ -1,0 +1,113 @@
+DISEÑO CONCEPTUAL
+* Se entregó archivo .dia (ultima versión)
+DISEÑO LOGICO 
+• Modelo relacional (en ERStudio) última versión
+• Diccionario de datos (nombre del objeto, tipo (tabla, relación, procedimiento almacenado, índice, función, etc.), descripción, en caso de las tablas para cada atributo poner tipo de datos y longitud)
+NORMALIZACIÓN
+• Explicar cada forma normal
+
+DISEÑO FÍSICO
+DCL
+• Borrado en cascada
+• Uso de índices
+• Indices non-clustered y UNIQUE
+DDL
+• llaves artificiales
+• columnas calculadas
+•  llaves naturales
+DML
+• 2 Funciones
+• Disparadores
+• 3 Vistas
+• Uso de transacciones
+• Manejo de errores
+• Llamadas a procedimiento almacenados
+Uso de restricciones vistas en clase:
+• Unique
+• check
+• FK
+• PK
+• Valores por default
+3 consultas (al menos)
+• Diferentes tipos de joins
+• funciones de agregación
+• Algebra relacional
+• Subconsultas
+
+
+Procedimiento almacenado
+
+ Se deberán implementar procedimientos almacenados para:
+1. Alta, modificación y borrado de usuarios con su plan, reposición de tarjetas y recargas
+2. Registro de usuarios a la base de datos, con diferentes perfiles
+3. Registrar un viaje
+4. Registrar un rondin
+5. Eliminar un usuario
+6. Modificar una falta, los datos que se pueden modificat son: fecha fin, descripción y motivo.
+7. Borrar un metodo de pago, si ya no tiene otro implica cancelación de la suscripción
+8. Registrar un incidente
+9. Actualizar un rondin
+10. Realice los procedimientos para poder obtener 4 estadísticas. Dichos procedimientos deben mostrar al menos 10 registros para cada caso. 
+Buscador con like
+
+2 ESQUEMAS
+
+SEGURIDAD
+
+CONSIDERACIONES (anotar las consideraciones semánticas una por renglón)
+
+1. Costo de la tarjeta: $50 pesos la primera vez
+2. Costo por reposición - $80 pesos por reposición
+3. Tipo de método de pago: C - Tarjeta de crédito, D - Tarjeta de débito, P - Paypal
+4.  Edad del empleado calculada por su fecha de nacimiento
+5.  Genero: F - Femenino, M - Masculino
+6. Tarifa adicional: calculada en base a la hora de llegada
+7.  Estado de la bicicleta: D - Dañada, F - Funcionando, B - Baja
+8. Tamaño de la bicicleta: C - Chica, M - Mediana, G - Grande
+9. Duración del viaje en minutos
+10 Estado civil: S - Soltero, C - Casado, D - Divorciado, V - Viudo, O-concuvinato
+11. Tipo de menbresia: B - Básica, I - Intermedia, P - Premium
+12. Tipo de empleado: A - Agente, R - Rondines, D - Administrador, M - Mantenimiento
+13.  Etapas puede definirse como cs o un catalogo
+14. Definir la edad para los de tercera edad
+
+ESTADISTICAS  E INFORMES
+
+1.     Estadísticas de los daños en las bicicletas con mayor frecuencia. 
+2.     Top 5 de los accidentes más frecuentes (descripción del daño, cantidad)
+3.     Estaciones con más reportes de accidentes. Listado de estaciones con el número de accidentes en un periodo de tiempo (fecha inicio – fecha fin) ordenados de mayor a menor
+4.     Total de accidentes en un rango de fechas, listados de mayor a menor (fecha y tipo de accidente y número de accidentes)
+5.     Total de usuarios por rangos de edades (10 a 15 años, 15-20 años, 20 a 30 años, más de 30 años)
+6.     Inventario de las bicicletas (todos los datos de las bicicletas) por estaciones con el número (total) de viajes, por un periodo de tiempo, incluir el número de accidentes si ha tenido
+7.     Listado de usuarios (datos generales), datos de su membresía y el tiempo en meses que tienen la membresía.
+8.     Agentes mejor recocidos en un mes especifico, para eso cada agente auxilia a un usuario en algún incidente y el usuario llena una pequeña encuesta.
+9.     Reporte diario de los empleados que hacen rondines (fecha, descripción, si hubo incidentes o no, número de accidentes, estación donde se obtiene el reporte). Ellos cuentan a su vez con un supervisor que también es empleado que hace rondines, este dato también deberá aparecer en el informe.
+10.  Listado de empleados con su tipo, todos sus datos
+11.  Informe de los recorridos (viajes), por estación y/o por periodo de tiempo (fecha inicio y fecha fin); nombre del usuario, estación de partida, lugar de llegada, tiempo en minutos del recorrido y costo.
+12.  Épocas del año con número de recorridos ordenados de mayor a menor
+13.  Obtener pada cada agente sus datos personales y el listado de los accidentes que ha atendido (tipo de accidente, fecha, lugar)
+14. Para el área de recursos humanos es importante un informe mensual de todos los empleados y sus datos: RFC, nombre completo y sueldo, asimismo nombre de los empleados y puesto de los que tengan un sueldo de 13000 mensuales y pertenezcan a la tercera edad.
+15. Estadística de faltas de los empleados en un periodo de tiempo: tipo de falta, total de ese tipo de falta en el periodo elegido.
+
+Las estadístcias deben mostrar 10 registros para cada caso
+
+
+CARGA INICIAL (anotar las realizadas)
+
+
+
+
+
+
+
+SCRPTS DOCUMENTADO (autor, fecha, descripción)
+
+ARCHIVOS A ENTREGAR ( 6 SCRIPTS)
+dia
+ERStudio
+seguridad.sql
+creabase.sql
+dml.sql
+informes.sql (estadisticas)
+carga inicial.sql
+valida triggers.SQL

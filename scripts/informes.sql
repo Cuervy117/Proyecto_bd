@@ -1,22 +1,22 @@
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : Díaz Núñez David
-             Hernández Acosta Mauricio Gabriel
-             Sánchez Luján César Ricardo
+  AUTORES  : DÃ­az NÃºÃ±ez David
+             HernÃ¡ndez Acosta Mauricio Gabriel
+             SÃ¡nchez LujÃ¡n CÃ©sar Ricardo
 
   FECHA    : 01/06/2026
-  VERSIÓN  : 1.0 FINAL
+  VERSIÃ“N  : 1.0 FINAL
 
-  DESCRIPCIÓN:
+  DESCRIPCIÃ“N:
   Script de consultas, informes / estadisticas
 =========================================================*/
 
 USE Ecobici_SQuipoL;
 GO
---1.     Estadísticas de los daños en las bicicletas con mayor frecuencia. 
+--1.Â Â Â Â  EstadÃ­sticas de los daÃ±os en las bicicletas con mayor frecuencia. 
 SELECT
     b.id_bicicleta,
-    COUNT(i.id_incidente) AS TotalDaños
+    COUNT(i.id_incidente) AS TotalDaÃ±os
 FROM movilidad.bicicleta b
 INNER JOIN movilidad.viaje v
     ON b.id_bicicleta = v.id_bicicleta
@@ -24,13 +24,13 @@ INNER JOIN incidentes.incidente i
     ON v.id_viaje = i.id_viaje
 GROUP BY b.id_bicicleta
 HAVING COUNT(i.id_incidente) > 0
-ORDER BY TotalDaños DESC;
+ORDER BY TotalDaÃ±os DESC;
 
 
---2.     Top 5 de los accidentes más frecuentes (descripción del daño, cantidad)
+--2.Â Â Â Â  Top 5 de los accidentes mÃ¡s frecuentes (descripciÃ³n del daÃ±o, cantidad)
 
 SELECT TOP 5
-    ti.nombre_incidente AS [Descripcion del daño],
+    ti.nombre_incidente AS [Descripcion del daÃ±o],
     COUNT(*) AS Cantidad
 FROM incidentes.incidente i
 INNER JOIN catalogo.tipo_incidente ti
@@ -39,14 +39,14 @@ GROUP BY ti.nombre_incidente
 ORDER BY Cantidad DESC;
 
 
---3. Estaciones con más reportes de accidentes. Listado de estaciones con el número de accidentes en un periodo de tiempo (fecha inicio – fecha fin) ordenados de mayor a menor
+--3.Â Estaciones con mÃ¡s reportes de accidentes. Listado de estaciones con el nÃºmero de accidentes en un periodo de tiempo (fecha inicio Â– fecha fin) ordenados de mayor a menor
 
 DECLARE @FechaInicio DATE = '2026-01-01';
 DECLARE @FechaFin DATE = '2027-12-31';
 
 SELECT
     e.nombre_estacion,
-    YEAR(i.fecha) AS Año,
+    YEAR(i.fecha) AS AÃ±o,
     MONTH(i.fecha) AS Mes,
     COUNT(*) AS TotalAccidentes
 FROM incidentes.incidente i
@@ -60,7 +60,7 @@ GROUP BY
     MONTH(i.fecha)
 ORDER BY TotalAccidentes DESC;
 
---4.     Total de accidentes en un rango de fechas, listados de mayor a menor (fecha y tipo de accidente y número de accidentes)
+--4.Â Â Â Â  Total de accidentes en un rango de fechas, listados de mayor a menor (fecha y tipo de accidente y nÃºmero de accidentes)
 
 SELECT
     CASE MONTH(i.fecha)
@@ -87,7 +87,7 @@ GROUP BY
     ti.nombre_incidente
 ORDER BY NumeroAccidentes DESC;
 
---5.     Total de usuarios por rangos de edades (10 a 15 años, 15-20 años, 20 a 30 años, más de 30 años)
+--5.Â Â Â Â  Total de usuarios por rangos de edades (10 a 15 aÃ±os, 15-20 aÃ±os, 20 a 30 aÃ±os, mÃ¡s de 30 aÃ±os)
 
 SELECT
     CASE
@@ -113,7 +113,7 @@ GROUP BY
     tm.descripcion
 ORDER BY RangoEdad;
 
---6.     Inventario de las bicicletas (todos los datos de las bicicletas) por estaciones con el número (total) de viajes, por un periodo de tiempo, incluir el número de accidentes si ha tenido
+--6.Â Â Â Â  Inventario de las bicicletas (todos los datos de las bicicletas) por estaciones con el nÃºmero (total) de viajes, por un periodo de tiempo, incluir el nÃºmero de accidentes si ha tenido
 
 --DECLARE @FechaInicio DATE = '2026-01-01';
 --DECLARE @FechaFin DATE = '2027-12-31';
@@ -150,7 +150,7 @@ ORDER BY
     TotalViajes DESC,
     TotalAccidentes DESC;
 
---7.     Listado de usuarios (datos generales), datos de su membresía y el tiempo en meses que tienen la membresía.
+--7.Â Â Â Â  Listado de usuarios (datos generales), datos de su membresÃ­a y el tiempo en meses que tienen la membresÃ­a.
 
 SELECT
     u.id_usuario,
@@ -170,7 +170,7 @@ INNER JOIN movilidad.tipo_membresia tm
     ON s.id_tipo_membresia = tm.id_tipo_membresia
 ORDER BY MesesConMembresia DESC;
 
---8.     Agentes mejor recocidos en un mes especifico, para eso cada agente auxilia a un usuario en algún incidente y el usuario llena una pequeña encuesta.
+--8.Â Â Â Â  Agentes mejor recocidos en un mes especifico, para eso cada agente auxilia a un usuario en algÃºn incidente y el usuario llena una pequeÃ±a encuesta.
 
 SELECT
     a.id_empleado AS Agente,
@@ -195,8 +195,8 @@ ORDER BY
     PromedioPuntuacion DESC,
     TotalEncuestas DESC;
 
---9.     Reporte diario de los empleados que hacen rondines (fecha, descripción, si hubo incidentes o no, número de accidentes, estación donde se obtiene el reporte). 
---		 Ellos cuentan a su vez con un supervisor que también es empleado que hace rondines, este dato también deberá aparecer en el informe.
+--9.Â Â Â Â  Reporte diario de los empleados que hacen rondines (fecha, descripciÃ³n, si hubo incidentes o no, nÃºmero de accidentes, estaciÃ³n donde se obtiene el reporte). 
+--		 Ellos cuentan a su vez con un supervisor que tambiÃ©n es empleado que hace rondines, este dato tambiÃ©n deberÃ¡ aparecer en el informe.
 
 SELECT
     r.fecha,
@@ -234,7 +234,7 @@ LEFT JOIN movilidad.estacion est
 
 ORDER BY r.fecha DESC;
 
---10.  Listado de empleados con su tipo, todos sus datos
+--10.Â  Listado de empleados con su tipo, todos sus datos
 
 SELECT
     e.*,a.*,r.*,
@@ -250,8 +250,8 @@ LEFT JOIN personal.rondin r
     ON e.id_empleado = r.id_empleado
 ORDER BY e.id_empleado;
 
---11.  Informe de los recorridos (viajes), por estación y/o por periodo de tiempo (fecha inicio y fecha fin); 
---		nombre del usuario, estación de partida, lugar de llegada, tiempo en minutos del recorrido y costo.
+--11.Â  Informe de los recorridos (viajes), por estaciÃ³n y/o por periodo de tiempo (fecha inicio y fecha fin); 
+--		nombre del usuario, estaciÃ³n de partida, lugar de llegada, tiempo en minutos del recorrido y costo.
 
 --DECLARE @FechaInicio DATE = '2026-01-01';
 --DECLARE @FechaFin DATE = '2027-12-31';
@@ -288,7 +288,7 @@ WHERE v.fecha BETWEEN @FechaInicio AND @FechaFin
 
 ORDER BY v.fecha DESC;
 
---12.  Épocas del año con número de recorridos ordenados de mayor a menor
+--12.Â  Ã‰pocas del aÃ±o con nÃºmero de recorridos ordenados de mayor a menor
 
 SELECT
     t.nombre_temp AS Temporada,
@@ -327,7 +327,7 @@ ORDER BY
     TotalRecorridos DESC,
     MONTH(v.fecha);
 
---13.  Obtener pada cada agente sus datos personales y el listado de los accidentes que ha atendido (tipo de accidente, fecha, lugar)
+--13.Â  Obtener pada cada agente sus datos personales y el listado de los accidentes que ha atendido (tipo de accidente, fecha, lugar)
 
 SELECT
     a.id_empleado AS Agente,
@@ -366,7 +366,7 @@ ORDER BY
     a.id_empleado,
     i.fecha DESC;
 
---14. Para el área de recursos humanos es importante un informe mensual de todos los empleados y sus datos: RFC, nombre completo y sueldo, 
+--14. Para el Ã¡rea de recursos humanos es importante un informe mensual de todos los empleados y sus datos: RFC, nombre completo y sueldo, 
 --asimismo nombre de los empleados y puesto de los que tengan un sueldo de 13000 mensuales y pertenezcan a la tercera edad.
 
 SELECT
@@ -395,7 +395,7 @@ SELECT
 FROM personal.empleado e
 ORDER BY e.ap_paterno,e.ap_materno, e.nombre_pila desc;
 
---15. Estadística de faltas de los empleados en un periodo de tiempo: tipo de falta, total de ese tipo de falta en el periodo elegido.
+--15. EstadÃ­stica de faltas de los empleados en un periodo de tiempo: tipo de falta, total de ese tipo de falta en el periodo elegido.
 
 --DECLARE @FechaInicio DATE = '2026-06-01';
 --DECLARE @FechaFin DATE = '2026-12-31';

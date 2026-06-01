@@ -3,9 +3,9 @@
 Autor: Equipo SQuipoL
 Fecha: 31/05/2026
 Archivo: seguridad.sql
-Descripción:
-Script DCL para la creación de roles, logins, usuarios
-y asignación de permisos para la base de datos
+DescripciÃ³n:
+Script DCL para la creaciÃ³n de roles, logins, usuarios
+y asignaciÃ³n de permisos para la base de datos
 Ecobici_SQuipoL.
 ==============================================================
 */

@@ -3,18 +3,18 @@ GO
 
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : D韆z Ant鷑ez David
-             Hern醤dez Acosta Mauricio Gabriel
-             S醤chez Luj醤 C閟ar Ricardo
+  AUTORES  : D铆az Ant煤nez David
+             Hern谩ndez Acosta Mauricio Gabriel
+             S谩nchez Luj谩n C茅sar Ricardo
 
   FECHA    : 01/06/2026
 =========================================================*/
 
 /*TRIGGERS*/
 
-/*Descripci髇
-Actualiza autom醫icamente la estaci髇 actual de una bicicleta
-cuando se registra la finalizaci髇 de un viaje.
+/*Descripci贸n
+Actualiza autom谩ticamente la estaci贸n actual de una bicicleta
+cuando se registra la finalizaci贸n de un viaje.
 */
 CREATE OR ALTER TRIGGER movilidad.trg_viaje_actualiza_ubicacion_bicicleta
 ON movilidad.viaje
@@ -29,10 +29,10 @@ BEGIN
 END;
 GO
 
-/*Descripci髇
-Al eliminar un m閠odo de pago, cancela las suscripciones
-que lo utilizan, elimina la referencia al m閠odo y despu閟
-borra el m閠odo de pago.*/
+/*Descripci贸n
+Al eliminar un m茅todo de pago, cancela las suscripciones
+que lo utilizan, elimina la referencia al m茅todo y despu茅s
+borra el m茅todo de pago.*/
 
 CREATE OR ALTER TRIGGER movilidad.trg_metodo_pago_cancela_suscripcion
 ON movilidad.metodo_pago
@@ -71,8 +71,8 @@ BEGIN
 END;
 GO
 
-/*Descripci髇:
-Evita registrar viajes con bicicletas da馻das o dadas de baja.*/
+/*Descripci贸n:
+Evita registrar viajes con bicicletas da帽adas o dadas de baja.*/
 
 CREATE OR ALTER TRIGGER movilidad.trg_viaje_valida_bicicleta_operativa
 ON movilidad.viaje
@@ -125,8 +125,8 @@ BEGIN
 END;
 GO
 
-/*Descripci髇:
-Desactiva automaticamente una tarjeta cuando se genero su reposici髇*/
+/*Descripci贸n:
+Desactiva automaticamente una tarjeta cuando se genero su reposici贸n*/
 
 CREATE OR ALTER TRIGGER movilidad.trg_tarjeta_desactiva_por_reposicion
 ON movilidad.tarjeta_movilidad
@@ -146,7 +146,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 1: trg_viaje_actualiza_ubicacion_bicicleta              */
-/* Al insertar un viaje, la bicicleta cambia a la estaci髇 fin. */
+/* Al insertar un viaje, la bicicleta cambia a la estaci贸n fin. */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -200,7 +200,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 2: trg_metodo_pago_cancela_suscripcion                   */
-/* Al eliminar el m閠odo, la suscripci髇 queda cancelada.       */
+/* Al eliminar el m茅todo, la suscripci贸n queda cancelada.       */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -248,7 +248,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 3: trg_incidente_marca_bicicleta                        */
-/* Al registrar ciertos incidentes, la bicicleta queda da馻da.  */
+/* Al registrar ciertos incidentes, la bicicleta queda da帽ada.  */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -292,7 +292,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 4: trg_viaje_valida_bicicleta_operativa                  */
-/* Impide registrar viajes para bicicletas da馻das.             */
+/* Impide registrar viajes para bicicletas da帽adas.             */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -340,7 +340,7 @@ GO
 
 /*==============================================================*/
 /* TRIGGER 5: trg_tarjeta_desactiva_por_reposicion                  */
-/* Al insertar una reposici髇, desactiva la tarjeta anterior.   */
+/* Al insertar una reposici贸n, desactiva la tarjeta anterior.   */
 /*==============================================================*/
 
 BEGIN TRANSACTION;
@@ -382,8 +382,8 @@ ROLLBACK TRANSACTION;
 GO
 
 /*
-Descripci髇:
-Funciones utilizadas para las edades de los usuarios y los meses de las membres韆s. 
+Descripci贸n:
+Funciones utilizadas para las edades de los usuarios y los meses de las membres铆as. 
 Y funciones para las estadisticas
 ==============================================================*/
 
