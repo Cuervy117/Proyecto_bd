@@ -712,6 +712,41 @@ END;
 GO
 
 /*
+SP de Recargas: Recargar saldo de una tarjeta de movilidad
+*/
+CREATE OR ALTER PROCEDURE movilidad.sp_RecargarTarjeta
+(
+    @id_tarjeta_movilidad INT,
+    @monto DECIMAL(10,2)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Validar que la tarjeta esté activa
+        IF NOT EXISTS (SELECT 1 FROM movilidad.tarjeta_movilidad WHERE id_tarjeta_movilidad = @id_tarjeta_movilidad AND activa = 1)
+        BEGIN
+            RAISERROR('No se puede recargar: la tarjeta no existe o no está activa.', 16, 1);
+        END
+
+        UPDATE movilidad.tarjeta_movilidad
+        SET saldo = saldo + @monto
+        WHERE id_tarjeta_movilidad = @id_tarjeta_movilidad;
+
+        COMMIT TRANSACTION;
+        PRINT 'Recarga realizada con éxito.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
 SP 11: Buscador de usuarios por coincidencia de nombre (Buscador con LIKE)
 */
 CREATE OR ALTER PROCEDURE usuarios.sp_BuscarUsuarioPorNombre
