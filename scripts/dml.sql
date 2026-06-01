@@ -543,13 +543,13 @@ END;
 GO
 
 /*
-SP 6: Modificar los datos de una Falta (fecha fin, descripción y motivo)
+SP 6: Modificar los datos de una Falta (fecha y motivo)
 */
 CREATE OR ALTER PROCEDURE personal.sp_ModificarFalta
 (
-    @id_falta INT,
-    @fecha_fin DATE,
-    @descripcion VARCHAR(200),
+    @id_empleado INT,
+    @id_falta SMALLINT,
+    @fecha DATE,
     @id_motivo INT
 )
 AS
@@ -559,10 +559,10 @@ BEGIN
         BEGIN TRANSACTION;
 
         UPDATE personal.falta
-        SET fecha_fin = @fecha_fin,
-            descripcion = @descripcion,
+        SET fecha = @fecha,
             id_motivo = @id_motivo
-        WHERE id_falta = @id_falta;
+        WHERE id_empleado = @id_empleado
+          AND id_falta = @id_falta;
 
         COMMIT TRANSACTION;
         PRINT 'Falta modificada correctamente.';
