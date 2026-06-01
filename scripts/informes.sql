@@ -430,8 +430,6 @@ SELECT
     e.sueldo
 FROM personal.empleado e
 WHERE e.id_empleado IN (
-    -- Subconsulta: obtener los IDs de empleados que pertenezcan a la tercera edad
-    -- y tengan un sueldo de exactamente $13,000 pesos mensuales
     SELECT emp.id_empleado
     FROM personal.empleado emp
     WHERE emp.sueldo = 13000
