@@ -20,7 +20,7 @@ GO
 /* CATALOGOS                                                    */
 /*==============================================================*/
 
-INSERT INTO catalogo.ESTADO_CIVIL
+INSERT INTO catalogo.estado_civil
 VALUES
 (1,'S','Soltero',1),
 (2,'C','Casado',1),
@@ -29,7 +29,7 @@ VALUES
 (5,'O','Otro',1);
 GO
 
-INSERT INTO catalogo.ALCALDIA VALUES
+INSERT INTO catalogo.alcaldia VALUES
 (1,'Coyoacan'),
 (2,'Benito Juarez'),
 (3,'Cuauhtemoc'),
@@ -37,7 +37,7 @@ INSERT INTO catalogo.ALCALDIA VALUES
 (5,'Alvaro Obregon');
 GO
 
-INSERT INTO catalogo.BICICLETA_COLOR VALUES
+INSERT INTO catalogo.bicicleta_color VALUES
 (1,'Verde'),
 (2,'Blanco'),
 (3,'Negro'),
@@ -45,32 +45,32 @@ INSERT INTO catalogo.BICICLETA_COLOR VALUES
 (5,'Azul');
 GO
 
-INSERT INTO catalogo.ESTADO_BICI
+INSERT INTO catalogo.estado_bici
 VALUES
 (1,'F','Funcionando'),
 (2,'D','Dañada'),
 (3,'B','Baja');
 GO
 
-INSERT INTO catalogo.CATALOGO_IDIOMAS VALUES
+INSERT INTO catalogo.catalogo_idiomas VALUES
 (1,'Español'),
 (2,'Ingles'),
 (3,'Frances');
 GO
 
-INSERT INTO catalogo.ESPECIALIDAD VALUES
+INSERT INTO catalogo.especialidad VALUES
 (1,'Reparacion'),
 (2,'Limpieza'),
 (3,'Transporte');
 GO
 
-INSERT INTO catalogo.MOTIVO VALUES
+INSERT INTO catalogo.motivo VALUES
 (1,'Retardo'),
 (2,'Inasistencia'),
 (3,'Permiso');
 GO
 
-INSERT INTO catalogo.TIPO_INCIDENTE VALUES
+INSERT INTO catalogo.tipo_incidente VALUES
 (1,'Choque','Choque con vehiculo'),
 (2,'Caida','Caida del usuario'),
 (3,'Robo','Intento de robo'),
@@ -84,7 +84,7 @@ GO
 /* EMPLEADOS                                                    */
 /*==============================================================*/
 
-INSERT INTO personal.EMPLEADO VALUES
+INSERT INTO personal.empleado VALUES
 (1,'R','M',12500,'1989-02-10',5511111111,'RFCEMP0000001','Luis','Perez','Lopez',1),
 (2,'R','F',12800,'1991-03-15',5522222222,'RFCEMP0000002','Maria','Garcia','Diaz',2),
 (3,'R','M',13200,'1988-07-20',5533333333,'RFCEMP0000003','Carlos','Torres','Ruiz',1),
@@ -121,7 +121,7 @@ GO
 /* SUBTIPOS EMPLEADOS                                           */
 /*==============================================================*/
 
-INSERT INTO personal.RONDIN VALUES
+INSERT INTO personal.rondin VALUES
 (1,NULL),
 (2,1),
 (3,1),
@@ -136,7 +136,7 @@ INSERT INTO personal.RONDIN VALUES
 GO
 
 
-INSERT INTO personal.AGENTE VALUES
+INSERT INTO personal.agente VALUES
 (6,'Centro','Moto'),
 (7,'Norte','Automovil'),
 (8,'Sur','Moto'),
@@ -151,12 +151,12 @@ INSERT INTO personal.AGENTE VALUES
 GO
 
 
-INSERT INTO personal.ADMINISTRACION VALUES
+INSERT INTO personal.administracion VALUES
 (11,'Contador','Oficina Central'),
 (12,'Administrador','Oficina Norte');
 GO
 
-INSERT INTO personal.MANTENIMIENTO VALUES
+INSERT INTO personal.mantenimiento VALUES
 (13,1),
 (14,2),
 (15,3);
@@ -166,7 +166,7 @@ GO
 /* COLONIAS Y DOMICILIOS                                        */
 /*==============================================================*/
 
-INSERT INTO personal.COLONIA VALUES
+INSERT INTO personal.colonia VALUES
 (1,'Del Valle',2),
 (2,'Roma Norte',3),
 (3,'Condesa',4),
@@ -174,7 +174,7 @@ INSERT INTO personal.COLONIA VALUES
 (5,'Santa Fe',5);
 GO
 
-INSERT INTO personal.DOMICILIO VALUES
+INSERT INTO personal.domicilio VALUES
 (1,1,120,NULL,'Insurgentes',1),
 (2,1,55,2,'Division del Norte',2),
 (3,1,340,NULL,'Reforma',3),
@@ -183,10 +183,10 @@ INSERT INTO personal.DOMICILIO VALUES
 GO
 
 /*==============================================================*/
-/* IDIOMAS                                                      */
+/* idiomas                                                      */
 /*==============================================================*/
 
-INSERT INTO personal.IDIOMAS VALUES
+INSERT INTO personal.idiomas VALUES
 (1,1),
 (2,1),
 (3,1),
@@ -200,10 +200,10 @@ INSERT INTO personal.IDIOMAS VALUES
 GO
 
 /*==============================================================*/
-/* FUNCIONES ADMINISTRACION                                     */
+/* funciones administracion                                     */
 /*==============================================================*/
 
-INSERT INTO personal.FUNCIONES VALUES
+INSERT INTO personal.funciones VALUES
 (1,11,'Control financiero'),
 (2,11,'Nominas'),
 (3,12,'Gestion operativa'),
@@ -214,7 +214,7 @@ GO
 /* USUARIOS (30)                                                */
 /*==============================================================*/
 
-INSERT INTO usuarios.USUARIO VALUES
+INSERT INTO usuarios.usuario VALUES
 (1,'u01@mail.com','Juan','Perez','Lopez','INE000000000000001','2015-03-15','M'),
 (2,'u02@mail.com','Maria','Garcia','Diaz','INE000000000000002','2014-07-20','F'),
 (3,'u03@mail.com','Luis','Torres','Ruiz','INE000000000000003','2013-11-01','M'),
@@ -254,7 +254,7 @@ GO
 /* TELEFONOS (30)                                               */
 /*==============================================================*/
 
-INSERT INTO usuarios.TELEFONO VALUES
+INSERT INTO usuarios.telefono VALUES
 (1,1,'5510000001'),
 (2,2,'5510000002'),
 (3,3,'5510000003'),
@@ -291,7 +291,7 @@ GO
 /* MEMBRESIAS                                                   */
 /*==============================================================*/
 
-INSERT INTO movilidad.TIPO_MEMBRESIA VALUES
+INSERT INTO movilidad.tipo_membresia VALUES
 (1,'B','Basica',30,'B',45,120,5,'N'),
 (2,'I','Intermedia',180,'M',60,450,3,'G'),
 (3,'P','Premium',365,'P',90,1000,1,'C');
@@ -301,7 +301,7 @@ GO
 /* METODOS DE PAGO (30)                                         */
 /*==============================================================*/
 
-INSERT INTO movilidad.METODO_PAGO VALUES
+INSERT INTO movilidad.metodo_pago VALUES
 (1,'2028-01-01','2025-01-01','C'),
 (2,'2028-02-01','2025-02-01','P'),
 (3,'2028-03-01','2025-03-01','D'),
@@ -338,7 +338,7 @@ GO
 /* SUSCRIPCIONES (30)                                           */
 /*==============================================================*/
 
-INSERT INTO movilidad.SUSCRIPCION VALUES
+INSERT INTO movilidad.suscripcion VALUES
 (1,'A','2024-12-31','2024-01-01',1,1,1),
 (2,'A','2024-12-31','2024-02-01',2,2,1),
 (3,'A','2024-12-31','2024-03-01',3,3,1),
@@ -380,7 +380,7 @@ GO
 /* TARJETAS MOVILIDAD (30)                                      */
 /*==============================================================*/
 
-INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+INSERT INTO movilidad.tarjeta_movilidad VALUES
 (1,NULL,1,'2030-01-01',150,0x1001,'2025-01-01',1,'Primera'),
 (2,NULL,2,'2030-01-01',180,0x1002,'2025-01-01',1,'Primera'),
 (3,NULL,3,'2030-01-01',200,0x1003,'2025-01-01',1,'Primera'),
@@ -422,7 +422,7 @@ GO
 /* ESTACIONES                                                   */
 /*==============================================================*/
 
-INSERT INTO movilidad.ESTACION VALUES
+INSERT INTO movilidad.estacion VALUES
 (1,10,15,'CU',1),
 (2,8,15,'Roma',2),
 (3,7,15,'Condesa',3),
@@ -434,7 +434,7 @@ GO
 /* 25 BICICLETAS                                                */
 /*==============================================================*/
 
-INSERT INTO movilidad.BICICLETA VALUES
+INSERT INTO movilidad.bicicleta VALUES
 (1,'G',1001,1,1,1),
 (2,'M',1002,1,1,2),
 (3,'C',1003,1,1,3),
@@ -467,10 +467,10 @@ INSERT INTO movilidad.BICICLETA VALUES
 GO
 
 /*==============================================================*/
-/* TEMPORADA                                                    */
+/* temporada                                                    */
 /*==============================================================*/
 
-INSERT INTO reportes.TEMPORADA VALUES
+INSERT INTO reportes.temporada VALUES
 (1,'Primavera'),
 (2,'Verano'),
 (3,'Otoño'),
@@ -480,7 +480,7 @@ GO
 /*==============================================================*/
 /* REPORTES (20)                                                */
 /*==============================================================*/
-INSERT INTO reportes.REPORTE VALUES
+INSERT INTO reportes.reporte VALUES
 (1,'2026-03-01','Inspeccion rutinaria de estacion',0,0,1,1),
 (2,'2026-03-02','Seguimiento de accidente reportado',1,2,2,1),
 (3,'2026-03-03','Verificacion de disponibilidad de bicicletas',0,0,3,1),
@@ -582,7 +582,7 @@ GO
 /* VIAJES (60-100)                                              */
 /*==============================================================*/
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (1,25,'2026-05-01','CU-ROMA','2026-05-01 08:00','2026-05-01 08:30','REF001',1,1,2,1),
 (2,30,'2026-05-02','ROMA-CU','2026-05-02 09:00','2026-05-02 09:40','REF002',1,2,1,1),
 (3,20,'2026-05-03','CU-CONDESA','2026-05-03 10:00','2026-05-03 10:20','REF003',1,1,3,1),
@@ -717,7 +717,7 @@ GO
 /* INCIDENTES (10)                                              */
 /*==============================================================*/
 
-INSERT INTO incidentes.INCIDENTE VALUES
+INSERT INTO incidentes.incidente VALUES
 (1,'Insurgentes',100,31001,'2026-05-01','19.43','-99.13',1,1,6,1),
 (2,'Reforma',220,67002,'2026-05-02','19.42','-99.15',2,2,7,2),
 (3,'Universidad',340,45003,'2026-05-03','19.40','-99.17',3,3,8,3),
@@ -782,7 +782,7 @@ GO
 /* ENCUESTAS                                                    */
 /*==============================================================*/
 
-INSERT INTO incidentes.ENCUESTA VALUES
+INSERT INTO incidentes.encuesta VALUES
 (1,1,8,'2026-05-01','Buen servicio'),
 (2,2,9,'2026-05-02','Atencion rapida'),
 (3,3,7,'2026-05-03','Buen apoyo'),
@@ -849,7 +849,7 @@ GO
 /* FALTAS                                                       */
 /*==============================================================*/
 
-INSERT INTO personal.FALTA (id_empleado,fecha,id_motivo) VALUES
+INSERT INTO personal.falta (id_empleado,fecha,id_motivo) VALUES
 (1,'2026-06-01',1),
 (2,'2026-06-02',2),
 (3,'2026-06-03',3),
@@ -898,55 +898,55 @@ GO
 /*==============================================================*/
 
 -- ESQUEMA: catalogo
-SELECT *, (SELECT COUNT(*) FROM catalogo.ESTADO_CIVIL) AS Total_Reg FROM catalogo.ESTADO_CIVIL;
-SELECT *, (SELECT COUNT(*) FROM catalogo.ALCALDIA) AS Total_Reg FROM catalogo.ALCALDIA;
-SELECT *, (SELECT COUNT(*) FROM catalogo.BICICLETA_COLOR) AS Total_Reg FROM catalogo.BICICLETA_COLOR;
-SELECT *, (SELECT COUNT(*) FROM catalogo.ESTADO_BICI) AS Total_Reg FROM catalogo.ESTADO_BICI;
-SELECT *, (SELECT COUNT(*) FROM catalogo.CATALOGO_IDIOMAS) AS Total_Reg FROM catalogo.CATALOGO_IDIOMAS;
-SELECT *, (SELECT COUNT(*) FROM catalogo.ESPECIALIDAD) AS Total_Reg FROM catalogo.ESPECIALIDAD;
-SELECT *, (SELECT COUNT(*) FROM catalogo.MOTIVO) AS Total_Reg FROM catalogo.MOTIVO;
-SELECT *, (SELECT COUNT(*) FROM catalogo.TIPO_INCIDENTE) AS Total_Reg FROM catalogo.TIPO_INCIDENTE;
+SELECT *, (SELECT COUNT(*) FROM catalogo.estado_civil) AS Total_Reg FROM catalogo.estado_civil;
+SELECT *, (SELECT COUNT(*) FROM catalogo.alcaldia) AS Total_Reg FROM catalogo.alcaldia;
+SELECT *, (SELECT COUNT(*) FROM catalogo.bicicleta_color) AS Total_Reg FROM catalogo.bicicleta_color;
+SELECT *, (SELECT COUNT(*) FROM catalogo.estado_bici) AS Total_Reg FROM catalogo.estado_bici;
+SELECT *, (SELECT COUNT(*) FROM catalogo.catalogo_idiomas) AS Total_Reg FROM catalogo.catalogo_idiomas;
+SELECT *, (SELECT COUNT(*) FROM catalogo.especialidad) AS Total_Reg FROM catalogo.especialidad;
+SELECT *, (SELECT COUNT(*) FROM catalogo.motivo) AS Total_Reg FROM catalogo.motivo;
+SELECT *, (SELECT COUNT(*) FROM catalogo.tipo_incidente) AS Total_Reg FROM catalogo.tipo_incidente;
 
 -- ESQUEMA: personal
-SELECT *, (SELECT COUNT(*) FROM personal.EMPLEADO) AS Total_Reg FROM personal.EMPLEADO;
-SELECT *, (SELECT COUNT(*) FROM personal.ADMINISTRACION) AS Total_Reg FROM personal.ADMINISTRACION;
-SELECT *, (SELECT COUNT(*) FROM personal.AGENTE) AS Total_Reg FROM personal.AGENTE;
-SELECT *, (SELECT COUNT(*) FROM personal.RONDIN) AS Total_Reg FROM personal.RONDIN;
-SELECT *, (SELECT COUNT(*) FROM personal.MANTENIMIENTO) AS Total_Reg FROM personal.MANTENIMIENTO;
-SELECT *, (SELECT COUNT(*) FROM personal.COLONIA) AS Total_Reg FROM personal.COLONIA;
-SELECT *, (SELECT COUNT(*) FROM personal.DOMICILIO) AS Total_Reg FROM personal.DOMICILIO;
-SELECT *, (SELECT COUNT(*) FROM personal.IDIOMAS) AS Total_Reg FROM personal.IDIOMAS;
-SELECT *, (SELECT COUNT(*) FROM personal.FUNCIONES) AS Total_Reg FROM personal.FUNCIONES;
-SELECT *, (SELECT COUNT(*) FROM personal.FALTA) AS Total_Reg FROM personal.FALTA;
+SELECT *, (SELECT COUNT(*) FROM personal.empleado) AS Total_Reg FROM personal.empleado;
+SELECT *, (SELECT COUNT(*) FROM personal.administracion) AS Total_Reg FROM personal.administracion;
+SELECT *, (SELECT COUNT(*) FROM personal.agente) AS Total_Reg FROM personal.agente;
+SELECT *, (SELECT COUNT(*) FROM personal.rondin) AS Total_Reg FROM personal.rondin;
+SELECT *, (SELECT COUNT(*) FROM personal.mantenimiento) AS Total_Reg FROM personal.mantenimiento;
+SELECT *, (SELECT COUNT(*) FROM personal.colonia) AS Total_Reg FROM personal.colonia;
+SELECT *, (SELECT COUNT(*) FROM personal.domicilio) AS Total_Reg FROM personal.domicilio;
+SELECT *, (SELECT COUNT(*) FROM personal.idiomas) AS Total_Reg FROM personal.idiomas;
+SELECT *, (SELECT COUNT(*) FROM personal.funciones) AS Total_Reg FROM personal.funciones;
+SELECT *, (SELECT COUNT(*) FROM personal.falta) AS Total_Reg FROM personal.falta;
 
 -- ESQUEMA: usuarios
-SELECT *, (SELECT COUNT(*) FROM usuarios.USUARIO) AS Total_Reg FROM usuarios.USUARIO;
-SELECT *, (SELECT COUNT(*) FROM usuarios.TELEFONO) AS Total_Reg FROM usuarios.TELEFONO;
+SELECT *, (SELECT COUNT(*) FROM usuarios.usuario) AS Total_Reg FROM usuarios.usuario;
+SELECT *, (SELECT COUNT(*) FROM usuarios.telefono) AS Total_Reg FROM usuarios.telefono;
 
 -- ESQUEMA: movilidad
-SELECT *, (SELECT COUNT(*) FROM movilidad.METODO_PAGO) AS Total_Reg FROM movilidad.METODO_PAGO;
-SELECT *, (SELECT COUNT(*) FROM movilidad.TIPO_MEMBRESIA) AS Total_Reg FROM movilidad.TIPO_MEMBRESIA;
-SELECT *, (SELECT COUNT(*) FROM movilidad.SUSCRIPCION) AS Total_Reg FROM movilidad.SUSCRIPCION;
-SELECT *, (SELECT COUNT(*) FROM movilidad.TARJETA_MOVILIDAD) AS Total_Reg FROM movilidad.TARJETA_MOVILIDAD;
-SELECT *, (SELECT COUNT(*) FROM movilidad.ESTACION) AS Total_Reg FROM movilidad.ESTACION;
-SELECT *, (SELECT COUNT(*) FROM movilidad.BICICLETA) AS Total_Reg FROM movilidad.BICICLETA;
-SELECT *, (SELECT COUNT(*) FROM movilidad.VIAJE) AS Total_Reg FROM movilidad.VIAJE;
+SELECT *, (SELECT COUNT(*) FROM movilidad.metodo_pago) AS Total_Reg FROM movilidad.metodo_pago;
+SELECT *, (SELECT COUNT(*) FROM movilidad.tipo_membresia) AS Total_Reg FROM movilidad.tipo_membresia;
+SELECT *, (SELECT COUNT(*) FROM movilidad.suscripcion) AS Total_Reg FROM movilidad.suscripcion;
+SELECT *, (SELECT COUNT(*) FROM movilidad.tarjeta_movilidad) AS Total_Reg FROM movilidad.tarjeta_movilidad;
+SELECT *, (SELECT COUNT(*) FROM movilidad.estacion) AS Total_Reg FROM movilidad.estacion;
+SELECT *, (SELECT COUNT(*) FROM movilidad.bicicleta) AS Total_Reg FROM movilidad.bicicleta;
+SELECT *, (SELECT COUNT(*) FROM movilidad.viaje) AS Total_Reg FROM movilidad.viaje;
 
 -- ESQUEMA: incidentes
-SELECT *, (SELECT COUNT(*) FROM incidentes.INCIDENTE) AS Total_Reg FROM incidentes.INCIDENTE;
-SELECT *, (SELECT COUNT(*) FROM incidentes.ENCUESTA) AS Total_Reg FROM incidentes.ENCUESTA;
+SELECT *, (SELECT COUNT(*) FROM incidentes.incidente) AS Total_Reg FROM incidentes.incidente;
+SELECT *, (SELECT COUNT(*) FROM incidentes.encuesta) AS Total_Reg FROM incidentes.encuesta;
 
 -- ESQUEMA: reportes
-SELECT *, (SELECT COUNT(*) FROM reportes.TEMPORADA) AS Total_Reg FROM reportes.TEMPORADA;
-SELECT *, (SELECT COUNT(*) FROM reportes.REPORTE) AS Total_Reg FROM reportes.REPORTE;
+SELECT *, (SELECT COUNT(*) FROM reportes.temporada) AS Total_Reg FROM reportes.temporada;
+SELECT *, (SELECT COUNT(*) FROM reportes.reporte) AS Total_Reg FROM reportes.reporte;
 GO
 
 
 SELECT nombre_temp, COUNT(*) AS Reportes
-FROM reportes.REPORTE r
-JOIN reportes.TEMPORADA t
+FROM reportes.reporte r
+JOIN reportes.temporada t
 ON r.id_temporada = t.id_temporada
 GROUP BY nombre_temp;
 
 SELECT COUNT(*) AS TiposIncidente
-FROM catalogo.TIPO_INCIDENTE;
+FROM catalogo.tipo_incidente;

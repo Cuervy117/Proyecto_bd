@@ -3,29 +3,27 @@ GO
 
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : Díaz Núñez David
+  AUTORES  : Díaz Antúnez David
              Hernández Acosta Mauricio Gabriel
              Sánchez Luján César Ricardo
 
   FECHA    : 01/06/2026
-  VERSIÓN  : 1.0 FINAL
-
-  DESCRIPCIÓN:
- 
-	Actualiza automáticamente la estación actual de una bicicleta
-	cuando se registra la finalización de un viaje.*/
 =========================================================*/
 
+/*TRIGGERS*/
 
-
-CREATE OR ALTER TRIGGER movilidad.trgViajeActualizaUbicacionBicicleta
-ON movilidad.VIAJE
+/*Descripción
+Actualiza automáticamente la estación actual de una bicicleta
+cuando se registra la finalización de un viaje.
+*/
+CREATE OR ALTER TRIGGER movilidad.trg_viaje_actualiza_ubicacion_bicicleta
+ON movilidad.viaje
 AFTER INSERT
 AS
 BEGIN
     UPDATE B
     SET B.id_estacion = I.id_estacion_fin
-    FROM movilidad.BICICLETA AS B
+    FROM movilidad.bicicleta AS B
     INNER JOIN inserted AS I
         ON B.id_bicicleta = I.id_bicicleta;
 END;
@@ -36,8 +34,8 @@ Al eliminar un método de pago, cancela las suscripciones
 que lo utilizan, elimina la referencia al método y después
 borra el método de pago.*/
 
-CREATE OR ALTER TRIGGER movilidad.trgMetodoPagoCancelaSuscripcion
-ON movilidad.METODO_PAGO
+CREATE OR ALTER TRIGGER movilidad.trg_metodo_pago_cancela_suscripcion
+ON movilidad.metodo_pago
 INSTEAD OF DELETE
 AS
 BEGIN
@@ -45,27 +43,27 @@ BEGIN
     SET S.estado = 'C',
         S.fecha_fin = CAST(GETDATE() AS DATE),
         S.id_metodo_pago = NULL
-    FROM movilidad.SUSCRIPCION AS S
+    FROM movilidad.suscripcion AS S
     INNER JOIN deleted AS D
         ON S.id_metodo_pago = D.id_metodo_pago
     WHERE S.estado = 'A';
 
     DELETE MP
-    FROM movilidad.METODO_PAGO AS MP
+    FROM movilidad.metodo_pago AS MP
     INNER JOIN deleted AS D
         ON MP.id_metodo_pago = D.id_metodo_pago;
 END;
 GO
 
-CREATE OR ALTER TRIGGER incidentes.trgIncidenteMarcaBicicleta
-ON incidentes.INCIDENTE
+CREATE OR ALTER TRIGGER incidentes.trg_incidente_marca_bicicleta
+ON incidentes.incidente
 AFTER INSERT
 AS
 BEGIN
     UPDATE B
     SET B.id_estado_bici = 2
-    FROM movilidad.BICICLETA AS B
-    INNER JOIN movilidad.VIAJE AS V
+    FROM movilidad.bicicleta AS B
+    INNER JOIN movilidad.viaje AS V
         ON B.id_bicicleta = V.id_bicicleta
     INNER JOIN inserted AS I
         ON V.id_viaje = I.id_viaje
@@ -76,8 +74,8 @@ GO
 /*Descripción:
 Evita registrar viajes con bicicletas dañadas o dadas de baja.*/
 
-CREATE OR ALTER TRIGGER movilidad.trgViajeValidaBicicletaOperativa
-ON movilidad.VIAJE
+CREATE OR ALTER TRIGGER movilidad.trg_viaje_valida_bicicleta_operativa
+ON movilidad.viaje
 INSTEAD OF INSERT
 AS
 BEGIN
@@ -86,9 +84,9 @@ BEGIN
     IF EXISTS (
         SELECT 1
         FROM inserted AS I
-        INNER JOIN movilidad.BICICLETA AS B
+        INNER JOIN movilidad.bicicleta AS B
             ON I.id_bicicleta = B.id_bicicleta
-        INNER JOIN catalogo.ESTADO_BICI AS EB
+        INNER JOIN catalogo.estado_bici AS EB
             ON B.id_estado_bici = EB.id_estado_bici
         WHERE EB.codigo <> 'F'
     )
@@ -97,7 +95,7 @@ BEGIN
         RETURN;
     END;
 
-    INSERT INTO movilidad.VIAJE
+    INSERT INTO movilidad.viaje
     (
         id_viaje,
         costo,
@@ -130,15 +128,15 @@ GO
 /*Descripción:
 Desactiva automaticamente una tarjeta cuando se genero su reposición*/
 
-CREATE OR ALTER TRIGGER movilidad.trgTarjetaDesactivaPorReposicion
-ON movilidad.TARJETA_MOVILIDAD
+CREATE OR ALTER TRIGGER movilidad.trg_tarjeta_desactiva_por_reposicion
+ON movilidad.tarjeta_movilidad
 AFTER INSERT
 AS
 BEGIN
     UPDATE TAnterior
     SET TAnterior.activa = 0,
         TAnterior.fecha_baja = CAST(GETDATE() AS DATE)
-    FROM movilidad.TARJETA_MOVILIDAD AS TAnterior
+    FROM movilidad.tarjeta_movilidad AS TAnterior
     INNER JOIN inserted AS Nueva
         ON TAnterior.id_tarjeta_movilidad = Nueva.id_tarjeta_reposicion
     WHERE Nueva.tipo_emision = 'Reposicion'
@@ -147,7 +145,7 @@ END;
 GO
 
 /*==============================================================*/
-/* TRIGGER 1: trgViajeActualizaUbicacionBicicleta              */
+/* TRIGGER 1: trg_viaje_actualiza_ubicacion_bicicleta              */
 /* Al insertar un viaje, la bicicleta cambia a la estación fin. */
 /*==============================================================*/
 
@@ -156,30 +154,30 @@ BEGIN TRANSACTION;
 PRINT 'TRIGGER 1 - ANTES DE INSERTAR LOS VIAJES';
 
 SELECT id_bicicleta, id_estacion
-FROM movilidad.BICICLETA
+FROM movilidad.bicicleta
 WHERE id_bicicleta IN (1,2,3,5,6);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (1001,25,'2027-02-01','CU-ROMA',
  '2027-02-01 08:00','2027-02-01 08:30',
  'PRUEBA_V001',1,1,2,1);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (1002,25,'2027-02-01','ROMA-CONDESA',
  '2027-02-01 09:00','2027-02-01 09:25',
  'PRUEBA_V002',2,2,3,2);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (1003,30,'2027-02-01','CONDESA-REFORMA',
  '2027-02-01 10:00','2027-02-01 10:35',
  'PRUEBA_V003',3,3,4,3);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (1004,20,'2027-02-01','REFORMA-POLANCO',
  '2027-02-01 11:00','2027-02-01 11:20',
  'PRUEBA_V004',5,4,5,5);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (1005,22,'2027-02-01','POLANCO-CU',
  '2027-02-01 12:00','2027-02-01 12:25',
  'PRUEBA_V005',6,5,1,6);
@@ -187,13 +185,13 @@ INSERT INTO movilidad.VIAJE VALUES
 PRINT 'TRIGGER 1 - VIAJES INSERTADOS';
 
 SELECT id_viaje, id_bicicleta, id_estacion_inicio, id_estacion_fin
-FROM movilidad.VIAJE
+FROM movilidad.viaje
 WHERE id_viaje BETWEEN 1001 AND 1005;
 
-PRINT 'TRIGGER 1 - DESPUES: LA BICICLETA DEBE ESTAR EN LA ESTACION FINAL';
+PRINT 'TRIGGER 1 - DESPUES: LA bicicleta DEBE ESTAR EN LA estacion FINAL';
 
 SELECT id_bicicleta, id_estacion
-FROM movilidad.BICICLETA
+FROM movilidad.bicicleta
 WHERE id_bicicleta IN (1,2,3,5,6);
 
 ROLLBACK TRANSACTION;
@@ -201,7 +199,7 @@ GO
 
 
 /*==============================================================*/
-/* TRIGGER 2: trgMetodoPagoCancelaSuscripcion                   */
+/* TRIGGER 2: trg_metodo_pago_cancela_suscripcion                   */
 /* Al eliminar el método, la suscripción queda cancelada.       */
 /*==============================================================*/
 
@@ -210,38 +208,38 @@ BEGIN TRANSACTION;
 PRINT 'TRIGGER 2 - ANTES DE ELIMINAR LOS METODOS DE PAGO';
 
 SELECT id_suscripcion, estado, id_metodo_pago, fecha_fin
-FROM movilidad.SUSCRIPCION
+FROM movilidad.suscripcion
 WHERE id_metodo_pago IN (1,2,3,4,5);
 
 SELECT id_metodo_pago, tipo_pago
-FROM movilidad.METODO_PAGO
+FROM movilidad.metodo_pago
 WHERE id_metodo_pago IN (1,2,3,4,5);
 
-DELETE FROM movilidad.METODO_PAGO
+DELETE FROM movilidad.metodo_pago
 WHERE id_metodo_pago = 1;
 
-DELETE FROM movilidad.METODO_PAGO
+DELETE FROM movilidad.metodo_pago
 WHERE id_metodo_pago = 2;
 
-DELETE FROM movilidad.METODO_PAGO
+DELETE FROM movilidad.metodo_pago
 WHERE id_metodo_pago = 3;
 
-DELETE FROM movilidad.METODO_PAGO
+DELETE FROM movilidad.metodo_pago
 WHERE id_metodo_pago = 4;
 
-DELETE FROM movilidad.METODO_PAGO
+DELETE FROM movilidad.metodo_pago
 WHERE id_metodo_pago = 5;
 
 PRINT 'TRIGGER 2 - DESPUES: SUSCRIPCIONES CANCELADAS Y SIN METODO DE PAGO';
 
 SELECT id_suscripcion, estado, id_metodo_pago, fecha_fin
-FROM movilidad.SUSCRIPCION
+FROM movilidad.suscripcion
 WHERE id_suscripcion IN (1,2,3,4,5);
 
 PRINT 'TRIGGER 2 - LOS METODOS YA NO DEBEN APARECER';
 
 SELECT id_metodo_pago, tipo_pago
-FROM movilidad.METODO_PAGO
+FROM movilidad.metodo_pago
 WHERE id_metodo_pago IN (1,2,3,4,5);
 
 ROLLBACK TRANSACTION;
@@ -249,7 +247,7 @@ GO
 
 
 /*==============================================================*/
-/* TRIGGER 3: trgIncidenteMarcaBicicleta                        */
+/* TRIGGER 3: trg_incidente_marca_bicicleta                        */
 /* Al registrar ciertos incidentes, la bicicleta queda dañada.  */
 /*==============================================================*/
 
@@ -258,34 +256,34 @@ BEGIN TRANSACTION;
 PRINT 'TRIGGER 3 - ANTES DE INSERTAR INCIDENTES';
 
 SELECT id_bicicleta, id_estado_bici
-FROM movilidad.BICICLETA
+FROM movilidad.bicicleta
 WHERE id_bicicleta IN (1,2,3,5,6);
 
-INSERT INTO incidentes.INCIDENTE VALUES
+INSERT INTO incidentes.incidente VALUES
 (1001,'Insurgentes',101,31001,'2027-02-02','19.43','-99.13',1,4,6,1);
 
-INSERT INTO incidentes.INCIDENTE VALUES
+INSERT INTO incidentes.incidente VALUES
 (1002,'Reforma',202,67002,'2027-02-02','19.42','-99.15',4,5,7,2);
 
-INSERT INTO incidentes.INCIDENTE VALUES
+INSERT INTO incidentes.incidente VALUES
 (1003,'Universidad',303,45003,'2027-02-02','19.40','-99.17',7,6,8,3);
 
-INSERT INTO incidentes.INCIDENTE VALUES
+INSERT INTO incidentes.incidente VALUES
 (1004,'Patriotismo',404,38004,'2027-02-02','19.44','-99.11',13,7,9,4);
 
-INSERT INTO incidentes.INCIDENTE VALUES
+INSERT INTO incidentes.incidente VALUES
 (1005,'Chapultepec',505,61005,'2027-02-02','19.45','-99.18',16,4,10,5);
 
 PRINT 'TRIGGER 3 - INCIDENTES INSERTADOS';
 
 SELECT id_incidente, id_viaje, id_tipo_incidente
-FROM incidentes.INCIDENTE
+FROM incidentes.incidente
 WHERE id_incidente BETWEEN 1001 AND 1005;
 
 PRINT 'TRIGGER 3 - DESPUES: LAS BICICLETAS DEBEN TENER ESTADO 2, DANADA';
 
 SELECT id_bicicleta, id_estado_bici
-FROM movilidad.BICICLETA
+FROM movilidad.bicicleta
 WHERE id_bicicleta IN (1,2,3,5,6);
 
 ROLLBACK TRANSACTION;
@@ -293,7 +291,7 @@ GO
 
 
 /*==============================================================*/
-/* TRIGGER 4: trgViajeValidaBicicletaOperativa                  */
+/* TRIGGER 4: trg_viaje_valida_bicicleta_operativa                  */
 /* Impide registrar viajes para bicicletas dañadas.             */
 /*==============================================================*/
 
@@ -302,30 +300,30 @@ BEGIN TRANSACTION;
 PRINT 'TRIGGER 4 - BICICLETAS DANADAS QUE SE INTENTARAN USAR';
 
 SELECT id_bicicleta, id_estado_bici
-FROM movilidad.BICICLETA
+FROM movilidad.bicicleta
 WHERE id_bicicleta IN (4,9,14,19,24);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (2001,25,'2027-02-03','CU-ROMA',
  '2027-02-03 08:00','2027-02-03 08:30',
  'PRUEBA_D001',4,1,2,1);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (2002,25,'2027-02-03','ROMA-CU',
  '2027-02-03 09:00','2027-02-03 09:30',
  'PRUEBA_D002',9,2,1,2);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (2003,25,'2027-02-03','CONDESA-ROMA',
  '2027-02-03 10:00','2027-02-03 10:30',
  'PRUEBA_D003',14,3,2,3);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (2004,25,'2027-02-03','REFORMA-CU',
  '2027-02-03 11:00','2027-02-03 11:30',
  'PRUEBA_D004',19,4,1,4);
 
-INSERT INTO movilidad.VIAJE VALUES
+INSERT INTO movilidad.viaje VALUES
 (2005,25,'2027-02-03','POLANCO-ROMA',
  '2027-02-03 12:00','2027-02-03 12:30',
  'PRUEBA_D005',24,5,2,5);
@@ -333,7 +331,7 @@ INSERT INTO movilidad.VIAJE VALUES
 PRINT 'TRIGGER 4 - LOS VIAJES NO DEBEN HABER SIDO REGISTRADOS';
 
 SELECT id_viaje, id_bicicleta, num_referencia
-FROM movilidad.VIAJE
+FROM movilidad.viaje
 WHERE id_viaje BETWEEN 2001 AND 2005;
 
 ROLLBACK TRANSACTION;
@@ -341,7 +339,7 @@ GO
 
 
 /*==============================================================*/
-/* TRIGGER 5: trgTarjetaDesactivaPorReposicion                  */
+/* TRIGGER 5: trg_tarjeta_desactiva_por_reposicion                  */
 /* Al insertar una reposición, desactiva la tarjeta anterior.   */
 /*==============================================================*/
 
@@ -350,34 +348,34 @@ BEGIN TRANSACTION;
 PRINT 'TRIGGER 5 - ANTES DE REGISTRAR REPOSICIONES';
 
 SELECT id_tarjeta_movilidad, id_usuario, activa, fecha_baja
-FROM movilidad.TARJETA_MOVILIDAD
+FROM movilidad.tarjeta_movilidad
 WHERE id_tarjeta_movilidad IN (1,2,3,4,5);
 
-INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+INSERT INTO movilidad.tarjeta_movilidad VALUES
 (1001,1,1,'2030-01-01',100,0x9001,'2027-02-04',1,'Reposicion');
 
-INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+INSERT INTO movilidad.tarjeta_movilidad VALUES
 (1002,2,2,'2030-01-01',100,0x9002,'2027-02-04',1,'Reposicion');
 
-INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+INSERT INTO movilidad.tarjeta_movilidad VALUES
 (1003,3,3,'2030-01-01',100,0x9003,'2027-02-04',1,'Reposicion');
 
-INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+INSERT INTO movilidad.tarjeta_movilidad VALUES
 (1004,4,4,'2030-01-01',100,0x9004,'2027-02-04',1,'Reposicion');
 
-INSERT INTO movilidad.TARJETA_MOVILIDAD VALUES
+INSERT INTO movilidad.tarjeta_movilidad VALUES
 (1005,5,5,'2030-01-01',100,0x9005,'2027-02-04',1,'Reposicion');
 
 PRINT 'TRIGGER 5 - TARJETAS NUEVAS DE REPOSICION';
 
 SELECT id_tarjeta_movilidad, id_tarjeta_reposicion, id_usuario, activa, tipo_emision
-FROM movilidad.TARJETA_MOVILIDAD
+FROM movilidad.tarjeta_movilidad
 WHERE id_tarjeta_movilidad BETWEEN 1001 AND 1005;
 
 PRINT 'TRIGGER 5 - TARJETAS ANTERIORES DESACTIVADAS';
 
 SELECT id_tarjeta_movilidad, id_usuario, activa, fecha_baja
-FROM movilidad.TARJETA_MOVILIDAD
+FROM movilidad.tarjeta_movilidad
 WHERE id_tarjeta_movilidad IN (1,2,3,4,5);
 
 ROLLBACK TRANSACTION;
@@ -391,7 +389,7 @@ Y funciones para las estadisticas
 
 
 /*==============================================================*/
-/* FUNCION 1: CALCULAR EDAD DE UN USUARIO                       */
+/* FUNCION 1: CALCULAR EDAD DE UN usuario                       */
 /*==============================================================*/
 
 CREATE OR ALTER FUNCTION usuarios.fn_calcular_edad
@@ -458,12 +456,12 @@ RETURN
         COUNT(DISTINCT I.id_incidente) AS incidentes_atendidos,
         COUNT(EN.id_encuesta) AS encuestas_recibidas,
         AVG(CAST(EN.puntuacion AS DECIMAL(5,2))) AS promedio_puntuacion
-    FROM personal.EMPLEADO AS E
-    INNER JOIN personal.AGENTE AS A
+    FROM personal.empleado AS E
+    INNER JOIN personal.agente AS A
         ON E.id_empleado = A.id_empleado
-    INNER JOIN incidentes.INCIDENTE AS I
+    INNER JOIN incidentes.incidente AS I
         ON A.id_empleado = I.id_empleado
-    INNER JOIN incidentes.ENCUESTA AS EN
+    INNER JOIN incidentes.encuesta AS EN
         ON I.id_incidente = EN.id_incidente
     WHERE YEAR(EN.fecha) = @anio
       AND MONTH(EN.fecha) = @mes
@@ -477,7 +475,7 @@ RETURN
 );
 GO
 /*==============================================================
-FUNCION 4: OBTENER VIAJES EN UN PERIODO O ESTACION DADA
+FUNCION 4: OBTENER VIAJES EN UN PERIODO O estacion DADA
 ==============================================================*/
 
 CREATE OR ALTER FUNCTION movilidad.fn_recorridos_periodo_estacion
@@ -502,14 +500,14 @@ RETURN
         EF.nombre_estacion AS lugar_llegada,
         V.duracion AS tiempo_minutos,
         V.costo
-    FROM movilidad.VIAJE AS V
-    INNER JOIN movilidad.TARJETA_MOVILIDAD AS T
+    FROM movilidad.viaje AS V
+    INNER JOIN movilidad.tarjeta_movilidad AS T
         ON V.id_tarjeta_movilidad = T.id_tarjeta_movilidad
-    INNER JOIN usuarios.USUARIO AS U
+    INNER JOIN usuarios.usuario AS U
         ON T.id_usuario = U.id_usuario
-    INNER JOIN movilidad.ESTACION AS EI
+    INNER JOIN movilidad.estacion AS EI
         ON V.id_estacion_inicio = EI.id_estacion
-    INNER JOIN movilidad.ESTACION AS EF
+    INNER JOIN movilidad.estacion AS EF
         ON V.id_estacion_fin = EF.id_estacion
     WHERE V.fecha BETWEEN @fecha_inicio AND @fecha_fin
       AND (
@@ -522,7 +520,7 @@ GO
 
 
 /*==============================================================*/
-/* PRUEBAS DE LAS FUNCIONES                                     */
+/* PRUEBAS DE LAS funciones                                     */
 /*==============================================================*/
 
 SELECT
@@ -530,7 +528,7 @@ SELECT
     nombre,
     fecha_nacimiento,
     usuarios.fn_calcular_edad(fecha_nacimiento) AS edad_calculada
-FROM usuarios.USUARIO;
+FROM usuarios.usuario;
 GO
 
 SELECT
@@ -538,7 +536,7 @@ SELECT
     fecha_inicio,
     fecha_fin,
     movilidad.fn_meses_membresia(fecha_inicio, fecha_fin) AS meses_membresia
-FROM movilidad.SUSCRIPCION;
+FROM movilidad.suscripcion;
 GO
 
 SELECT *
@@ -554,3 +552,8 @@ FROM movilidad.fn_recorridos_periodo_estacion
     NULL
 );
 GO
+
+/* PROCEDIMIENTOS ALMACENADOS*/
+
+/* 1.- Alta de usuario*/
+

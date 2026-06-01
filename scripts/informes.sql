@@ -17,10 +17,10 @@ GO
 SELECT
     b.id_bicicleta,
     COUNT(i.id_incidente) AS TotalDaños
-FROM movilidad.BICICLETA b
-INNER JOIN movilidad.VIAJE v
+FROM movilidad.bicicleta b
+INNER JOIN movilidad.viaje v
     ON b.id_bicicleta = v.id_bicicleta
-INNER JOIN incidentes.INCIDENTE i
+INNER JOIN incidentes.incidente i
     ON v.id_viaje = i.id_viaje
 GROUP BY b.id_bicicleta
 HAVING COUNT(i.id_incidente) > 0
@@ -32,8 +32,8 @@ ORDER BY TotalDaños DESC;
 SELECT TOP 5
     ti.nombre_incidente AS [Descripcion del daño],
     COUNT(*) AS Cantidad
-FROM incidentes.INCIDENTE i
-INNER JOIN catalogo.TIPO_INCIDENTE ti
+FROM incidentes.incidente i
+INNER JOIN catalogo.tipo_incidente ti
     ON i.id_tipo_incidente = ti.id_tipo_incidente
 GROUP BY ti.nombre_incidente
 ORDER BY Cantidad DESC;
@@ -49,10 +49,10 @@ SELECT
     YEAR(i.fecha) AS Año,
     MONTH(i.fecha) AS Mes,
     COUNT(*) AS TotalAccidentes
-FROM incidentes.INCIDENTE i
-JOIN movilidad.VIAJE v
+FROM incidentes.incidente i
+JOIN movilidad.viaje v
     ON i.id_viaje = v.id_viaje
-JOIN movilidad.ESTACION e
+JOIN movilidad.estacion e
     ON v.id_estacion_inicio = e.id_estacion
 GROUP BY
     e.nombre_estacion,
@@ -79,8 +79,8 @@ SELECT
     END AS Mes,
     ti.nombre_incidente AS TipoAccidente,
     COUNT(*) AS NumeroAccidentes
-FROM incidentes.INCIDENTE i
-INNER JOIN catalogo.TIPO_INCIDENTE ti
+FROM incidentes.incidente i
+INNER JOIN catalogo.tipo_incidente ti
     ON i.id_tipo_incidente = ti.id_tipo_incidente
 GROUP BY
     MONTH(i.fecha),
@@ -98,10 +98,10 @@ SELECT
     END AS RangoEdad,
     tm.descripcion AS TipoMembresia,
     COUNT(*) AS TotalUsuarios
-FROM usuarios.USUARIO u
-JOIN movilidad.SUSCRIPCION s
+FROM usuarios.usuario u
+JOIN movilidad.suscripcion s
     ON u.id_usuario = s.id_usuario
-JOIN movilidad.TIPO_MEMBRESIA tm
+JOIN movilidad.tipo_membresia tm
     ON s.id_tipo_membresia = tm.id_tipo_membresia
 GROUP BY
     CASE
@@ -127,17 +127,17 @@ SELECT
     bc.color,
     COUNT(DISTINCT v.id_viaje) AS TotalViajes,
     COUNT(DISTINCT i.id_incidente) AS TotalAccidentes
-FROM movilidad.BICICLETA b
-INNER JOIN movilidad.ESTACION e
+FROM movilidad.bicicleta b
+INNER JOIN movilidad.estacion e
     ON b.id_estacion = e.id_estacion
-INNER JOIN catalogo.ESTADO_BICI eb
+INNER JOIN catalogo.estado_bici eb
     ON b.id_estado_bici = eb.id_estado_bici
-INNER JOIN catalogo.BICICLETA_COLOR bc
+INNER JOIN catalogo.bicicleta_color bc
     ON b.id_bicicleta_color = bc.id_bicicleta_color
-LEFT JOIN movilidad.VIAJE v
+LEFT JOIN movilidad.viaje v
     ON b.id_bicicleta = v.id_bicicleta
     AND v.fecha BETWEEN @FechaInicio AND @FechaFin
-LEFT JOIN incidentes.INCIDENTE i
+LEFT JOIN incidentes.incidente i
     ON v.id_viaje = i.id_viaje
 GROUP BY
     e.nombre_estacion,
@@ -163,10 +163,10 @@ SELECT
     s.fecha_inicio,
     s.fecha_fin,
     DATEDIFF(MONTH, s.fecha_inicio, GETDATE()) AS MesesConMembresia
-FROM usuarios.USUARIO u
-INNER JOIN movilidad.SUSCRIPCION s
+FROM usuarios.usuario u
+INNER JOIN movilidad.suscripcion s
     ON u.id_usuario = s.id_usuario
-INNER JOIN movilidad.TIPO_MEMBRESIA tm
+INNER JOIN movilidad.tipo_membresia tm
     ON s.id_tipo_membresia = tm.id_tipo_membresia
 ORDER BY MesesConMembresia DESC;
 
@@ -179,12 +179,12 @@ SELECT
     MONTH(en.fecha) AS Mes,
     COUNT(en.id_encuesta) AS TotalEncuestas,
     ROUND(AVG(CAST(en.puntuacion AS DECIMAL(5,2))),2) AS PromedioPuntuacion
-FROM personal.AGENTE a
-INNER JOIN personal.EMPLEADO e
+FROM personal.agente a
+INNER JOIN personal.empleado e
     ON a.id_empleado = e.id_empleado
-INNER JOIN incidentes.INCIDENTE i
+INNER JOIN incidentes.incidente i
     ON a.id_empleado = i.id_empleado
-INNER JOIN incidentes.ENCUESTA en
+INNER JOIN incidentes.encuesta en
     ON i.id_incidente = en.id_incidente
 GROUP BY
     a.id_empleado,
@@ -218,18 +218,18 @@ SELECT
         'Sin supervisor'
     ) AS Supervisor
 
-FROM reportes.REPORTE r
+FROM reportes.reporte r
 
-INNER JOIN personal.EMPLEADO emp
+INNER JOIN personal.empleado emp
     ON r.id_empleado = emp.id_empleado
 
-INNER JOIN personal.RONDIN ro
+INNER JOIN personal.rondin ro
     ON emp.id_empleado = ro.id_empleado
 
-LEFT JOIN personal.EMPLEADO sup
+LEFT JOIN personal.empleado sup
     ON ro.id_empleado_supervisor = sup.id_empleado
 
-LEFT JOIN movilidad.ESTACION est
+LEFT JOIN movilidad.estacion est
     ON emp.id_empleado = est.id_empleado
 
 ORDER BY r.fecha DESC;
@@ -243,10 +243,10 @@ SELECT
         WHEN r.id_empleado IS NOT NULL THEN 'Empleado de Rondin'
         ELSE 'Empleado'
     END AS TipoEmpleado
-FROM personal.EMPLEADO e
-LEFT JOIN personal.AGENTE a
+FROM personal.empleado e
+LEFT JOIN personal.agente a
     ON e.id_empleado = a.id_empleado
-LEFT JOIN personal.RONDIN r
+LEFT JOIN personal.rondin r
     ON e.id_empleado = r.id_empleado
 ORDER BY e.id_empleado;
 
@@ -270,18 +270,18 @@ SELECT
     v.duracion AS TiempoMinutos,
     v.costo
 
-FROM movilidad.VIAJE v
+FROM movilidad.viaje v
 
-INNER JOIN movilidad.TARJETA_MOVILIDAD tm
+INNER JOIN movilidad.tarjeta_movilidad tm
     ON v.id_tarjeta_movilidad = tm.id_tarjeta_movilidad
 
-INNER JOIN usuarios.USUARIO u
+INNER JOIN usuarios.usuario u
     ON tm.id_usuario = u.id_usuario
 
-INNER JOIN movilidad.ESTACION ei
+INNER JOIN movilidad.estacion ei
     ON v.id_estacion_inicio = ei.id_estacion
 
-INNER JOIN movilidad.ESTACION ef
+INNER JOIN movilidad.estacion ef
     ON v.id_estacion_fin = ef.id_estacion
 
 WHERE v.fecha BETWEEN @FechaInicio AND @FechaFin
@@ -310,8 +310,8 @@ SELECT
 
     COUNT(*) AS TotalRecorridos
 
-FROM movilidad.VIAJE v
-INNER JOIN reportes.TEMPORADA t
+FROM movilidad.viaje v
+INNER JOIN reportes.temporada t
 ON CASE
     WHEN MONTH(v.fecha) IN (3,4,5) THEN 1
     WHEN MONTH(v.fecha) IN (6,7,8) THEN 2
@@ -345,21 +345,21 @@ SELECT
 
     est.nombre_estacion AS Lugar
 
-FROM personal.AGENTE a
+FROM personal.agente a
 
-INNER JOIN personal.EMPLEADO e
+INNER JOIN personal.empleado e
     ON a.id_empleado = e.id_empleado
 
-INNER JOIN incidentes.INCIDENTE i
+INNER JOIN incidentes.incidente i
     ON a.id_empleado = i.id_empleado
 
-INNER JOIN catalogo.TIPO_INCIDENTE ti
+INNER JOIN catalogo.tipo_incidente ti
     ON i.id_tipo_incidente = ti.id_tipo_incidente
 
-INNER JOIN movilidad.VIAJE v
+INNER JOIN movilidad.viaje v
     ON i.id_viaje = v.id_Viaje
 
-INNER JOIN movilidad.ESTACION est
+INNER JOIN movilidad.estacion est
     ON v.id_estacion_inicio = est.id_estacion
 
 ORDER BY
@@ -392,7 +392,7 @@ SELECT
         ELSE 'NO'
     END AS CumpleCriterioRH
 
-FROM personal.EMPLEADO e
+FROM personal.empleado e
 ORDER BY e.ap_paterno,e.ap_materno, e.nombre_pila desc;
 
 --15. Estadística de faltas de los empleados en un periodo de tiempo: tipo de falta, total de ese tipo de falta en el periodo elegido.
@@ -422,8 +422,8 @@ SELECT
 
     COUNT(*) AS TotalFaltas
 
-FROM personal.FALTA f
-INNER JOIN catalogo.MOTIVO m
+FROM personal.falta f
+INNER JOIN catalogo.motivo m
     ON f.id_motivo = m.id_motivo
 
 WHERE f.fecha BETWEEN @FechaInicio AND @FechaFin
