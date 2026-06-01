@@ -395,9 +395,10 @@ GO
 --14. Para el área de recursos humanos es importante un informe mensual de todos los empleados y sus datos: RFC, nombre completo y sueldo, 
 --asimismo nombre de los empleados y puesto de los que tengan un sueldo de 13000 mensuales y pertenezcan a la tercera edad.
 
+-- PARTE A: Informe mensual general de todos los empleados
 SELECT
     e.rfc,
-    e.nombre_pila + ' ' + e.ap_paterno + ' ' + e.ap_materno AS NombreCompleto,
+    e.nombre_pila + ' ' + e.ap_paterno + ' ' + ISNULL(e.ap_materno, '') AS NombreCompleto,
 
     CASE e.tipo_empleado
         WHEN 'a' THEN 'Agente'
@@ -407,19 +408,36 @@ SELECT
         ELSE e.tipo_empleado
     END AS Puesto,
 
-    e.sueldo,
-
-    DATEDIFF(YEAR,e.fecha_nacimiento,GETDATE()) AS Edad,
-
-    CASE
-        WHEN e.sueldo = 13000
-         AND DATEDIFF(YEAR,e.fecha_nacimiento,GETDATE()) >= 60
-        THEN 'SI'
-        ELSE 'NO'
-    END AS CumpleCriterioRH
+    e.sueldo
 
 FROM personal.empleado e
-ORDER BY e.ap_paterno,e.ap_materno, e.nombre_pila desc;
+ORDER BY e.ap_paterno, e.ap_materno, e.nombre_pila;
+
+GO
+
+-- PARTE B: Empleados de la tercera edad con sueldo de $13,000 (usa subconsulta)
+SELECT
+    e.nombre_pila + ' ' + e.ap_paterno + ' ' + ISNULL(e.ap_materno, '') AS NombreCompleto,
+
+    CASE e.tipo_empleado
+        WHEN 'a' THEN 'Agente'
+        WHEN 'r' THEN 'Empleado de Rondin'
+        WHEN 'm' THEN 'Mantenimiento'
+        WHEN 'd' THEN 'Administracion'
+        ELSE e.tipo_empleado
+    END AS Puesto,
+
+    e.sueldo
+FROM personal.empleado e
+WHERE e.id_empleado IN (
+    -- Subconsulta: obtener los IDs de empleados que pertenezcan a la tercera edad
+    -- y tengan un sueldo de exactamente $13,000 pesos mensuales
+    SELECT emp.id_empleado
+    FROM personal.empleado emp
+    WHERE emp.sueldo = 13000
+      AND DATEDIFF(YEAR, emp.fecha_nacimiento, GETDATE()) >= 60
+)
+ORDER BY e.ap_paterno, e.nombre_pila;
 
 GO
 
