@@ -1,11 +1,15 @@
 /*
 ==============================================================
-Autor: Equipo SQuipoL
-Fecha: 31/05/2026
-Archivo: seguridad.sql
-Descripci�n:
-Script DCL para la creaci�n de roles, logins, usuarios
-y asignaci�n de permisos para la base de datos
+PROYECTO : ECOBICI
+  AUTORES  : Díaz Antúnez David
+             Hernández Acosta Mauricio Gabriel
+             Sánchez Luján César Ricardo
+
+  FECHA    : 01/06/2026
+  VERSIÓN  : 1.0 FINAL
+Descripción:
+Script DCL para la creación de roles, logins, usuarios
+y asignación de permisos para la base de datos
 Ecobici_SQuipoL.
 ==============================================================
 */
