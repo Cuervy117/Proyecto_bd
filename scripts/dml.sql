@@ -759,12 +759,12 @@ AS
 BEGIN
     SET NOCOUNT ON;
     SELECT TOP 5 
-        ti.descripcion_incidente AS descripcion_dano, 
+        ti.descripcion AS descripcion_dano, 
         COUNT(i.id_incidente) AS cantidad_accidentes
     FROM incidentes.incidente i
     INNER JOIN catalogo.tipo_incidente ti 
         ON i.id_tipo_incidente = ti.id_tipo_incidente
-    GROUP BY ti.descripcion_incidente
+    GROUP BY ti.descripcion
     ORDER BY cantidad_accidentes DESC;
 END;
 GO
