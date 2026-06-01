@@ -3,16 +3,22 @@ GO
 
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : Díaz Antúnez David
+  AUTORES  : Díaz Núñez David
              Hernández Acosta Mauricio Gabriel
              Sánchez Luján César Ricardo
 
   FECHA    : 01/06/2026
+  VERSIÓN  : 1.0 FINAL
+  DESCRIPCIÓN: Script de lógica programática (DML Avanzada).
+               Incluye Triggers, UDFs y Stored Procedures transaccionales.
 =========================================================*/
 
-/*TRIGGERS*/
+/*==============================================================*/
+/* TRIGGERS                                                     */
+/*==============================================================*/
 
-/*Descripción
+/*
+Descripción:
 Actualiza automáticamente la estación actual de una bicicleta
 cuando se registra la finalización de un viaje.
 */
@@ -21,6 +27,7 @@ ON movilidad.viaje
 AFTER INSERT
 AS
 BEGIN
+    SET NOCOUNT ON;
     UPDATE B
     SET B.id_estacion = I.id_estacion_fin
     FROM movilidad.bicicleta AS B
@@ -29,16 +36,18 @@ BEGIN
 END;
 GO
 
-/*Descripción
+/*
+Descripción:
 Al eliminar un método de pago, cancela las suscripciones
 que lo utilizan, elimina la referencia al método y después
-borra el método de pago.*/
-
+borra el método de pago.
+*/
 CREATE OR ALTER TRIGGER movilidad.trg_metodo_pago_cancela_suscripcion
 ON movilidad.metodo_pago
 INSTEAD OF DELETE
 AS
 BEGIN
+    SET NOCOUNT ON;
     UPDATE S
     SET S.estado = 'C',
         S.fecha_fin = CAST(GETDATE() AS DATE),
@@ -55,11 +64,17 @@ BEGIN
 END;
 GO
 
+/*
+Descripción:
+Al registrar ciertos incidentes mecánicos o de vandalismo,
+la bicicleta se marca automáticamente como dañada.
+*/
 CREATE OR ALTER TRIGGER incidentes.trg_incidente_marca_bicicleta
 ON incidentes.incidente
 AFTER INSERT
 AS
 BEGIN
+    SET NOCOUNT ON;
     UPDATE B
     SET B.id_estado_bici = 2
     FROM movilidad.bicicleta AS B
@@ -71,9 +86,10 @@ BEGIN
 END;
 GO
 
-/*Descripción:
-Evita registrar viajes con bicicletas dañadas o dadas de baja.*/
-
+/*
+Descripción:
+Evita registrar viajes con bicicletas dañadas o dadas de baja.
+*/
 CREATE OR ALTER TRIGGER movilidad.trg_viaje_valida_bicicleta_operativa
 ON movilidad.viaje
 INSTEAD OF INSERT
@@ -125,14 +141,16 @@ BEGIN
 END;
 GO
 
-/*Descripción:
-Desactiva automaticamente una tarjeta cuando se genero su reposición*/
-
+/*
+Descripción:
+Desactiva automáticamente la tarjeta anterior cuando se genera su reposición.
+*/
 CREATE OR ALTER TRIGGER movilidad.trg_tarjeta_desactiva_por_reposicion
 ON movilidad.tarjeta_movilidad
 AFTER INSERT
 AS
 BEGIN
+    SET NOCOUNT ON;
     UPDATE TAnterior
     SET TAnterior.activa = 0,
         TAnterior.fecha_baja = CAST(GETDATE() AS DATE)
@@ -144,254 +162,15 @@ BEGIN
 END;
 GO
 
-/*==============================================================*/
-/* TRIGGER 1: trg_viaje_actualiza_ubicacion_bicicleta              */
-/* Al insertar un viaje, la bicicleta cambia a la estación fin. */
-/*==============================================================*/
-
-BEGIN TRANSACTION;
-
-PRINT 'TRIGGER 1 - ANTES DE INSERTAR LOS VIAJES';
-
-SELECT id_bicicleta, id_estacion
-FROM movilidad.bicicleta
-WHERE id_bicicleta IN (1,2,3,5,6);
-
-INSERT INTO movilidad.viaje VALUES
-(1001,25,'2027-02-01','CU-ROMA',
- '2027-02-01 08:00','2027-02-01 08:30',
- 'PRUEBA_V001',1,1,2,1);
-
-INSERT INTO movilidad.viaje VALUES
-(1002,25,'2027-02-01','ROMA-CONDESA',
- '2027-02-01 09:00','2027-02-01 09:25',
- 'PRUEBA_V002',2,2,3,2);
-
-INSERT INTO movilidad.viaje VALUES
-(1003,30,'2027-02-01','CONDESA-REFORMA',
- '2027-02-01 10:00','2027-02-01 10:35',
- 'PRUEBA_V003',3,3,4,3);
-
-INSERT INTO movilidad.viaje VALUES
-(1004,20,'2027-02-01','REFORMA-POLANCO',
- '2027-02-01 11:00','2027-02-01 11:20',
- 'PRUEBA_V004',5,4,5,5);
-
-INSERT INTO movilidad.viaje VALUES
-(1005,22,'2027-02-01','POLANCO-CU',
- '2027-02-01 12:00','2027-02-01 12:25',
- 'PRUEBA_V005',6,5,1,6);
-
-PRINT 'TRIGGER 1 - VIAJES INSERTADOS';
-
-SELECT id_viaje, id_bicicleta, id_estacion_inicio, id_estacion_fin
-FROM movilidad.viaje
-WHERE id_viaje BETWEEN 1001 AND 1005;
-
-PRINT 'TRIGGER 1 - DESPUES: LA bicicleta DEBE ESTAR EN LA estacion FINAL';
-
-SELECT id_bicicleta, id_estacion
-FROM movilidad.bicicleta
-WHERE id_bicicleta IN (1,2,3,5,6);
-
-ROLLBACK TRANSACTION;
-GO
-
 
 /*==============================================================*/
-/* TRIGGER 2: trg_metodo_pago_cancela_suscripcion                   */
-/* Al eliminar el método, la suscripción queda cancelada.       */
+/* FUNCIONES (UDFs)                                             */
 /*==============================================================*/
-
-BEGIN TRANSACTION;
-
-PRINT 'TRIGGER 2 - ANTES DE ELIMINAR LOS METODOS DE PAGO';
-
-SELECT id_suscripcion, estado, id_metodo_pago, fecha_fin
-FROM movilidad.suscripcion
-WHERE id_metodo_pago IN (1,2,3,4,5);
-
-SELECT id_metodo_pago, tipo_pago
-FROM movilidad.metodo_pago
-WHERE id_metodo_pago IN (1,2,3,4,5);
-
-DELETE FROM movilidad.metodo_pago
-WHERE id_metodo_pago = 1;
-
-DELETE FROM movilidad.metodo_pago
-WHERE id_metodo_pago = 2;
-
-DELETE FROM movilidad.metodo_pago
-WHERE id_metodo_pago = 3;
-
-DELETE FROM movilidad.metodo_pago
-WHERE id_metodo_pago = 4;
-
-DELETE FROM movilidad.metodo_pago
-WHERE id_metodo_pago = 5;
-
-PRINT 'TRIGGER 2 - DESPUES: SUSCRIPCIONES CANCELADAS Y SIN METODO DE PAGO';
-
-SELECT id_suscripcion, estado, id_metodo_pago, fecha_fin
-FROM movilidad.suscripcion
-WHERE id_suscripcion IN (1,2,3,4,5);
-
-PRINT 'TRIGGER 2 - LOS METODOS YA NO DEBEN APARECER';
-
-SELECT id_metodo_pago, tipo_pago
-FROM movilidad.metodo_pago
-WHERE id_metodo_pago IN (1,2,3,4,5);
-
-ROLLBACK TRANSACTION;
-GO
-
-
-/*==============================================================*/
-/* TRIGGER 3: trg_incidente_marca_bicicleta                        */
-/* Al registrar ciertos incidentes, la bicicleta queda dañada.  */
-/*==============================================================*/
-
-BEGIN TRANSACTION;
-
-PRINT 'TRIGGER 3 - ANTES DE INSERTAR INCIDENTES';
-
-SELECT id_bicicleta, id_estado_bici
-FROM movilidad.bicicleta
-WHERE id_bicicleta IN (1,2,3,5,6);
-
-INSERT INTO incidentes.incidente VALUES
-(1001,'Insurgentes',101,31001,'2027-02-02','19.43','-99.13',1,4,6,1);
-
-INSERT INTO incidentes.incidente VALUES
-(1002,'Reforma',202,67002,'2027-02-02','19.42','-99.15',4,5,7,2);
-
-INSERT INTO incidentes.incidente VALUES
-(1003,'Universidad',303,45003,'2027-02-02','19.40','-99.17',7,6,8,3);
-
-INSERT INTO incidentes.incidente VALUES
-(1004,'Patriotismo',404,38004,'2027-02-02','19.44','-99.11',13,7,9,4);
-
-INSERT INTO incidentes.incidente VALUES
-(1005,'Chapultepec',505,61005,'2027-02-02','19.45','-99.18',16,4,10,5);
-
-PRINT 'TRIGGER 3 - INCIDENTES INSERTADOS';
-
-SELECT id_incidente, id_viaje, id_tipo_incidente
-FROM incidentes.incidente
-WHERE id_incidente BETWEEN 1001 AND 1005;
-
-PRINT 'TRIGGER 3 - DESPUES: LAS BICICLETAS DEBEN TENER ESTADO 2, DANADA';
-
-SELECT id_bicicleta, id_estado_bici
-FROM movilidad.bicicleta
-WHERE id_bicicleta IN (1,2,3,5,6);
-
-ROLLBACK TRANSACTION;
-GO
-
-
-/*==============================================================*/
-/* TRIGGER 4: trg_viaje_valida_bicicleta_operativa                  */
-/* Impide registrar viajes para bicicletas dañadas.             */
-/*==============================================================*/
-
-BEGIN TRANSACTION;
-
-PRINT 'TRIGGER 4 - BICICLETAS DANADAS QUE SE INTENTARAN USAR';
-
-SELECT id_bicicleta, id_estado_bici
-FROM movilidad.bicicleta
-WHERE id_bicicleta IN (4,9,14,19,24);
-
-INSERT INTO movilidad.viaje VALUES
-(2001,25,'2027-02-03','CU-ROMA',
- '2027-02-03 08:00','2027-02-03 08:30',
- 'PRUEBA_D001',4,1,2,1);
-
-INSERT INTO movilidad.viaje VALUES
-(2002,25,'2027-02-03','ROMA-CU',
- '2027-02-03 09:00','2027-02-03 09:30',
- 'PRUEBA_D002',9,2,1,2);
-
-INSERT INTO movilidad.viaje VALUES
-(2003,25,'2027-02-03','CONDESA-ROMA',
- '2027-02-03 10:00','2027-02-03 10:30',
- 'PRUEBA_D003',14,3,2,3);
-
-INSERT INTO movilidad.viaje VALUES
-(2004,25,'2027-02-03','REFORMA-CU',
- '2027-02-03 11:00','2027-02-03 11:30',
- 'PRUEBA_D004',19,4,1,4);
-
-INSERT INTO movilidad.viaje VALUES
-(2005,25,'2027-02-03','POLANCO-ROMA',
- '2027-02-03 12:00','2027-02-03 12:30',
- 'PRUEBA_D005',24,5,2,5);
-
-PRINT 'TRIGGER 4 - LOS VIAJES NO DEBEN HABER SIDO REGISTRADOS';
-
-SELECT id_viaje, id_bicicleta, num_referencia
-FROM movilidad.viaje
-WHERE id_viaje BETWEEN 2001 AND 2005;
-
-ROLLBACK TRANSACTION;
-GO
-
-
-/*==============================================================*/
-/* TRIGGER 5: trg_tarjeta_desactiva_por_reposicion                  */
-/* Al insertar una reposición, desactiva la tarjeta anterior.   */
-/*==============================================================*/
-
-BEGIN TRANSACTION;
-
-PRINT 'TRIGGER 5 - ANTES DE REGISTRAR REPOSICIONES';
-
-SELECT id_tarjeta_movilidad, id_usuario, activa, fecha_baja
-FROM movilidad.tarjeta_movilidad
-WHERE id_tarjeta_movilidad IN (1,2,3,4,5);
-
-INSERT INTO movilidad.tarjeta_movilidad VALUES
-(1001,1,1,'2030-01-01',100,0x9001,'2027-02-04',1,'Reposicion');
-
-INSERT INTO movilidad.tarjeta_movilidad VALUES
-(1002,2,2,'2030-01-01',100,0x9002,'2027-02-04',1,'Reposicion');
-
-INSERT INTO movilidad.tarjeta_movilidad VALUES
-(1003,3,3,'2030-01-01',100,0x9003,'2027-02-04',1,'Reposicion');
-
-INSERT INTO movilidad.tarjeta_movilidad VALUES
-(1004,4,4,'2030-01-01',100,0x9004,'2027-02-04',1,'Reposicion');
-
-INSERT INTO movilidad.tarjeta_movilidad VALUES
-(1005,5,5,'2030-01-01',100,0x9005,'2027-02-04',1,'Reposicion');
-
-PRINT 'TRIGGER 5 - TARJETAS NUEVAS DE REPOSICION';
-
-SELECT id_tarjeta_movilidad, id_tarjeta_reposicion, id_usuario, activa, tipo_emision
-FROM movilidad.tarjeta_movilidad
-WHERE id_tarjeta_movilidad BETWEEN 1001 AND 1005;
-
-PRINT 'TRIGGER 5 - TARJETAS ANTERIORES DESACTIVADAS';
-
-SELECT id_tarjeta_movilidad, id_usuario, activa, fecha_baja
-FROM movilidad.tarjeta_movilidad
-WHERE id_tarjeta_movilidad IN (1,2,3,4,5);
-
-ROLLBACK TRANSACTION;
-GO
 
 /*
 Descripción:
-Funciones utilizadas para las edades de los usuarios y los meses de las membresías. 
-Y funciones para las estadisticas
-==============================================================*/
-
-
-/*==============================================================*/
-/* FUNCION 1: CALCULAR EDAD DE UN usuario                       */
-/*==============================================================*/
-
+Calcular la edad de un usuario basándose en su fecha de nacimiento.
+*/
 CREATE OR ALTER FUNCTION usuarios.fn_calcular_edad
 (
     @fecha_nacimiento DATE
@@ -400,21 +179,17 @@ RETURNS INT
 AS
 BEGIN
     DECLARE @edad INT;
-
     SET @edad = DATEDIFF(YEAR, @fecha_nacimiento, GETDATE());
-
     IF DATEADD(YEAR, @edad, @fecha_nacimiento) > GETDATE()
         SET @edad = @edad - 1;
-
     RETURN @edad;
 END;
 GO
 
-
-/*==============================================================*/
-/* FUNCION 2: CALCULAR MESES DE MEMBRESIA                       */
-/*==============================================================*/
-
+/*
+Descripción:
+Calcular la duración en meses de una suscripción.
+*/
 CREATE OR ALTER FUNCTION movilidad.fn_meses_membresia
 (
     @fecha_inicio DATE,
@@ -424,17 +199,61 @@ RETURNS INT
 AS
 BEGIN
     DECLARE @meses INT;
-
     SET @meses = DATEDIFF(MONTH, @fecha_inicio, @fecha_fin);
-
     RETURN @meses;
 END;
 GO
 
-/*==============================================================
-FUNCION 3: OBTENER AGENTES MEJOR RECONOCIDOS EN UN MES ESPECIFICO
-==============================================================*/
+/*
+Descripción:
+UDF para calcular tarifas excedentes basada en la duración del viaje.
+*/
+CREATE OR ALTER FUNCTION movilidad.fn_calcular_tarifa_excedente
+(
+    @duracion INT,
+    @tiempo_excedente INT,
+    @tarifa_excedente DECIMAL(10,2)
+)
+RETURNS DECIMAL(10,2)
+AS
+BEGIN
+    DECLARE @costo DECIMAL(10,2) = 0.0;
+    IF @duracion > @tiempo_excedente
+        SET @costo = (@duracion - @tiempo_excedente) * @tarifa_excedente;
+    RETURN @costo;
+END;
+GO
 
+/*
+Descripción:
+UDF para clasificar un usuario por rangos de edad requeridos en estadísticas.
+*/
+CREATE OR ALTER FUNCTION usuarios.fn_obtener_rango_edad
+(
+    @edad INT
+)
+RETURNS VARCHAR(20)
+AS
+BEGIN
+    DECLARE @rango VARCHAR(20);
+    IF @edad BETWEEN 10 AND 14
+        SET @rango = '10 a 15 anos';
+    ELSE IF @edad BETWEEN 15 AND 19
+        SET @rango = '15-20 anos';
+    ELSE IF @edad BETWEEN 20 AND 30
+        SET @rango = '20 a 30 anos';
+    ELSE IF @edad > 30
+        SET @rango = 'mas de 30 anos';
+    ELSE
+        SET @rango = 'Menores';
+    RETURN @rango;
+END;
+GO
+
+/*
+Descripción:
+Obtener los agentes mejores puntuados en encuestas para un mes dado.
+*/
 CREATE OR ALTER FUNCTION incidentes.fn_agentes_reconocidos_mes
 (
     @anio INT,
@@ -446,11 +265,7 @@ RETURN
 (
     SELECT
         E.id_empleado,
-        CONCAT(
-            E.nombre_pila, ' ',
-            E.ap_paterno, ' ',
-            ISNULL(E.ap_materno, '')
-        ) AS agente,
+        CONCAT(E.nombre_pila, ' ', E.ap_paterno, ' ', ISNULL(E.ap_materno, '')) AS agente,
         A.zona_asignada,
         A.vehiculo_asignado,
         COUNT(DISTINCT I.id_incidente) AS incidentes_atendidos,
@@ -466,18 +281,15 @@ RETURN
     WHERE YEAR(EN.fecha) = @anio
       AND MONTH(EN.fecha) = @mes
     GROUP BY
-        E.id_empleado,
-        E.nombre_pila,
-        E.ap_paterno,
-        E.ap_materno,
-        A.zona_asignada,
-        A.vehiculo_asignado
+        E.id_empleado, E.nombre_pila, E.ap_paterno, E.ap_materno,
+        A.zona_asignada, A.vehiculo_asignado
 );
 GO
-/*==============================================================
-FUNCION 4: OBTENER VIAJES EN UN PERIODO O estacion DADA
-==============================================================*/
 
+/*
+Descripción:
+Obtener recorridos en un rango de fechas y estación de origen/destino.
+*/
 CREATE OR ALTER FUNCTION movilidad.fn_recorridos_periodo_estacion
 (
     @fecha_inicio DATE,
@@ -491,11 +303,7 @@ RETURN
     SELECT
         V.id_viaje,
         V.fecha,
-        CONCAT(
-            U.nombre, ' ',
-            U.ap_paterno, ' ',
-            ISNULL(U.ap_materno, '')
-        ) AS usuario,
+        CONCAT(U.nombre, ' ', U.ap_paterno, ' ', ISNULL(U.ap_materno, '')) AS usuario,
         EI.nombre_estacion AS estacion_partida,
         EF.nombre_estacion AS lugar_llegada,
         V.duracion AS tiempo_minutos,
@@ -520,40 +328,484 @@ GO
 
 
 /*==============================================================*/
-/* PRUEBAS DE LAS funciones                                     */
+/* PROCEDIMIENTOS ALMACENADOS (SPs)                             */
 /*==============================================================*/
 
-SELECT
-    id_usuario,
-    nombre,
-    fecha_nacimiento,
-    usuarios.fn_calcular_edad(fecha_nacimiento) AS edad_calculada
-FROM usuarios.usuario;
-GO
-
-SELECT
-    id_suscripcion,
-    fecha_inicio,
-    fecha_fin,
-    movilidad.fn_meses_membresia(fecha_inicio, fecha_fin) AS meses_membresia
-FROM movilidad.suscripcion;
-GO
-
-SELECT *
-FROM incidentes.fn_agentes_reconocidos_mes(2026, 7)
-ORDER BY promedio_puntuacion DESC, encuestas_recibidas DESC;
-GO
-
-SELECT *
-FROM movilidad.fn_recorridos_periodo_estacion
+/*
+SP 1: Registro general de usuarios a la base de datos (con perfiles y teléfono opcional)
+*/
+CREATE OR ALTER PROCEDURE usuarios.sp_RegistrarUsuario
 (
-    '2026-05-01',
-    '2027-01-31',
-    NULL
-);
+    @id_usuario INT,
+    @correo VARCHAR(100),
+    @nombre VARCHAR(50),
+    @ap_paterno VARCHAR(50),
+    @ap_materno VARCHAR(50) = NULL,
+    @CURP CHAR(18),
+    @fecha_nacimiento DATE,
+    @genero CHAR(1),
+    @telefono VARCHAR(15) = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        INSERT INTO usuarios.usuario (id_usuario, correo, nombre, ap_paterno, ap_materno, CURP, fecha_nacimiento, genero, edad)
+        VALUES (@id_usuario, @correo, @nombre, @ap_paterno, @ap_materno, @CURP, @fecha_nacimiento, @genero, usuarios.fn_calcular_edad(@fecha_nacimiento));
+
+        IF @telefono IS NOT NULL
+        BEGIN
+            INSERT INTO usuarios.telefono (id_telefono, id_usuario, numero)
+            VALUES (@id_usuario, @id_usuario, @telefono);
+        END
+
+        COMMIT TRANSACTION;
+        PRINT 'Usuario registrado correctamente.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
 GO
 
-/* PROCEDIMIENTOS ALMACENADOS*/
+/*
+SP 2: Alta de un Plan/Membresía vinculada a un usuario (incluye costo de tarjeta $50 si es la primera y recargas)
+*/
+CREATE OR ALTER PROCEDURE usuarios.sp_AltaUsuarioPlan
+(
+    @id_suscripcion INT,
+    @id_usuario INT,
+    @id_tipo_membresia INT,
+    @id_metodo_pago INT,
+    @id_tarjeta INT,
+    @tipo_emision VARCHAR(20), -- 'Primera' o 'Reposicion'
+    @saldo_tarjeta DECIMAL(10,2)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
 
-/* 1.- Alta de usuario*/
+        DECLARE @costo_membresia DECIMAL(10,2);
+        DECLARE @duracion_membresia INT;
+        
+        SELECT @costo_membresia = costo, @duracion_membresia = duracion_dias
+        FROM movilidad.tipo_membresia
+        WHERE id_tipo_membresia = @id_tipo_membresia;
 
+        -- Registrar suscripción
+        INSERT INTO movilidad.suscripcion (id_suscripcion, estado, fecha_fin, fecha_inicio, id_usuario, id_metodo_pago, id_tipo_membresia)
+        VALUES (@id_suscripcion, 'A', DATEADD(DAY, @duracion_membresia, GETDATE()), GETDATE(), @id_usuario, @id_metodo_pago, @id_tipo_membresia);
+
+        -- Registrar tarjeta de movilidad (Costo de $50 pesos la primera vez)
+        DECLARE @costo_emision DECIMAL(10,2) = 0.0;
+        IF @tipo_emision = 'Primera'
+            SET @costo_emision = 50.0;
+
+        INSERT INTO movilidad.tarjeta_movilidad (id_tarjeta_movilidad, fecha_baja, id_usuario, fecha_vigencia, saldo, codigo_QR, fecha_adquisicion, activa, tipo_emision)
+        VALUES (@id_tarjeta, NULL, @id_usuario, DATEADD(YEAR, 5, GETDATE()), @saldo_tarjeta, CAST(@id_tarjeta AS VARBINARY(100)), GETDATE(), 1, @tipo_emision);
+
+        COMMIT TRANSACTION;
+        PRINT 'Plan y tarjeta dados de alta correctamente.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 3: Registrar el inicio y finalización de un viaje
+*/
+CREATE OR ALTER PROCEDURE movilidad.sp_RegistrarViaje
+(
+    @id_viaje INT,
+    @id_bicicleta INT,
+    @id_estacion_inicio INT,
+    @id_estacion_fin INT,
+    @id_tarjeta_movilidad INT,
+    @hora_inicio DATETIME,
+    @hora_fin DATETIME,
+    @num_referencia VARCHAR(20)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- Validar duración del viaje en minutos
+        DECLARE @duracion INT;
+        SET @duracion = DATEDIFF(MINUTE, @hora_inicio, @hora_fin);
+
+        -- Obtener usuario y tipo de membresía
+        DECLARE @id_usuario INT;
+        DECLARE @id_tipo_membresia INT;
+        
+        SELECT @id_usuario = id_usuario 
+        FROM movilidad.tarjeta_movilidad 
+        WHERE id_tarjeta_movilidad = @id_tarjeta_movilidad;
+
+        SELECT @id_tipo_membresia = id_tipo_membresia 
+        FROM movilidad.suscripcion 
+        WHERE id_usuario = @id_usuario AND estado = 'A';
+
+        -- Calcular costo
+        DECLARE @costo DECIMAL(10,2) = 0.0;
+        IF @id_tipo_membresia IS NOT NULL
+        BEGIN
+            DECLARE @tiempo_excedente INT;
+            DECLARE @tarifa_excedente DECIMAL(10,2);
+            
+            SELECT @tiempo_excedente = tiempo_excedente, @tarifa_excedente = tarifa_excedente
+            FROM movilidad.tipo_membresia
+            WHERE id_tipo_membresia = @id_tipo_membresia;
+
+            SET @costo = movilidad.fn_calcular_tarifa_excedente(@duracion, @tiempo_excedente, @tarifa_excedente);
+        END
+
+        INSERT INTO movilidad.viaje (id_viaje, duracion, fecha, ruta, hora_inicio, hora_fin, num_referencia, id_bicicleta, id_estacion_inicio, id_estacion_fin, id_tarjeta_movilidad, costo)
+        VALUES (@id_viaje, @duracion, CAST(@hora_inicio AS DATE), 'RUTA_TRIP', @hora_inicio, @hora_fin, @num_referencia, @id_bicicleta, @id_estacion_inicio, @id_estacion_fin, @id_tarjeta_movilidad, @costo);
+
+        COMMIT TRANSACTION;
+        PRINT 'Viaje registrado con éxito.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 4: Registrar un Rondín realizado por un empleado
+*/
+CREATE OR ALTER PROCEDURE personal.sp_RegistrarRondin
+(
+    @id_empleado INT,
+    @id_empleado_supervisor INT = NULL
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        INSERT INTO personal.rondin (id_empleado, id_empleado_supervisor)
+        VALUES (@id_empleado, @id_empleado_supervisor);
+
+        COMMIT TRANSACTION;
+        PRINT 'Rondin registrado correctamente.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 5: Eliminar un usuario de forma segura
+*/
+CREATE OR ALTER PROCEDURE usuarios.sp_EliminarUsuario
+(
+    @id_usuario INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- El borrado en cascada (ON DELETE CASCADE) se encarga de eliminar automáticamente
+        -- los registros relacionados en teléfono, suscripción, tarjeta, viaje, etc.
+        DELETE FROM usuarios.usuario
+        WHERE id_usuario = @id_usuario;
+
+        COMMIT TRANSACTION;
+        PRINT 'Usuario y todos sus registros relacionados eliminados en cascada.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 6: Modificar los datos de una Falta (fecha fin, descripción y motivo)
+*/
+CREATE OR ALTER PROCEDURE personal.sp_ModificarFalta
+(
+    @id_falta INT,
+    @fecha_fin DATE,
+    @descripcion VARCHAR(200),
+    @id_motivo INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        UPDATE personal.falta
+        SET fecha_fin = @fecha_fin,
+            descripcion = @descripcion,
+            id_motivo = @id_motivo
+        WHERE id_falta = @id_falta;
+
+        COMMIT TRANSACTION;
+        PRINT 'Falta modificada correctamente.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 7: Borrar un método de pago (cancela suscripciones si es el único asociado)
+*/
+CREATE OR ALTER PROCEDURE movilidad.sp_BorrarMetodoPago
+(
+    @id_metodo_pago INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        -- El trigger trg_metodo_pago_cancela_suscripcion se disparará automáticamente
+        -- al borrar el registro de metodo_pago, cancelando la suscripción asociada.
+        DELETE FROM movilidad.metodo_pago
+        WHERE id_metodo_pago = @id_metodo_pago;
+
+        COMMIT TRANSACTION;
+        PRINT 'Método de pago eliminado y suscripciones asociadas canceladas.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 8: Registrar un Incidente vial o de bicicleta
+*/
+CREATE OR ALTER PROCEDURE incidentes.sp_RegistrarIncidente
+(
+    @id_incidente INT,
+    @calle VARCHAR(50),
+    @numero INT,
+    @id_colonia INT,
+    @fecha DATE,
+    @latitud VARCHAR(20),
+    @longitud VARCHAR(20),
+    @id_viaje INT,
+    @id_tipo_incidente INT,
+    @id_empleado INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        INSERT INTO incidentes.incidente (id_incidente, calle, numero, id_colonia, fecha, latitud, longitud, id_viaje, id_tipo_incidente, id_empleado)
+        VALUES (@id_incidente, @calle, @numero, @id_colonia, @fecha, @latitud, @longitud, @id_viaje, @id_tipo_incidente, @id_empleado);
+
+        COMMIT TRANSACTION;
+        PRINT 'Incidente registrado correctamente.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 9: Actualizar los datos de asignación de un supervisor en un Rondín
+*/
+CREATE OR ALTER PROCEDURE personal.sp_ActualizarRondin
+(
+    @id_empleado INT,
+    @id_empleado_supervisor INT
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        UPDATE personal.rondin
+        SET id_empleado_supervisor = @id_empleado_supervisor
+        WHERE id_empleado = @id_empleado;
+
+        COMMIT TRANSACTION;
+        PRINT 'Supervisor de Rondín actualizado correctamente.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 10: Reposición de Tarjeta de Movilidad (costo semántico $80 por reposición)
+*/
+CREATE OR ALTER PROCEDURE movilidad.sp_ReposicionTarjeta
+(
+    @id_nueva_tarjeta INT,
+    @id_tarjeta_anterior INT,
+    @saldo_inicial DECIMAL(10,2)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    BEGIN TRY
+        BEGIN TRANSACTION;
+
+        DECLARE @id_usuario INT;
+        SELECT @id_usuario = id_usuario
+        FROM movilidad.tarjeta_movilidad
+        WHERE id_tarjeta_movilidad = @id_tarjeta_anterior;
+
+        -- Descontar el costo semántico de la reposición ($80) del saldo inicial si corresponde
+        DECLARE @saldo_final DECIMAL(10,2);
+        SET @saldo_final = @saldo_inicial - 80.00;
+        IF @saldo_final < 0
+            SET @saldo_final = 0.00;
+
+        -- El trigger trg_tarjeta_desactiva_por_reposicion se ejecutará tras el INSERT,
+        -- desactivando la tarjeta anterior automáticamente.
+        INSERT INTO movilidad.tarjeta_movilidad (id_tarjeta_movilidad, fecha_baja, id_usuario, fecha_vigencia, saldo, codigo_QR, fecha_adquisicion, activa, tipo_emision, id_tarjeta_reposicion)
+        VALUES (@id_nueva_tarjeta, NULL, @id_usuario, DATEADD(YEAR, 5, GETDATE()), @saldo_final, CAST(@id_nueva_tarjeta AS VARBINARY(100)), GETDATE(), 1, 'Reposicion', @id_tarjeta_anterior);
+
+        COMMIT TRANSACTION;
+        PRINT 'Reposición de tarjeta registrada con costo de $80 aplicado.';
+    END TRY
+    BEGIN CATCH
+        IF @@TRANCOUNT > 0
+            ROLLBACK TRANSACTION;
+        THROW;
+    END CATCH
+END;
+GO
+
+/*
+SP 11: Buscador de usuarios por coincidencia de nombre (Buscador con LIKE)
+*/
+CREATE OR ALTER PROCEDURE usuarios.sp_BuscarUsuarioPorNombre
+(
+    @nombre_busqueda VARCHAR(100)
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT id_usuario, correo, CONCAT(nombre, ' ', ap_paterno, ' ', ISNULL(ap_materno, '')) AS nombre_completo, CURP, edad, genero
+    FROM usuarios.usuario
+    WHERE nombre LIKE '%' + @nombre_busqueda + '%'
+       OR ap_paterno LIKE '%' + @nombre_busqueda + '%'
+       OR ap_materno LIKE '%' + @nombre_busqueda + '%';
+END;
+GO
+
+/*
+SPs de Reportes / Estadísticas (Wrappers para informes requeridos)
+===================================================================*/
+
+/*
+SP de Reporte 1: Estadísticas de los daños en las bicicletas con mayor frecuencia
+*/
+CREATE OR ALTER PROCEDURE reportes.sp_EstadisticaDanosBicicletas
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 10 
+        ti.nombre_incidente AS tipo_dano, 
+        COUNT(i.id_incidente) AS total_reportes
+    FROM incidentes.incidente i
+    INNER JOIN catalogo.tipo_incidente ti 
+        ON i.id_tipo_incidente = ti.id_tipo_incidente
+    GROUP BY ti.nombre_incidente
+    ORDER BY total_reportes DESC;
+END;
+GO
+
+/*
+SP de Reporte 2: Top 5 de los accidentes más frecuentes (descripción del daño y cantidad)
+*/
+CREATE OR ALTER PROCEDURE reportes.sp_TopAccidentesMasFrecuentes
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 5 
+        ti.descripcion_incidente AS descripcion_dano, 
+        COUNT(i.id_incidente) AS cantidad_accidentes
+    FROM incidentes.incidente i
+    INNER JOIN catalogo.tipo_incidente ti 
+        ON i.id_tipo_incidente = ti.id_tipo_incidente
+    GROUP BY ti.descripcion_incidente
+    ORDER BY cantidad_accidentes DESC;
+END;
+GO
+
+/*
+SP de Reporte 3: Estaciones con más reportes de accidentes en un periodo de tiempo
+*/
+CREATE OR ALTER PROCEDURE reportes.sp_EstacionesMasAccidentes
+(
+    @fecha_inicio DATE,
+    @fecha_fin DATE
+)
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT TOP 10
+        e.nombre_estacion,
+        COUNT(i.id_incidente) AS numero_accidentes
+    FROM incidentes.incidente i
+    INNER JOIN movilidad.viaje v 
+        ON i.id_viaje = v.id_viaje
+    INNER JOIN movilidad.estacion e 
+        ON v.id_estacion_inicio = e.id_estacion
+    WHERE i.fecha BETWEEN @fecha_inicio AND @fecha_fin
+    GROUP BY e.nombre_estacion
+    ORDER BY numero_accidentes DESC;
+END;
+GO
+
+/*
+SP de Reporte 4: Total de usuarios por rangos de edades
+*/
+CREATE OR ALTER PROCEDURE reportes.sp_TotalUsuariosPorRangoEdad
+AS
+BEGIN
+    SET NOCOUNT ON;
+    SELECT 
+        usuarios.fn_obtener_rango_edad(edad) AS rango_edad,
+        COUNT(id_usuario) AS total_usuarios
+    FROM usuarios.usuario
+    GROUP BY usuarios.fn_obtener_rango_edad(edad)
+    ORDER BY total_usuarios DESC;
+END;
+GO
