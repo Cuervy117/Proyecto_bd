@@ -438,9 +438,9 @@ CREATE TABLE movilidad.TARJETA_MOVILIDAD(
     fecha_baja DATE NOT NULL,
     saldo DECIMAL(10,2) NOT NULL DEFAULT 0,
     codigo_QR VARBINARY(100) NOT NULL,
-    fecha_emision DATE NOT NULL,
+    fecha_emision DATE NOT NULL DEFAULT GETDATE(),
     activa BIT NOT NULL,
-    tipo_emision VARCHAR(20) NOT NULL DEFAULT GETDATE(), 
+    tipo_emision VARCHAR(20) NOT NULL, 
 
     CONSTRAINT pk_tarjeta_movilidad 
         PRIMARY KEY (id_tarjeta_movilidad),
