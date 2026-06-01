@@ -1,6 +1,6 @@
 /*=========================================================
   PROYECTO : ECOBICI
-  AUTORES  : Díaz Núñez David
+  AUTORES  : Díaz Antúnez David
              Hernández Acosta Mauricio Gabriel
              Sánchez Luján César Ricardo
 
