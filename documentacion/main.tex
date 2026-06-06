@@ -1,0 +1,42 @@
+\documentclass[12pt, letterpaper]{article}
+
+\usepackage{common/preamble}
+
+\begin{document}
+
+\input{common/portada}
+
+% Set numbering style and start counting
+\pagenumbering{roman}
+
+% --- Table of Contents ---
+\tableofcontents
+\newpage
+
+% --- List of Figures ---
+\listoffigures
+\newpage
+
+% Start page numbering in arabic for sections
+\pagenumbering{arabic}
+
+\input{secciones/1_introduccion}
+\input{secciones/2_objetivos}
+\input{secciones/3_descripcion_problema}
+\input{secciones/4_reglas_negocio}
+\input{secciones/5_modelo_er}
+\input{secciones/6_modelo_relacional}
+\input{secciones/7_normalizacion}
+\input{secciones/8_diccionario_datos}
+\input{secciones/9_diseno_fisico}
+\input{secciones/10_carga_inicial}
+\input{secciones/11_aplicacion_consideraciones}
+\input{secciones/12_informes_estadisticas}
+\input{secciones/13_conclusiones}
+
+\input{common/bibliografia}
+\newpage
+
+\input{secciones/15_anexos}
+
+\end{document}

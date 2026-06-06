@@ -1,0 +1,1705 @@
+
+--- PAGE 1 ---
+Universidad Nacional Autónoma de México
+Facultad de Ingeniería
+
+ECOBICI
+Sistema de Gestión de Movilidad Urbana
+
+Proyecto Final de Bases de Datos
+Documentación Técnica
+
+Profesora:
+Equipo:
+Integrantes:
+
+Martha López Pelcastre
+SQuipoL
+David Díaz Antúnez
+Mauricio Gabriel Hernández Acosta
+César Ricardo Sánchez Luján
+
+Ciudad Universitaria, Ciudad de México
+31 de Mayo de 2026
+
+
+--- PAGE 2 ---
+Índice
+1. Introducción
+
+4
+
+2. Objetivos
+2.1. Objetivo General . . . . . . . . . . . . . . . . . . . . . . . . .
+2.2. Objetivos Específicos . . . . . . . . . . . . . . . . . . . . . . .
+
+4
+4
+4
+
+3. Descripción del Problema
+
+5
+
+4. Reglas de Negocio
+
+5
+
+5. Modelo Entidad–Relación
+
+7
+
+6. Modelo Relacional
+
+7
+
+7. Normalización
+8
+7.1. Primera Forma Normal (1FN) . . . . . . . . . . . . . . . . . . 8
+7.2. Segunda Forma Normal (2FN) . . . . . . . . . . . . . . . . . . 8
+7.3. Tercera Forma Normal (3FN) . . . . . . . . . . . . . . . . . . 10
+8. Diccionario de Datos
+
+10
+
+9. Diseño Físico de la Base de Datos
+9.1. Seguridad . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+9.2. Creación de la Base de Datos . . . . . . . . . . . . . . . . . .
+9.3. Objetos Programados . . . . . . . . . . . . . . . . . . . . . . .
+
+11
+11
+11
+12
+
+10.Carga Inicial
+
+12
+
+11.Aplicación de Consideraciones
+11.1. Lineamientos de Nomenclatura . . . . . . . . . . . . . . . . .
+11.2. Restricciones CHECK . . . . . . . . . . . . . . . . . . . . . .
+11.3. Restricciones UNIQUE . . . . . . . . . . . . . . . . . . . . . .
+11.4. Restricciones DEFAULT . . . . . . . . . . . . . . . . . . . . .
+11.5. Llaves Artificiales . . . . . . . . . . . . . . . . . . . . . . . . .
+11.6. Llaves Naturales . . . . . . . . . . . . . . . . . . . . . . . . .
+11.7. Columna Calculada . . . . . . . . . . . . . . . . . . . . . . . .
+11.8. Índices . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+
+14
+14
+14
+15
+15
+15
+15
+15
+16
+
+1
+
+
+--- PAGE 3 ---
+11.9. Integridad Referencial . . . . . . . . . . . . . . . . . . . . . .
+11.10.Borrado en Cascada . . . . . . . . . . . . . . . . . . . . . . .
+11.11.Procedimientos Almacenados . . . . . . . . . . . . . . . . . .
+11.12.Funciones . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11.13.Vistas . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11.14.Triggers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+11.15.Consultas Avanzadas . . . . . . . . . . . . . . . . . . . . . . .
+
+16
+16
+17
+17
+17
+17
+17
+
+12.Informes y Estadísticas
+12.1. Estadística 1. Daños en bicicletas con mayor frecuencia . . . .
+12.2. Estadística 2. Top 5 de accidentes más frecuentes . . . . . . .
+12.3. Estadística 3. Estaciones con más reportes de accidentes . . .
+12.4. Estadística 4. Total de accidentes por mes y tipo . . . . . . . .
+12.5. Estadística 5. Usuarios por rango de edad . . . . . . . . . . .
+12.6. Estadística 6. Inventario de bicicletas por estación . . . . . . .
+12.7. Estadística 7. Usuarios y antigüedad de membresía . . . . . .
+12.8. Estadística 8. Agentes mejor evaluados . . . . . . . . . . . . .
+12.9. Estadística 9. Reporte diario de rondines . . . . . . . . . . . .
+12.10.Estadística 10. Listado completo de empleados . . . . . . . . .
+12.11.Estadística 11. Informe de recorridos . . . . . . . . . . . . . .
+12.12.Estadística 12. Recorridos por temporada . . . . . . . . . . . .
+12.13.Estadística 13. Accidentes atendidos por agente . . . . . . . .
+12.14.Estadística 14. Informe de Recursos Humanos . . . . . . . . .
+12.15.Estadística 15. Faltas de empleados . . . . . . . . . . . . . . .
+
+18
+18
+18
+18
+18
+18
+23
+23
+23
+23
+23
+23
+23
+28
+28
+28
+
+13.Conclusiones
+13.1. Conclusión General . . . . . . . . . . . . . . . . . . . . . . . .
+13.2. Conclusión de David Díaz Antúnez . . . . . . . . . . . . . . .
+13.3. Conclusión de Mauricio Gabriel Hernández Acosta . . . . . . .
+13.4. Conclusión de César Ricardo Sánchez Luján . . . . . . . . . .
+
+35
+35
+35
+35
+36
+
+14.Bibliografía
+
+36
+
+15.Anexos
+15.1. Anexo A. Diccionario de Datos . . . . . . . . . . . . . . . . .
+15.2. Anexo B. Script de Seguridad . . . . . . . . . . . . . . . . . .
+15.3. Anexo C. Script de Creación de la Base de Datos . . . . . . .
+15.4. Anexo D. Script de Objetos Programados . . . . . . . . . . . .
+
+37
+37
+43
+43
+43
+
+2
+
+
+--- PAGE 4 ---
+15.5. Anexo E. Script de Carga Inicial . . . . . . . . . . . . . . . . . 43
+15.6. Anexo F. Script de Informes y Estadísticas . . . . . . . . . . . 43
+
+3
+
+
+--- PAGE 5 ---
+1.
+
+Introducción
+
+La movilidad urbana representa uno de los principales desafíos en las grandes ciudades debido al crecimiento poblacional y al incremento constante de
+los medios de transporte. Como alternativa sustentable, los sistemas de bicicletas compartidas permiten a los usuarios desplazarse de manera eficiente,
+económica y amigable con el medio ambiente.
+El presente proyecto consiste en el diseño e implementación de una base de
+datos para el sistema ECOBICI, cuyo objetivo es administrar la información
+relacionada con usuarios, membresías, estaciones, bicicletas, viajes, incidentes, métodos de pago y personal operativo. La base de datos fue desarrollada
+aplicando los principios del diseño conceptual, lógico y físico, garantizando
+la integridad, consistencia y disponibilidad de la información.
+Asimismo, se implementaron mecanismos de seguridad, restricciones de
+integridad, procedimientos almacenados, funciones, vistas y disparadores que
+permiten automatizar procesos y asegurar el correcto funcionamiento del
+sistema. Finalmente, se desarrollaron consultas e informes estadísticos que
+facilitan la toma de decisiones dentro de la organización.
+
+2.
+
+Objetivos
+
+2.1.
+
+Objetivo General
+
+Diseñar e implementar una base de datos relacional para el sistema ECOBICI que permita administrar de manera eficiente la información relacionada
+con usuarios, membresías, bicicletas, estaciones, viajes, incidentes y empleados, garantizando la integridad, seguridad y disponibilidad de los datos.
+
+2.2.
+
+Objetivos Específicos
+Diseñar el modelo entidad-relación del sistema ECOBICI.
+Construir el modelo relacional normalizado hasta Tercera Forma Normal.
+Implementar restricciones de integridad mediante llaves primarias, llaves foráneas, restricciones CHECK, UNIQUE y DEFAULT.
+
+4
+
+
+--- PAGE 6 ---
+Desarrollar procedimientos almacenados, funciones, vistas y disparadores para automatizar procesos.
+Implementar mecanismos de seguridad mediante usuarios y permisos.
+Generar consultas e informes estadísticos que apoyen la toma de decisiones.
+
+3.
+
+Descripción del Problema
+
+ECOBICI es un sistema de movilidad urbana basado en el préstamo y
+renta de bicicletas dentro de la Ciudad de México. El servicio permite a los
+usuarios adquirir diferentes tipos de membresías para acceder a las bicicletas
+disponibles en diversas estaciones distribuidas estratégicamente en la ciudad.
+Debido al volumen de información generado por las operaciones diarias,
+resulta necesario contar con una base de datos capaz de administrar usuarios, membresías, métodos de pago, estaciones, bicicletas, viajes, incidentes y
+personal de la organización. Además, el sistema debe permitir mantener un
+historial de viajes, registrar accidentes e incidentes, controlar el inventario de
+bicicletas y estaciones, gestionar la información de los empleados y generar
+reportes estadísticos que apoyen la toma de decisiones.
+Por lo anterior, se requiere diseñar e implementar una base de datos
+relacional que garantice la integridad, consistencia y disponibilidad de la información, permitiendo automatizar procesos operativos y administrativos
+mediante el uso de restricciones, procedimientos almacenados, funciones, vistas y disparadores.
+
+4.
+
+Reglas de Negocio
+
+1. Cada usuario debe registrarse proporcionando nombre completo, fecha
+de nacimiento, correo electrónico, código de identificación oficial, género
+y al menos un teléfono de contacto.
+2. El correo electrónico de cada usuario debe ser único dentro del sistema.
+3. Todo usuario debe contar con una membresía activa para poder utilizar
+el servicio.
+
+5
+
+
+--- PAGE 7 ---
+4. Las membresías disponibles son Básica, Intermedia y Premium.
+5. Un usuario puede cambiar de membresía cuando lo desee.
+6. Todo usuario debe tener registrado al menos un método de pago activo
+mientras mantenga una suscripción vigente.
+7. La eliminación del último método de pago provoca la cancelación automática de la suscripción asociada.
+8. Para utilizar el servicio es obligatorio contar con una tarjeta de movilidad integrada asociada al usuario.
+9. Cada bicicleta posee un número de serie único que la identifica dentro
+del sistema.
+10. Las bicicletas pueden encontrarse en estado de funcionamiento, mantenimiento o baja.
+11. Cada bicicleta pertenece a una categoría de tamaño: chica, mediana o
+grande.
+12. Todo viaje debe registrar una estación de origen y una estación de
+destino.
+13. Cada viaje debe almacenar fecha, hora de inicio y hora de finalización.
+14. Todo viaje debe quedar almacenado en un historial permanente para
+fines estadísticos y administrativos.
+15. Los incidentes reportados deben asociarse a un viaje previamente registrado.
+16. Cada incidente debe registrar fecha, hora, ubicación y tipo de incidente.
+17. Las estaciones mantienen un inventario actualizado de bicicletas disponibles y terminales operativas.
+18. Todo empleado pertenece a un área específica de trabajo.
+19. Los empleados pueden pertenecer al área de mantenimiento o administración.
+6
+
+
+--- PAGE 8 ---
+20. Cada empleado debe contar con un RFC único.
+21. Las faltas de los empleados deben registrarse mediante un consecutivo
+individual por empleado.
+22. Cada falta debe registrar la fecha y el motivo correspondiente.
+23. El sistema debe conservar el historial de faltas de todos los empleados.
+24. Cada incidente atendido debe estar asociado a un agente responsable.
+25. El sistema debe generar información estadística relacionada con usuarios, bicicletas, estaciones, viajes, incidentes y empleados.
+
+5.
+
+Modelo Entidad–Relación
+
+El Modelo Entidad–Relación representa la estructura conceptual de la
+base de datos desarrollada para el sistema ECOBICI. En este modelo se
+identifican las principales entidades involucradas en la operación del sistema,
+así como sus atributos y relaciones.
+Las entidades modeladas permiten administrar la información relacionada
+con usuarios, membresías, bicicletas, estaciones, viajes, incidentes, métodos
+de pago y personal operativo. Asimismo, se establecen las cardinalidades
+necesarias para garantizar la correcta representación de las reglas de negocio
+identificadas durante la fase de análisis.
+Como puede observarse en la Figura 1, el modelo conceptual permite
+identificar claramente las dependencias entre las entidades principales del
+sistema, sirviendo como base para la construcción del modelo relacional y la
+implementación física de la base de datos.
+
+6.
+
+Modelo Relacional
+
+El Modelo Relacional fue construido a partir del Modelo Entidad–Relación,
+transformando cada entidad en tablas y definiendo las relaciones mediante
+llaves primarias y llaves foráneas.
+La estructura resultante se encuentra normalizada hasta la Tercera Forma Normal (3FN), reduciendo la redundancia de datos y garantizando la
+integridad referencial dentro del sistema.
+7
+
+
+--- PAGE 9 ---
+Para facilitar la organización de la información, la base de datos fue dividida en distintos esquemas que agrupan tablas con funciones similares, tales
+como catalogo, usuarios, movilidad, personal, incidentes y reportes.
+La Figura 2 muestra la estructura lógica completa de la base de datos,
+incluyendo las tablas, atributos, llaves primarias, llaves foráneas y relaciones
+existentes entre los diferentes componentes del sistema.
+
+7.
+
+Normalización
+
+Durante la etapa de diseño de la base de datos se aplicaron desde el inicio
+los principios de normalización vistos en el curso, por lo que el modelo fue
+construido directamente considerando las reglas necesarias para cumplir con
+la Tercera Forma Normal (3FN). Debido a este enfoque, no fue necesario
+realizar un proceso posterior de descomposición de tablas, ya que las entidades y relaciones fueron definidas desde el principio evitando redundancias y
+dependencias innecesarias.
+
+7.1.
+
+Primera Forma Normal (1FN)
+
+La Primera Forma Normal establece que todos los atributos deben contener valores atómicos y que no deben existir grupos repetitivos dentro de
+una misma tabla. Durante el diseño de la base de datos se procuró que cada atributo almacenara únicamente un valor indivisible y que cada registro
+pudiera identificarse de manera única mediante una clave primaria.
+Por ejemplo, la información correspondiente a teléfonos de usuarios se almacenó en una tabla independiente, permitiendo registrar múltiples números
+telefónicos para un mismo usuario sin generar grupos repetitivos dentro de
+la tabla principal de usuarios.
+De esta manera, todas las tablas cumplen con los requisitos establecidos
+por la Primera Forma Normal.
+
+7.2.
+
+Segunda Forma Normal (2FN)
+
+La Segunda Forma Normal establece que todos los atributos no clave
+deben depender completamente de la clave primaria de la tabla. Durante el
+diseño se identificaron adecuadamente las entidades principales y se separó
+la información en tablas especializadas para evitar dependencias parciales.
+8
+
+
+--- PAGE 10 ---
+Figura 1: Modelo Entidad–Relación del sistema ECOBICI
+
+Figura 2: Modelo Relacional del sistema ECOBICI
+
+9
+
+
+--- PAGE 11 ---
+Cada tabla fue diseñada para representar una única entidad o concepto
+del sistema, garantizando que todos sus atributos describieran exclusivamente a la clave primaria correspondiente. Esto permitió evitar redundancias y
+mantener una estructura consistente para el almacenamiento de la información.
+Por lo anterior, el modelo cumple con los requisitos de la Segunda Forma
+Normal.
+
+7.3.
+
+Tercera Forma Normal (3FN)
+
+La Tercera Forma Normal establece que no deben existir dependencias
+transitivas entre atributos que no forman parte de la clave primaria. Para
+cumplir este criterio, la información descriptiva y los valores reutilizables
+fueron separados en entidades independientes.
+Durante las etapas finales del proyecto se incorporaron diversos catálogos
+para representar información de referencia utilizada por múltiples tablas.
+Entre ellos se encuentran los catálogos de alcaldías, estados civiles, idiomas,
+especialidades, motivos de faltas, estados de bicicletas, colores de bicicletas
+y tipos de incidentes.
+La utilización de estos catálogos permitió centralizar la información, reducir la redundancia de datos y fortalecer la integridad referencial mediante
+el uso de llaves foráneas. Como resultado, la base de datos mantiene una
+estructura organizada, flexible y consistente.
+Por las características descritas anteriormente, se concluye que el modelo
+relacional desarrollado para ECOBICI cumple con los principios de la Tercera
+Forma Normal (3FN), garantizando una adecuada organización de los datos
+y minimizando problemas de actualización, inserción y eliminación. “ ‘
+
+8.
+
+Diccionario de Datos
+
+Debido a la cantidad de entidades y atributos presentes en el sistema
+ECOBICI, el diccionario de datos completo se presenta en el Anexo A. Dicho
+documento contiene la descripción detallada de las tablas, campos y tipos de
+datos que conforman la base de datos.
+“ ‘latex
+
+10
+
+
+--- PAGE 12 ---
+9.
+
+Diseño Físico de la Base de Datos
+
+La implementación física de la base de datos ECOBICI se realizó utilizando SQL Server. Durante esta etapa se definieron los esquemas, tablas,
+restricciones, usuarios, permisos y objetos programados necesarios para garantizar el correcto funcionamiento del sistema.
+El diseño físico fue desarrollado tomando como base el modelo relacional
+previamente definido, incorporando mecanismos que permiten asegurar la
+integridad de los datos, optimizar el acceso a la información y automatizar
+diversos procesos operativos.
+
+9.1.
+
+Seguridad
+
+La seguridad de la base de datos fue implementada mediante la creación de usuarios con distintos niveles de acceso, permitiendo controlar las
+operaciones que cada tipo de usuario puede realizar sobre la información
+almacenada.
+Se definieron perfiles orientados a consulta, gestión y administración, con
+el objetivo de aplicar el principio de privilegios mínimos y garantizar la protección de los datos del sistema.
+La creación de usuarios, asignación de permisos y configuración de seguridad se encuentran implementadas en el archivo seguridad.sql.
+
+9.2.
+
+Creación de la Base de Datos
+
+La estructura principal de la base de datos fue implementada en el archivo
+creaBase.sql. En este script se definieron los esquemas, tablas, llaves primarias, llaves foráneas y restricciones necesarias para garantizar la integridad
+de la información.
+Para facilitar la organización de los datos, las tablas fueron agrupadas en
+distintos esquemas de acuerdo con su función dentro del sistema:
+catalogo: Catálogos utilizados por múltiples módulos del sistema.
+usuarios: Información de usuarios y teléfonos.
+movilidad: Gestión de membresías, bicicletas, estaciones y viajes.
+personal: Información de empleados y recursos humanos.
+11
+
+
+--- PAGE 13 ---
+incidentes: Registro de incidentes y encuestas.
+reportes: Información relacionada con temporadas y reportes operativos.
+Asimismo, se implementaron restricciones de integridad referencial mediante llaves foráneas, restricciones de dominio mediante cláusulas CHECK,
+validaciones de unicidad mediante restricciones UNIQUE y valores predeterminados mediante restricciones DEFAULT.
+
+9.3.
+
+Objetos Programados
+
+Con el propósito de automatizar procesos y facilitar la explotación de la
+información, se desarrollaron diversos objetos programados dentro de la base
+de datos.
+Entre los objetos implementados se encuentran:
+Procedimientos almacenados para operaciones de inserción, actualización y consulta.
+Funciones para realizar cálculos y obtener información derivada.
+Vistas para simplificar consultas frecuentes.
+Triggers para automatizar validaciones y acciones relacionadas con modificaciones de datos.
+La implementación de estos componentes se encuentra contenida en el
+archivo dml.sql, permitiendo centralizar la lógica de negocio dentro de la
+base de datos y mejorar la consistencia de las operaciones realizadas por el
+sistema.
+“ ‘latex id="2p5xx6"
+
+10.
+
+Carga Inicial
+
+Con el objetivo de validar el correcto funcionamiento de la base de datos
+y de los diferentes procesos implementados, se realizó una carga inicial de
+información representativa del sistema ECOBICI. Los datos cargados permiten probar la integridad de las relaciones, las restricciones definidas y las
+consultas estadísticas requeridas para el proyecto.
+12
+
+
+--- PAGE 14 ---
+La carga inicial fue implementada mediante el archivo cargaInicial.sql,
+el cual contiene los registros necesarios para poblar las tablas principales de
+la base de datos.
+Entre los datos cargados se encuentran:
+Catálogos generales utilizados por los distintos módulos del sistema,
+tales como alcaldías, estados civiles, idiomas, especialidades, estados
+de bicicletas, colores de bicicletas, tipos de incidentes y motivos de
+faltas.
+Usuarios registrados dentro de la plataforma junto con su información
+personal y medios de contacto.
+Métodos de pago, membresías, suscripciones y tarjetas de movilidad
+asociadas a los usuarios.
+Estaciones ECOBICI distribuidas en diferentes ubicaciones.
+Bicicletas registradas dentro del inventario general del sistema, incluyendo su estado operativo, color y tamaño.
+Viajes realizados por los usuarios entre distintas estaciones, permitiendo generar históricos de recorridos y estadísticas de uso.
+Empleados pertenecientes a las diferentes áreas operativas y administrativas de la organización.
+Agentes encargados de la atención de incidentes y personal responsable
+de realizar rondines.
+Incidentes reportados por los usuarios durante los viajes y las encuestas
+asociadas a la atención brindada.
+Reportes operativos generados por el personal encargado de los rondines.
+La información cargada fue diseñada para cubrir los distintos escenarios contemplados en los requerimientos del proyecto, permitiendo ejecutar
+correctamente los procedimientos almacenados, funciones, vistas, triggers e
+informes estadísticos desarrollados para la base de datos.
+Asimismo, la carga inicial facilita la validación de las relaciones entre
+tablas y el comportamiento de las restricciones de integridad implementadas
+durante el diseño físico del sistema.
+13
+
+
+--- PAGE 15 ---
+11.
+
+Aplicación de Consideraciones
+
+Durante el desarrollo de la base de datos ECOBICI se aplicaron las consideraciones técnicas solicitadas en los requerimientos del proyecto. Estas
+consideraciones permitieron garantizar la integridad, consistencia, seguridad
+y rendimiento de la información almacenada.
+
+11.1.
+
+Lineamientos de Nomenclatura
+
+Con el propósito de mantener uniformidad en el desarrollo de la base de
+datos, se utilizaron convenciones de nomenclatura para los diferentes objetos
+implementados.
+pk_: Llaves primarias.
+fk_: Llaves foráneas.
+ck_: Restricciones CHECK.
+u_: Restricciones UNIQUE.
+idx_: Índices.
+trg_: Triggers.
+sp: Procedimientos almacenados.
+
+11.2.
+
+Restricciones CHECK
+
+Se implementaron restricciones CHECK para validar los valores permitidos en distintos atributos del sistema.
+Validación de códigos para los estados de las bicicletas.
+Validación de los tipos de empleado permitidos.
+Validación del género de los empleados.
+Validación de sueldos mayores a cero.
+Validación de diferentes atributos de dominio dentro de la base de datos.
+14
+
+
+--- PAGE 16 ---
+11.3.
+
+Restricciones UNIQUE
+
+Se utilizaron restricciones UNIQUE para evitar la duplicidad de información crítica.
+RFC de los empleados.
+Código de estado de bicicleta.
+Otros atributos que requieren valores únicos dentro del sistema.
+
+11.4.
+
+Restricciones DEFAULT
+
+Se implementaron valores predeterminados para simplificar el registro de
+información y garantizar la consistencia de ciertos atributos cuando no se
+proporciona un valor explícito.
+
+11.5.
+
+Llaves Artificiales
+
+La mayoría de las entidades utilizan identificadores numéricos autogenerados (id_*) como llaves primarias, facilitando la administración de relaciones
+y mejorando el rendimiento de las consultas.
+
+11.6.
+
+Llaves Naturales
+
+Se utilizaron llaves naturales cuando los atributos poseían significado propio dentro del negocio.
+RFC de los empleados.
+
+11.7.
+
+Columna Calculada
+
+Se implementó una columna calculada dentro de la tabla personal.EMPLEADO
+para obtener automáticamente la edad del empleado a partir de su fecha de
+nacimiento.
+
+15
+
+
+--- PAGE 17 ---
+11.8.
+
+Índices
+
+Se implementaron índices para optimizar el desempeño de las consultas
+más frecuentes realizadas sobre la base de datos.
+Índices sobre atributos utilizados en búsquedas frecuentes.
+Índices UNIQUE para garantizar unicidad y acelerar consultas.
+Índices asociados a relaciones utilizadas comúnmente en operaciones
+JOIN.
+
+11.9.
+
+Integridad Referencial
+
+La integridad referencial se implementó mediante llaves foráneas distribuidas en todo el modelo relacional, garantizando la consistencia entre entidades
+relacionadas.
+
+11.10.
+
+Borrado en Cascada
+
+Se implementó la cláusula ON DELETE CASCADE en las relaciones que dependen directamente de la entidad EMPLEADO. Esto permite eliminar automáticamente los registros relacionados cuando un empleado es eliminado del
+sistema, evitando la existencia de registros huérfanos.
+Las tablas que utilizan esta característica son:
+personal.ADMINISTRACION
+personal.AGENTE
+personal.RONDIN
+personal.MANTENIMIENTO
+personal.DOMICILIO
+personal.IDIOMAS
+
+16
+
+
+--- PAGE 18 ---
+11.11.
+
+Procedimientos Almacenados
+
+Se desarrollaron procedimientos almacenados para realizar operaciones de
+inserción, actualización, eliminación y generación de información estadística
+requerida por el sistema.
+
+11.12.
+
+Funciones
+
+Se implementaron funciones para encapsular lógica reutilizable y facilitar
+cálculos utilizados por distintos componentes de la base de datos.
+
+11.13.
+
+Vistas
+
+Se desarrollaron vistas para simplificar consultas complejas y facilitar el
+acceso a información consolidada.
+
+11.14.
+
+Triggers
+
+Se implementaron triggers para automatizar procesos de validación y actualización de información ante eventos de inserción, modificación o eliminación de datos.
+
+11.15.
+
+Consultas Avanzadas
+
+Los informes estadísticos utilizan diferentes técnicas de consulta avanzadas.
+INNER JOIN.
+LEFT JOIN.
+Funciones de agregación COUNT, SUM y AVG.
+Subconsultas.
+Ordenamiento y agrupamiento de información.
+Estas herramientas permitieron construir los reportes y estadísticas solicitados para la administración y operación del sistema ECOBICI.
+
+17
+
+
+--- PAGE 19 ---
+12.
+
+Informes y Estadísticas
+
+12.1.
+
+Estadística 1. Daños en bicicletas con mayor frecuencia
+
+Esta consulta identifica las bicicletas que han estado involucradas en un
+mayor número de incidentes registrados. La información obtenida permite
+detectar unidades con problemas recurrentes y apoyar la toma de decisiones
+relacionadas con mantenimiento preventivo o sustitución de bicicletas.
+
+12.2.
+
+Estadística 2. Top 5 de accidentes más frecuentes
+
+Esta consulta muestra los cinco tipos de incidentes que ocurren con mayor
+frecuencia dentro del sistema ECOBICI. Los resultados permiten identificar
+los riesgos más comunes y diseñar estrategias de prevención.
+
+12.3.
+
+Estadística 3. Estaciones con más reportes de accidentes
+
+Esta consulta presenta las estaciones que registran la mayor cantidad
+de accidentes durante un periodo determinado, agrupando la información
+por año y mes. Los resultados ayudan a identificar zonas de mayor riesgo
+operativo.
+
+12.4.
+
+Estadística 4. Total de accidentes por mes y tipo
+
+Esta consulta muestra el número de accidentes registrados por mes y
+tipo de incidente. La información permite analizar tendencias temporales y
+evaluar el comportamiento de los diferentes tipos de accidentes.
+
+12.5.
+
+Estadística 5. Usuarios por rango de edad
+
+Esta consulta clasifica a los usuarios por rangos de edad y tipo de membresía. Su objetivo es conocer la distribución demográfica de los usuarios del
+sistema.
+
+18
+
+
+--- PAGE 20 ---
+Figura 3: Daños en bicicletas con mayor frecuencia
+
+19
+
+
+--- PAGE 21 ---
+Figura 4: Top 5 de accidentes más frecuentes
+
+Figura 5: Estaciones con más reportes de accidentes
+
+20
+
+
+--- PAGE 22 ---
+21
+
+
+--- PAGE 23 ---
+Figura 7: Usuarios por rango de edad
+
+22
+
+
+--- PAGE 24 ---
+12.6.
+
+Estadística 6. Inventario de bicicletas por estación
+
+Esta consulta muestra el inventario de bicicletas por estación, incluyendo
+estado, color, cantidad de viajes realizados y número de accidentes asociados.
+
+12.7.
+
+Estadística 7. Usuarios y antigüedad de membresía
+
+Esta consulta presenta la información general de los usuarios, el tipo de
+membresía que poseen y el tiempo que han permanecido suscritos al servicio.
+
+12.8.
+
+Estadística 8. Agentes mejor evaluados
+
+Esta consulta identifica a los agentes con mejor desempeño según las
+encuestas de satisfacción realizadas por los usuarios después de la atención
+de incidentes.
+
+12.9.
+
+Estadística 9. Reporte diario de rondines
+
+Esta consulta genera un reporte diario de las actividades realizadas por
+el personal de rondín, incluyendo incidentes detectados, estación asociada y
+supervisor responsable.
+
+12.10.
+
+Estadística 10. Listado completo de empleados
+
+Esta consulta muestra la información completa de los empleados registrados en el sistema, indicando además el tipo de puesto que desempeñan.
+
+12.11.
+
+Estadística 11. Informe de recorridos
+
+Esta consulta genera un informe detallado de los viajes realizados por los
+usuarios, incluyendo estaciones de origen y destino, duración del recorrido y
+costo generado.
+
+12.12.
+
+Estadística 12. Recorridos por temporada
+
+Esta consulta permite conocer la cantidad de recorridos realizados durante cada temporada del año, identificando los periodos de mayor actividad.
+23
+
+
+--- PAGE 25 ---
+Figura 8: Inventario de bicicletas por estación
+
+24
+
+
+--- PAGE 26 ---
+Figura 9: Usuarios y antigüedad de membresía
+
+25
+
+
+--- PAGE 27 ---
+Figura 10: Agentes mejor evaluados
+
+26
+
+
+--- PAGE 28 ---
+Figura 11: Reporte diario de rondines
+
+27
+
+
+--- PAGE 29 ---
+12.13.
+
+Estadística 13. Accidentes atendidos por agente
+
+Esta consulta muestra los datos personales de cada agente y el historial
+de accidentes que ha atendido, incluyendo fecha, lugar y tipo de incidente.
+
+12.14.
+
+Estadística 14. Informe de Recursos Humanos
+
+Esta consulta identifica empleados de la tercera edad con sueldo mensual
+de $13,000, apoyando los procesos de análisis y gestión de recursos humanos.
+
+12.15.
+
+Estadística 15. Faltas de empleados
+
+Esta consulta presenta estadísticas de faltas de empleados por periodo,
+clasificadas según el motivo registrado. La información permite analizar patrones de ausentismo dentro de la organización.
+
+28
+
+
+--- PAGE 30 ---
+Figura 12: Listado completo de empleados
+
+29
+
+
+--- PAGE 31 ---
+Figura 13: Informe de recorridos
+
+30
+
+
+--- PAGE 32 ---
+31
+
+
+--- PAGE 33 ---
+Figura 15: Accidentes atendidos por agente
+
+32
+
+
+--- PAGE 34 ---
+Figura 16: Informe de Recursos Humanos
+
+33
+
+
+--- PAGE 35 ---
+34
+
+
+--- PAGE 36 ---
+13.
+
+Conclusiones
+
+13.1.
+
+Conclusión General
+
+El desarrollo de la base de datos ECOBICI permitió aplicar de manera
+integral los conocimientos adquiridos durante el curso de Bases de Datos,
+abarcando las etapas de análisis, diseño conceptual, diseño lógico e implementación física. A lo largo del proyecto se construyó una solución capaz de
+administrar la información relacionada con usuarios, membresías, estaciones,
+bicicletas, viajes, incidentes y personal operativo, garantizando la integridad
+y consistencia de los datos mediante restricciones, llaves primarias, llaves
+foráneas y mecanismos de seguridad.
+Asimismo, la implementación de procedimientos almacenados, funciones,
+vistas, triggers e informes estadísticos permitió automatizar procesos y facilitar la obtención de información relevante para la toma de decisiones. El
+proyecto permitió comprender la importancia de un diseño adecuado desde
+las primeras etapas de desarrollo, demostrando que una base de datos correctamente normalizada contribuye significativamente a la eficiencia, mantenimiento y escalabilidad de los sistemas de información.
+
+13.2.
+
+Conclusión de David Díaz Antúnez
+
+La realización de este proyecto permitió reforzar los conocimientos relacionados con el diseño e implementación de bases de datos relacionales, así
+como comprender la importancia de una correcta organización de la información para garantizar la integridad de los datos. Durante el desarrollo del
+sistema ECOBICI se adquirió experiencia en el uso de SQL Server, la creación
+de estructuras relacionales y la aplicación de buenas prácticas de modelado.
+Además, se fortalecieron habilidades de trabajo colaborativo y resolución de
+problemas, aspectos fundamentales en el desarrollo de proyectos de software.
+
+13.3.
+
+Conclusión de Mauricio Gabriel Hernández Acosta
+
+A través del desarrollo de la base de datos ECOBICI fue posible aplicar
+de manera práctica los conceptos estudiados durante el curso, especialmente aquellos relacionados con la normalización, la integridad referencial y la
+implementación de objetos programados. El proyecto permitió comprender
+35
+
+
+--- PAGE 37 ---
+cómo las decisiones tomadas durante la etapa de diseño impactan directamente en el rendimiento y mantenimiento de una base de datos. Asimismo,
+se obtuvo experiencia en la construcción de consultas complejas e informes
+estadísticos orientados al análisis de información y apoyo en la toma de decisiones.
+
+13.4.
+
+Conclusión de César Ricardo Sánchez Luján
+
+El proyecto ECOBICI representó una oportunidad para integrar conocimientos teóricos y prácticos en un entorno cercano a una situación real.
+La implementación de mecanismos de seguridad, restricciones de integridad
+y procesos automatizados permitió comprender la importancia de diseñar
+soluciones robustas y confiables. De igual forma, se fortaleció la capacidad
+para analizar requerimientos, modelar información y desarrollar bases de datos que satisfagan necesidades específicas de una organización, contribuyendo
+a la formación profesional en el área de tecnologías de la información.
+“ ‘latex
+
+14.
+
+Bibliografía
+
+1. Elmasri, R., & Navathe, S. B. (2016). Fundamentals of Database Systems (7th ed.). Pearson.
+2. Coronel, C., & Morris, S. (2019). Database Systems: Design, Implementation, & Management (13th ed.). Cengage Learning.
+3. Silberschatz, A., Korth, H. F., & Sudarshan, S. (2020). Database System
+Concepts (7th ed.). McGraw-Hill Education.
+4. Microsoft Corporation. (2025). SQL Server Documentation. Recuperado de https://learn.microsoft.com/sql
+5. Date, C. J. (2019). An Introduction to Database Systems (8th ed.).
+Pearson.
+6. Universidad Nacional Autónoma de México. Facultad de Ingeniería.
+Material de apoyo y apuntes de la asignatura Bases de Datos.
+
+36
+
+
+--- PAGE 38 ---
+15.
+
+Anexos
+
+Los siguientes documentos complementan la información presentada en
+esta documentación y contienen los elementos desarrollados durante la implementación del proyecto.
+
+15.1.
+
+Anexo A. Diccionario de Datos
+
+37
+
+
+--- PAGE 39 ---
+Tabla
+Campo
+Tipo de dato
+Descripción
+catalogo.ALCALDIA
+id_alcaldia
+INT
+Identificador de alcaldia.
+catalogo.ALCALDIA
+alcaldia
+VARCHAR(22) Campo alcaldia.
+catalogo.BICICLETA_COLOR id_bicicleta_Color TINYINT
+Identificador de bicicleta Color.
+catalogo.BICICLETA_COLOR color
+VARCHAR(18) Campo color.
+catalogo.ESTADO_BICI
+id_estado_bici
+INT
+Identificador de estado bici.
+catalogo.ESTADO_BICI
+codigo
+CHAR(1)
+Campo codigo.
+catalogo.ESTADO_BICI
+descripcion
+VARCHAR(20) Campo descripcion.
+catalogo.ESTADO_CIVIL
+id_estado_civil
+INT
+Identificador de estado civil.
+catalogo.ESTADO_CIVIL
+codigo
+CHAR(1)
+Campo codigo.
+catalogo.ESTADO_CIVIL
+estado_civil
+VARCHAR(15) Campo estado civil.
+catalogo.ESTADO_CIVIL
+vigente
+BIT
+Campo vigente.
+catalogo.CATALOGO_IDIOMASid_idioma
+INT
+Identificador de idioma.
+catalogo.CATALOGO_IDIOMASnombre_idioma VARCHAR(30) Campo nombre idioma.
+catalogo.ESPECIALIDAD
+id_especialidad
+INT
+Identificador de especialidad.
+catalogo.ESPECIALIDAD
+especialidad
+VARCHAR(25) Campo especialidad.
+catalogo.MOTIVO
+id_motivo
+INT
+Identificador de motivo.
+catalogo.MOTIVO
+motivo_falta
+VARCHAR(30) Campo motivo falta.
+catalogo.TIPO_INCIDENTE
+id_tipo_incidente INT
+Identificador de tipo incidente.
+catalogo.TIPO_INCIDENTE
+nombre_incidente VARCHAR(30) Campo nombre incidente.
+catalogo.TIPO_INCIDENTE
+descripcion
+VARCHAR(80) Campo descripcion.
+personal.EMPLEADO
+id_empleado
+INT
+Identificador de empleado.
+personal.EMPLEADO
+tipo_empleado
+VARCHAR(2)
+Campo tipo empleado.
+personal.EMPLEADO
+genero
+CHAR(1)
+Campo genero.
+personal.EMPLEADO
+edad
+AS DATEDIFF(YEAR,
+Campo
+fecha_nacimiento,
+edad.
+GETDATE())
+personal.EMPLEADO
+sueldo
+DECIMAL(12,2) Campo sueldo.
+personal.EMPLEADO
+fecha_nacimiento DATE
+Campo fecha nacimiento.
+personal.EMPLEADO
+telefono
+NUMERIC(10,0) Campo telefono.
+personal.EMPLEADO
+RFC
+CHAR(13)
+Campo RFC.
+personal.EMPLEADO
+nombre_pila
+VARCHAR(30) Campo nombre pila.
+personal.EMPLEADO
+ap_paterno
+VARCHAR(30) Campo ap paterno.
+personal.EMPLEADO
+ap_materno
+VARCHAR(30) Campo ap materno.
+personal.EMPLEADO
+id_estado_civil
+INT
+Identificador de estado civil.
+personal.EMPLEADO
+REFERENCES
+catalogo
+Campo REFERENCES.
+personal.ADMINISTRACION id_empleado
+INT
+Identificador de empleado.
+personal.ADMINISTRACION profesion
+VARCHAR(30) Campo profesion.
+personal.ADMINISTRACION ubicacion_trabajo VARCHAR(40) Campo ubicacion trabajo.
+personal.ADMINISTRACION REFERENCES
+personal
+Campo REFERENCES.
+personal.AGENTE
+id_empleado
+INT
+Identificador de empleado.
+personal.AGENTE
+zona_asignada
+VARCHAR(30) Campo zona asignada.
+personal.AGENTE
+vehiculo_asignado VARCHAR(20) Campo vehiculo asignado.
+personal.AGENTE
+REFERENCES
+personal
+Campo REFERENCES.
+personal.RONDIN
+id_empleado
+INT
+Identificador de empleado.
+personal.RONDIN
+id_empleado_supervisor
+INT
+Identificador de empleado supervisor.
+
+
+--- PAGE 40 ---
+personal.RONDIN
+personal.RONDIN
+personal.MANTENIMIENTO
+personal.MANTENIMIENTO
+personal.MANTENIMIENTO
+personal.MANTENIMIENTO
+personal.COLONIA
+personal.COLONIA
+personal.COLONIA
+personal.COLONIA
+personal.DOMICILIO
+personal.DOMICILIO
+personal.DOMICILIO
+personal.DOMICILIO
+personal.DOMICILIO
+personal.DOMICILIO
+personal.DOMICILIO
+personal.DOMICILIO
+personal.IDIOMAS
+personal.IDIOMAS
+personal.IDIOMAS
+personal.IDIOMAS
+personal.FALTA
+personal.FALTA
+personal.FALTA
+personal.FALTA
+personal.FALTA
+personal.FALTA
+personal.FUNCIONES
+personal.FUNCIONES
+personal.FUNCIONES
+personal.FUNCIONES
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.USUARIO
+usuarios.TELEFONO
+usuarios.TELEFONO
+usuarios.TELEFONO
+
+REFERENCES
+personal
+Campo REFERENCES.
+REFERENCES
+personal
+Campo REFERENCES.
+id_empleado
+INT
+Identificador de empleado.
+id_especialidad
+INT
+Identificador de especialidad.
+REFERENCES
+personal
+Campo REFERENCES.
+REFERENCES
+catalogo
+Campo REFERENCES.
+id_colonia
+INT
+Identificador de colonia.
+colonia
+VARCHAR(20) Campo colonia.
+id_alcaldia
+INT
+Identificador de alcaldia.
+REFERENCES
+catalogo
+Campo REFERENCES.
+id_empleado
+INT
+Identificador de empleado.
+id_domicilio
+INT
+Identificador de domicilio.
+numero_ext
+NUMERIC(3,0) Campo numero ext.
+numero_int
+NUMERIC(3,0) Campo numero int.
+calle
+VARCHAR(30) Campo calle.
+id_colonia
+INT
+Identificador de colonia.
+REFERENCES
+personal
+Campo REFERENCES.
+REFERENCES
+personal
+Campo REFERENCES.
+id_empleado
+INT
+Identificador de empleado.
+id_idioma
+INT
+Identificador de idioma.
+REFERENCES
+personal
+Campo REFERENCES.
+REFERENCES
+catalogo
+Campo REFERENCES.
+id_empleado
+INT
+Identificador de empleado.
+id_falta
+SMALLINT
+Identificador de falta.
+fecha
+DATE
+Campo fecha.
+id_motivo
+INT
+Identificador de motivo.
+REFERENCES
+personal
+Campo REFERENCES.
+REFERENCES
+catalogo
+Campo REFERENCES.
+id_funciones
+INT
+Identificador de funciones.
+id_empleado
+INT
+Identificador de empleado.
+nombre_funcion VARCHAR(30) Campo nombre funcion.
+REFERENCES
+personal
+Campo REFERENCES.
+id_usuario
+INT
+Identificador de usuario.
+correo
+VARCHAR(30) Campo correo.
+nombre
+VARCHAR(40) Campo nombre.
+ap_paterno
+VARCHAR(40) Campo ap paterno.
+ap_materno
+VARCHAR(40) Campo ap materno.
+codigo_INE
+CHAR(18)
+Campo codigo INE.
+fecha_nacimiento DATE
+Campo fecha nacimiento.
+genero
+CHAR(1)
+Campo genero.
+edad
+AS DATEDIFF(YEAR,
+Campo
+fecha_Nacimiento,
+edad.
+GETDATE())
+id_telefono
+INT
+Identificador de telefono.
+id_usuario
+INT
+Identificador de usuario.
+telefono
+CHAR(10)
+Campo telefono.
+
+
+--- PAGE 41 ---
+usuarios.TELEFONO
+REFERENCES
+usuarios
+Campo REFERENCES.
+movilidad.METODO_PAGO id_metodo_Pago INT
+Identificador de metodo Pago.
+movilidad.METODO_PAGO fecha_exp
+DATE
+Campo fecha exp.
+movilidad.METODO_PAGO fecha_inicio
+DATE
+Campo fecha inicio.
+movilidad.METODO_PAGO tipo_pago
+CHAR(1)
+Campo tipo pago.
+movilidad.TIPO_MEMBRESIA id_tipo_membresiaINT
+Identificador de tipo membresia.
+movilidad.TIPO_MEMBRESIA tipo_membresia CHAR(1)
+Campo tipo membresia.
+movilidad.TIPO_MEMBRESIA descripcion
+VARCHAR(15) Campo descripcion.
+movilidad.TIPO_MEMBRESIA duracion_dias
+NUMERIC(4,0) Campo duracion dias.
+movilidad.TIPO_MEMBRESIA tipo_Seguro
+CHAR(1)
+Campo tipo Seguro.
+movilidad.TIPO_MEMBRESIA tiempo_excedente DECIMAL(18,0) Campo tiempo excedente.
+movilidad.TIPO_MEMBRESIA costo_base
+DECIMAL(10,2) Campo costo base.
+movilidad.TIPO_MEMBRESIA tarifa_excedente DECIMAL(10,2) Campo tarifa excedente.
+movilidad.TIPO_MEMBRESIA tipo_beneficio
+CHAR(1)
+Campo tipo beneficio.
+movilidad.SUSCRIPCION
+id_suscripcion
+INT
+Identificador de suscripcion.
+movilidad.SUSCRIPCION
+estado
+CHAR(1)
+Campo estado.
+movilidad.SUSCRIPCION
+fecha_fin
+DATE
+Campo fecha fin.
+movilidad.SUSCRIPCION
+fecha_inicio
+DATE
+Campo fecha inicio.
+movilidad.SUSCRIPCION
+id_usuario
+INT
+Identificador de usuario.
+movilidad.SUSCRIPCION
+id_metodo_pago INT
+Identificador de metodo pago.
+movilidad.SUSCRIPCION
+id_tipo_membresiaINT
+Identificador de tipo membresia.
+movilidad.SUSCRIPCION
+REFERENCES
+usuarios
+Campo REFERENCES.
+movilidad.SUSCRIPCION
+REFERENCES
+movilidad
+Campo REFERENCES.
+movilidad.SUSCRIPCION
+REFERENCES
+movilidad
+Campo REFERENCES.
+movilidad.TARJETA_MOVILIDAD
+id_tarjeta_movilidad
+INT
+Identificador de tarjeta movilidad.
+movilidad.TARJETA_MOVILIDAD
+id_tarjeta_reposicion
+INT
+Identificador de tarjeta reposicion.
+movilidad.TARJETA_MOVILIDAD
+id_usuario
+INT
+Identificador de usuario.
+movilidad.TARJETA_MOVILIDAD
+fecha_baja
+DATE
+Campo fecha baja.
+movilidad.TARJETA_MOVILIDAD
+saldo
+DECIMAL(10,2) Campo saldo.
+movilidad.TARJETA_MOVILIDAD
+codigo_QR
+VARBINARY(100)Campo codigo QR.
+movilidad.TARJETA_MOVILIDAD
+fecha_emision
+DATE
+Campo fecha emision.
+movilidad.TARJETA_MOVILIDAD
+activa
+BIT
+Campo activa.
+movilidad.TARJETA_MOVILIDAD
+tipo_emision
+VARCHAR(20) Campo tipo emision.
+movilidad.TARJETA_MOVILIDAD
+REFERENCES
+usuarios
+Campo REFERENCES.
+movilidad.TARJETA_MOVILIDAD
+REFERENCES
+movilidad
+Campo REFERENCES.
+movilidad.ESTACION
+id_estacion
+INT
+Identificador de estacion.
+movilidad.ESTACION
+terminales_disponibles
+INT
+Campo terminales disponibles.
+movilidad.ESTACION
+terminales_totales INT
+Campo terminales totales.
+movilidad.ESTACION
+nombre_estacion VARCHAR(20) Campo nombre estacion.
+movilidad.ESTACION
+id_empleado
+INT
+Identificador de empleado.
+movilidad.ESTACION
+REFERENCES
+personal
+Campo REFERENCES.
+movilidad.ESTACION
+AND
+terminales
+Campo AND.
+movilidad.ESTACION
+AND
+terminales
+Campo AND.
+movilidad.BICICLETA
+id_bicicleta
+INT
+Identificador de bicicleta.
+
+
+--- PAGE 42 ---
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.BICICLETA
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+movilidad.VIAJE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.INCIDENTE
+incidentes.ENCUESTA
+incidentes.ENCUESTA
+incidentes.ENCUESTA
+incidentes.ENCUESTA
+incidentes.ENCUESTA
+
+modelo
+CHAR(1)
+Campo modelo.
+num_serie
+NUMERIC(10,0) Campo num serie.
+id_estado_bici
+INT
+Identificador de estado bici.
+id_estacion
+INT
+Identificador de estacion.
+id_bicicleta_color TINYINT
+Identificador de bicicleta color.
+REFERENCES
+catalogo
+Campo REFERENCES.
+REFERENCES
+movilidad
+Campo REFERENCES.
+REFERENCES
+catalogo
+Campo REFERENCES.
+id_viaje
+INT
+Identificador de viaje.
+costo
+DECIMAL(10,2) Campo costo.
+fecha
+DATE
+Campo fecha.
+ruta
+VARCHAR(60) Campo ruta.
+hora_inicio
+DATETIME
+Campo hora inicio.
+hora_fin
+DATETIME
+Campo hora fin.
+duracion
+AS DATEDIFF(MINUTE,
+Campohora_inicio,
+duracion. hora_fin)
+num_referencia VARCHAR(20) Campo num referencia.
+id_bicicleta
+INT
+Identificador de bicicleta.
+id_estacion_inicio INT
+Identificador de estacion inicio.
+id_estacion_fin
+INT
+Identificador de estacion fin.
+id_tarjeta_movilidad
+INT
+Identificador de tarjeta movilidad.
+REFERENCES
+movilidad
+Campo REFERENCES.
+REFERENCES
+movilidad
+Campo REFERENCES.
+REFERENCES
+movilidad
+Campo REFERENCES.
+REFERENCES
+movilidad
+Campo REFERENCES.
+id_incidente
+INT
+Identificador de incidente.
+calle
+VARCHAR(30) Campo calle.
+numero
+NUMERIC(4,0) Campo numero.
+codigo_postal
+NUMERIC(5,0) Campo codigo postal.
+fecha
+DATE
+Campo fecha.
+latitud
+VARCHAR(20) Campo latitud.
+longitud
+VARCHAR(20) Campo longitud.
+id_viaje
+INT
+Identificador de viaje.
+id_tipo_incidente INT
+Identificador de tipo incidente.
+id_empleado
+INT
+Identificador de empleado.
+id_colonia
+INT
+Identificador de colonia.
+REFERENCES
+movilidad
+Campo REFERENCES.
+REFERENCES
+catalogo
+Campo REFERENCES.
+REFERENCES
+personal
+Campo REFERENCES.
+REFERENCES
+personal
+Campo REFERENCES.
+id_encuesta
+INT
+Identificador de encuesta.
+id_incidente
+INT
+Identificador de incidente.
+puntuacion
+NUMERIC(2,0) Campo puntuacion.
+fecha
+DATE
+Campo fecha.
+comentario
+VARCHAR(120) Campo comentario.
+
+
+--- PAGE 43 ---
+incidentes.ENCUESTA
+reportes.TEMPORADA
+reportes.TEMPORADA
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+reportes.REPORTE
+
+REFERENCES
+incidentes
+id_temporada
+INT
+nombre_temp
+VARCHAR(15)
+id_reporte
+INT
+fecha
+DATE
+descripcion
+VARCHAR(90)
+bandera_incidente BIT
+numero_incidentesNUMERIC(2,0)
+id_empleado
+INT
+id_temporada
+INT
+REFERENCES
+personal
+REFERENCES
+reportes
+
+Campo REFERENCES.
+Identificador de temporada.
+Campo nombre temp.
+Identificador de reporte.
+Campo fecha.
+Campo descripcion.
+Campo bandera incidente.
+Campo numero incidentes.
+Identificador de empleado.
+Identificador de temporada.
+Campo REFERENCES.
+Campo REFERENCES.
+
+
+--- PAGE 44 ---
+15.2.
+
+Anexo B. Script de Seguridad
+
+seguridad.sql
+
+15.3.
+
+Anexo C. Script de Creación de la Base de Datos
+
+creaBase.sql
+
+15.4.
+
+Anexo D. Script de Objetos Programados
+
+dml.sql
+
+15.5.
+
+Anexo E. Script de Carga Inicial
+
+cargaInicial.sql
+
+15.6.
+
+Anexo F. Script de Informes y Estadísticas
+
+informes.sql
+
+43
+
+

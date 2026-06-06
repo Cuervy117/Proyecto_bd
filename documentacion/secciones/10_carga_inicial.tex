@@ -1,0 +1,23 @@
+\section{Carga Inicial}
+
+Con el objetivo de validar el correcto funcionamiento de la base de datos y de los diferentes procesos implementados, se realizó una carga inicial de información representativa del sistema ECOBICI. Los datos cargados permiten probar la integridad de las relaciones, las restricciones definidas y las consultas estadísticas requeridas para el proyecto.
+
+La carga inicial fue implementada mediante el archivo \texttt{cargaInicial.sql}, el cual contiene los registros necesarios para poblar las tablas principales de la base de datos.
+
+Entre los datos cargados se encuentran:
+\begin{itemize}
+	\item Catálogos generales utilizados por los distintos módulos del sistema, tales como alcaldías, estados civiles, idiomas, especialidades, estados de bicicletas, colores de bicicletas, tipos de incidentes y motivos de faltas.
+	\item Usuarios registrados dentro de la plataforma junto con su información personal y medios de contacto.
+	\item Métodos de pago, membresías, suscripciones y tarjetas de movilidad asociadas a los usuarios.
+	\item Estaciones ECOBICI distribuidas en diferentes ubicaciones de la ciudad.
+	\item Bicicletas registradas dentro del inventario general del sistema, incluyendo su estado operativo, color y tamaño.
+	\item Viajes realizados por los usuarios entre distintas estaciones, permitiendo generar históricos de recorridos y estadísticas de uso.
+	\item Empleados pertenecientes a las diferentes áreas operativas y administrativas de la organización.
+	\item Agentes encargados de la atención de incidentes y personal responsable de realizar rondines.
+	\item Incidentes reportados por los usuarios durante los viajes y las encuestas asociadas a la atención brindada.
+	\item Reportes operativos generados por el personal encargado de los rondines.
+\end{itemize}
+
+La información cargada fue diseñada para cubrir los distintos escenarios contemplados en los requerimientos del proyecto, permitiendo ejecutar correctamente los procedimientos almacenados, funciones, vistas, triggers e informes estadísticos desarrollados para la base de datos.
+
+Asimismo, la carga inicial facilita la validación de las relaciones entre tablas y el comportamiento de las restricciones de integridad implementadas durante el diseño físico del sistema.

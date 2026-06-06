@@ -1,0 +1,29 @@
+\section{Normalización}
+
+Durante la etapa de diseño de la base de datos se aplicaron desde el inicio los principios de normalización vistos en el curso, por lo que el modelo fue construido directamente considerando las reglas necesarias para cumplir con la Tercera Forma Normal (3FN). Debido a este enfoque, no fue necesario realizar un proceso posterior de descomposición de tablas, ya que las entidades y relaciones fueron definidas desde el principio evitando redundancias y dependencias innecesarias.
+
+\subsection{Primera Forma Normal (1FN)}
+
+La Primera Forma Normal establece que todos los atributos deben contener valores atómicos y que no deben existir grupos repetitivos dentro de una misma tabla. Durante el diseño de la base de datos se procuró que cada atributo almacenara únicamente un valor indivisible y que cada registro pudiera identificarse de manera única mediante una clave primaria.
+
+Por ejemplo, la información correspondiente a teléfonos de usuarios se almacenó en una tabla independiente, permitiendo registrar múltiples números telefónicos para un mismo usuario sin generar grupos repetitivos dentro de la tabla principal de usuarios.
+
+De esta manera, todas las tablas cumplen con los requisitos establecidos por la Primera Forma Normal.
+
+\subsection{Segunda Forma Normal (2FN)}
+
+La Segunda Forma Normal establece que todos los atributos no clave deben depender completamente de la clave primaria de la tabla. Durante el diseño se identificaron adecuadamente las entidades principales y se separó la información en tablas especializadas para evitar dependencias parciales.
+
+Cada tabla fue diseñada para representar una única entidad o concepto del sistema, garantizando que todos sus atributos describieran exclusivamente a la clave primaria correspondiente. Esto permitió evitar redundancias y mantener una estructura consistente para el almacenamiento de la información.
+
+Por lo anterior, el modelo cumple con los requisitos de la Segunda Forma Normal.
+
+\subsection{Tercera Forma Normal (3FN)}
+
+La Tercera Forma Normal establece que no deben existir dependencias transitivas entre atributos que no forman parte de la clave primaria. Para cumplir este criterio, la información descriptiva y los valores reutilizables fueron separados en entidades independientes.
+
+Durante las etapas finales del proyecto se incorporaron diversos catálogos para representar información de referencia utilizada por múltiples tablas. Entre ellos se encuentran los catálogos de alcaldías, estados civiles, idiomas, especialidades, motivos de faltas, estados de bicicletas, colores de bicicletas y tipos de incidentes.
+
+La utilización de estos catálogos permitió centralizar la información, reducir la redundancia de datos y fortalecer la integridad referencial mediante el uso de llaves foráneas. Como resultado, la base de datos mantiene una estructura organizada, flexible y consistente.
+
+Por las características descritas anteriormente, se concluye que el modelo relacional desarrollado para ECOBICI cumple con los principios de la Tercera Forma Normal (3FN), garantizando una adecuada organización de los datos y minimizando problemas de actualización, inserción y eliminación.

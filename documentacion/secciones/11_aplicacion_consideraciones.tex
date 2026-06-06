@@ -1,0 +1,140 @@
+\section{Aplicación de Consideraciones}
+
+Durante el desarrollo de la base de datos ECOBICI se aplicaron las consideraciones técnicas solicitadas en los requerimientos del proyecto. Estas consideraciones permitieron garantizar la integridad, consistencia, seguridad y rendimiento de la información almacenada.
+
+\subsection{Lineamientos de Nomenclatura}
+
+Con el propósito de mantener uniformidad en el desarrollo de la base de datos, se utilizaron convenciones de nomenclatura para los diferentes objetos implementados:
+\begin{itemize}
+	\item \texttt{pk\_}: Llaves primarias.
+	\item \texttt{fk\_}: Llaves foráneas.
+	\item \texttt{ck\_}: Restricciones CHECK.
+	\item \texttt{u\_}: Restricciones UNIQUE.
+	\item \texttt{idx\_}: Índices.
+	\item \texttt{trg\_}: Disparadores (Triggers).
+	\item \texttt{sp\_}: Procedimientos almacenados.
+	\item \texttt{fn\_}: Funciones.
+	\item \texttt{vw\_}: Vistas.
+\end{itemize}
+
+\subsection{Restricciones CHECK}
+
+Se implementaron restricciones CHECK para validar los valores permitidos en distintos atributos del sistema, asegurando la integridad del dominio:
+\begin{itemize}
+	\item Validación de códigos para los estados de las bicicletas (e.g. \texttt{F}, \texttt{D}, \texttt{B}).
+	\item Validación de los tipos de empleado permitidos (e.g. \texttt{a}, \texttt{r}, \texttt{d}, \texttt{m}).
+	\item Validación del género de los empleados y usuarios (\texttt{M} o \texttt{F}).
+	\item Validación de sueldos mayores a cero.
+	\item Validación de puntuación de encuestas (rango de 1 a 10).
+\end{itemize}
+
+\subsection{Restricciones UNIQUE}
+
+Se utilizaron restricciones UNIQUE para evitar la duplicidad de información crítica no clave primaria dentro de las tablas:
+\begin{itemize}
+	\item RFC y teléfono de los empleados.
+	\item Correo electrónico e INE de los usuarios.
+	\item Código de estado de bicicleta y de estado civil.
+	\item Número de serie de la bicicleta.
+\end{itemize}
+
+\subsection{Restricciones DEFAULT}
+
+Se implementaron valores predeterminados para simplificar el registro de información y garantizar la consistencia de ciertos atributos cuando no se proporciona un valor explícito:
+\begin{itemize}
+	\item Saldo inicial de la tarjeta de movilidad igual a 0 (\texttt{saldo DECIMAL(10,2) NOT NULL DEFAULT 0}).
+	\item Fecha de emisión de tarjeta de movilidad igual a la fecha del sistema (\texttt{DEFAULT GETDATE()}).
+	\item Fecha de encuesta de satisfacción igual a la fecha del sistema.
+	\item Banderas y contadores de incidentes en reportes con valor predeterminado de 0.
+\end{itemize}
+
+\subsection{Llaves Artificiales}
+
+La mayoría de las entidades utilizan identificadores numéricos (\texttt{id\_*}) como llaves primarias, facilitando la administración de relaciones y mejorando el rendimiento de las consultas y las operaciones de unión (JOIN).
+
+\subsection{Llaves Naturales}
+
+Se utilizaron llaves naturales complementarias cuando los atributos poseían significado y valor de identificación propio y único dentro del negocio:
+\begin{itemize}
+	\item RFC para los empleados.
+	\item Código INE para los usuarios.
+	\item Número de serie para las bicicletas.
+\end{itemize}
+
+\subsection{Columna Calculada}
+
+Se implementó una columna calculada dentro de las tablas principales para simplificar el cálculo en consultas en tiempo real:
+\begin{itemize}
+	\item Campo \texttt{edad} en la tabla \texttt{personal.empleado} y \texttt{usuarios.usuario} calculada a partir de su fecha de nacimiento: \texttt{edad AS DATEDIFF(YEAR, fecha\_nacimiento, GETDATE())}.
+	\item Campo \texttt{duracion} en la tabla \texttt{movilidad.viaje} calculada en minutos como la diferencia entre la hora de inicio y fin: \texttt{duracion AS DATEDIFF(MINUTE, hora\_inicio, hora\_fin)}.
+\end{itemize}
+
+\subsection{Índices}
+
+Se implementaron índices no agrupados (\textit{Non-Clustered Indexes}) para optimizar el desempeño de las consultas más frecuentes realizadas sobre la base de datos:
+\begin{itemize}
+	\item \texttt{idx\_viaje\_fecha} sobre \texttt{movilidad.viaje(fecha)}.
+	\item \texttt{idx\_incidente\_fecha} sobre \texttt{incidentes.incidente(fecha)}.
+	\item \texttt{idx\_suscripcion\_usuario} sobre \texttt{movilidad.suscripcion(id\_usuario)}.
+	\item \texttt{idx\_usuario\_nombre} sobre \texttt{usuarios.usuario(nombre, ap\_paterno)}.
+	\item \texttt{idx\_empleado\_rfc} sobre \texttt{personal.empleado(RFC)}.
+\end{itemize}
+
+\subsection{Integridad Referencial}
+
+La integridad referencial se garantizó mediante la adecuada declaración de llaves foráneas en todo el modelo relacional, asegurando que no existan registros huérfanos y que las relaciones correspondan estrictamente a lo establecido en las reglas de negocio.
+
+\subsection{Borrado en Cascada}
+
+Se implementó la cláusula \texttt{ON DELETE CASCADE} en las relaciones de las tablas secundarias que dependen directamente de una entidad principal. Esto permite eliminar automáticamente los registros relacionados cuando una entidad principal es eliminada del sistema, evitando la existencia de registros huérfanos. Las tablas dependientes del borrado de empleados y usuarios son:
+\begin{itemize}
+	\item \texttt{personal.administracion}
+	\item \texttt{personal.agente}
+	\item \texttt{personal.rondin}
+	\item \texttt{personal.mantenimiento}
+	\item \texttt{personal.domicilio}
+	\item \texttt{personal.idiomas}
+	\item \texttt{personal.falta}
+	\item \texttt{usuarios.telefono}
+	\item \texttt{movilidad.suscripcion}
+	\item \texttt{movilidad.tarjeta\_movilidad}
+	\item \texttt{movilidad.viaje}
+\end{itemize}
+
+\subsection{Procedimientos Almacenados}
+
+Se desarrollaron procedimientos almacenados transaccionales (con bloqueos \texttt{TRY...CATCH} y transacciones \texttt{BEGIN TRAN / COMMIT / ROLLBACK}) para realizar operaciones de inserción, actualización, eliminación y generación de información estadística requerida por el sistema de manera consistente.
+
+\subsection{Funciones}
+
+Se implementaron funciones para encapsular lógica reutilizable y facilitar cálculos utilizados por distintos componentes de la base de datos, como la edad (\texttt{fn\_calcular\_edad}), meses de membresía (\texttt{fn\_meses\_membresia}) o tarifa excedente de viajes (\texttt{fn\_calcular\_tarifa\_excedente}).
+
+\subsection{Vistas}
+
+Se desarrollaron vistas para simplificar consultas complejas y facilitar el acceso a información consolidada:
+\begin{itemize}
+	\item \texttt{movilidad.vw\_viaje\_tarifa\_adicional}: Resuelve el cálculo de cargos excedentes por viaje en base a la membresía.
+	\item \texttt{usuarios.vw\_usuarios\_planes\_activos}: Consolida la información de usuarios que poseen suscripciones activas.
+	\item \texttt{incidentes.vw\_resumen\_incidentes}: Genera el listado y detalle de los reportes viales y mecánicos atendidos.
+\end{itemize}
+
+\subsection{Triggers}
+
+Se implementaron triggers para automatizar procesos de validación y actualización de información ante eventos de inserción, modificación o eliminación de datos:
+\begin{itemize}
+	\item \texttt{trg\_viaje\_actualiza\_ubicacion\_bicicleta}: Actualiza la estación final en la tabla de bicicletas cuando finaliza un viaje.
+	\item \texttt{trg\_metodo\_pago\_cancela\_suscripcion}: Cancela la suscripción activa si se elimina su método de pago único.
+	\item \texttt{trg\_incidente\_marca\_bicicleta}: Marca automáticamente una bicicleta como dañada si se reporta un incidente mecánico grave.
+	\item \texttt{trg\_viaje\_valida\_bicicleta\_operativa}: Evita el préstamo de bicicletas en estado de mantenimiento o dadas de baja.
+	\item \texttt{trg\_tarjeta\_desactiva\_por\_reposicion}: Desactiva y da de baja la tarjeta anterior al emitir una reposición.
+\end{itemize}
+
+\subsection{Consultas Avanzadas}
+
+Los informes estadísticos utilizan diferentes técnicas de consulta avanzadas:
+\begin{itemize}
+	\item Cláusulas de unión \texttt{INNER JOIN} y \texttt{LEFT JOIN}.
+	\item Funciones de agregación como \texttt{COUNT}, \texttt{SUM} y \texttt{AVG}.
+	\item Estructuras condicionales \texttt{CASE} y subconsultas complejas.
+	\item Agrupamiento mediante \texttt{GROUP BY} y filtros post-agregación mediante \texttt{HAVING}.
+\end{itemize}

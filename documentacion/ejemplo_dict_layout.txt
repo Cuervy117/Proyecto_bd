@@ -1,0 +1,224 @@
+15.     Anexos
+    Los siguientes documentos complementan la información presentada en
+esta documentación y contienen los elementos desarrollados durante la im-
+plementación del proyecto.
+
+15.1.    Anexo A. Diccionario de Datos
+
+
+
+
+                                   37
+            Tabla              Campo         Tipo de dato            Descripción
+catalogo.ALCALDIA        id_alcaldia        INT           Identificador de alcaldia.
+catalogo.ALCALDIA        alcaldia           VARCHAR(22) Campo alcaldia.
+catalogo.BICICLETA_COLOR id_bicicleta_Color TINYINT       Identificador de bicicleta Color.
+catalogo.BICICLETA_COLOR color              VARCHAR(18) Campo color.
+catalogo.ESTADO_BICI     id_estado_bici     INT           Identificador de estado bici.
+catalogo.ESTADO_BICI     codigo             CHAR(1)       Campo codigo.
+catalogo.ESTADO_BICI     descripcion        VARCHAR(20) Campo descripcion.
+catalogo.ESTADO_CIVIL    id_estado_civil    INT           Identificador de estado civil.
+catalogo.ESTADO_CIVIL    codigo             CHAR(1)       Campo codigo.
+catalogo.ESTADO_CIVIL    estado_civil       VARCHAR(15) Campo estado civil.
+catalogo.ESTADO_CIVIL    vigente            BIT           Campo vigente.
+catalogo.CATALOGO_IDIOMASid_idioma          INT           Identificador de idioma.
+catalogo.CATALOGO_IDIOMASnombre_idioma VARCHAR(30) Campo nombre idioma.
+catalogo.ESPECIALIDAD    id_especialidad    INT           Identificador de especialidad.
+catalogo.ESPECIALIDAD    especialidad       VARCHAR(25) Campo especialidad.
+catalogo.MOTIVO          id_motivo          INT           Identificador de motivo.
+catalogo.MOTIVO          motivo_falta       VARCHAR(30) Campo motivo falta.
+catalogo.TIPO_INCIDENTE  id_tipo_incidente INT            Identificador de tipo incidente.
+catalogo.TIPO_INCIDENTE  nombre_incidente VARCHAR(30) Campo nombre incidente.
+catalogo.TIPO_INCIDENTE  descripcion        VARCHAR(80) Campo descripcion.
+personal.EMPLEADO        id_empleado        INT           Identificador de empleado.
+personal.EMPLEADO        tipo_empleado      VARCHAR(2)    Campo tipo empleado.
+personal.EMPLEADO        genero             CHAR(1)       Campo genero.
+personal.EMPLEADO        edad               AS DATEDIFF(YEAR,
+                                                          Campo
+                                                              fecha_nacimiento,
+                                                                  edad.           GETDATE())
+personal.EMPLEADO        sueldo             DECIMAL(12,2) Campo sueldo.
+personal.EMPLEADO        fecha_nacimiento DATE            Campo fecha nacimiento.
+personal.EMPLEADO        telefono           NUMERIC(10,0) Campo telefono.
+personal.EMPLEADO        RFC                CHAR(13)      Campo RFC.
+personal.EMPLEADO        nombre_pila        VARCHAR(30) Campo nombre pila.
+personal.EMPLEADO        ap_paterno         VARCHAR(30) Campo ap paterno.
+personal.EMPLEADO        ap_materno         VARCHAR(30) Campo ap materno.
+personal.EMPLEADO        id_estado_civil    INT           Identificador de estado civil.
+personal.EMPLEADO        REFERENCES         catalogo      Campo REFERENCES.
+personal.ADMINISTRACION id_empleado         INT           Identificador de empleado.
+personal.ADMINISTRACION profesion           VARCHAR(30) Campo profesion.
+personal.ADMINISTRACION ubicacion_trabajo VARCHAR(40) Campo ubicacion trabajo.
+personal.ADMINISTRACION REFERENCES          personal      Campo REFERENCES.
+personal.AGENTE          id_empleado        INT           Identificador de empleado.
+personal.AGENTE          zona_asignada      VARCHAR(30) Campo zona asignada.
+personal.AGENTE          vehiculo_asignado VARCHAR(20) Campo vehiculo asignado.
+personal.AGENTE          REFERENCES         personal      Campo REFERENCES.
+personal.RONDIN          id_empleado        INT           Identificador de empleado.
+personal.RONDIN          id_empleado_supervisor
+                                            INT           Identificador de empleado supervisor.
+personal.RONDIN          REFERENCES       personal      Campo REFERENCES.
+personal.RONDIN          REFERENCES       personal      Campo REFERENCES.
+personal.MANTENIMIENTO   id_empleado      INT           Identificador de empleado.
+personal.MANTENIMIENTO   id_especialidad  INT           Identificador de especialidad.
+personal.MANTENIMIENTO   REFERENCES       personal      Campo REFERENCES.
+personal.MANTENIMIENTO   REFERENCES       catalogo      Campo REFERENCES.
+personal.COLONIA         id_colonia       INT           Identificador de colonia.
+personal.COLONIA         colonia          VARCHAR(20) Campo colonia.
+personal.COLONIA         id_alcaldia      INT           Identificador de alcaldia.
+personal.COLONIA         REFERENCES       catalogo      Campo REFERENCES.
+personal.DOMICILIO       id_empleado      INT           Identificador de empleado.
+personal.DOMICILIO       id_domicilio     INT           Identificador de domicilio.
+personal.DOMICILIO       numero_ext       NUMERIC(3,0) Campo numero ext.
+personal.DOMICILIO       numero_int       NUMERIC(3,0) Campo numero int.
+personal.DOMICILIO       calle            VARCHAR(30) Campo calle.
+personal.DOMICILIO       id_colonia       INT           Identificador de colonia.
+personal.DOMICILIO       REFERENCES       personal      Campo REFERENCES.
+personal.DOMICILIO       REFERENCES       personal      Campo REFERENCES.
+personal.IDIOMAS         id_empleado      INT           Identificador de empleado.
+personal.IDIOMAS         id_idioma        INT           Identificador de idioma.
+personal.IDIOMAS         REFERENCES       personal      Campo REFERENCES.
+personal.IDIOMAS         REFERENCES       catalogo      Campo REFERENCES.
+personal.FALTA           id_empleado      INT           Identificador de empleado.
+personal.FALTA           id_falta         SMALLINT      Identificador de falta.
+personal.FALTA           fecha            DATE          Campo fecha.
+personal.FALTA           id_motivo        INT           Identificador de motivo.
+personal.FALTA           REFERENCES       personal      Campo REFERENCES.
+personal.FALTA           REFERENCES       catalogo      Campo REFERENCES.
+personal.FUNCIONES       id_funciones     INT           Identificador de funciones.
+personal.FUNCIONES       id_empleado      INT           Identificador de empleado.
+personal.FUNCIONES       nombre_funcion VARCHAR(30) Campo nombre funcion.
+personal.FUNCIONES       REFERENCES       personal      Campo REFERENCES.
+usuarios.USUARIO         id_usuario       INT           Identificador de usuario.
+usuarios.USUARIO         correo           VARCHAR(30) Campo correo.
+usuarios.USUARIO         nombre           VARCHAR(40) Campo nombre.
+usuarios.USUARIO         ap_paterno       VARCHAR(40) Campo ap paterno.
+usuarios.USUARIO         ap_materno       VARCHAR(40) Campo ap materno.
+usuarios.USUARIO         codigo_INE       CHAR(18)      Campo codigo INE.
+usuarios.USUARIO         fecha_nacimiento DATE          Campo fecha nacimiento.
+usuarios.USUARIO         genero           CHAR(1)       Campo genero.
+usuarios.USUARIO         edad             AS DATEDIFF(YEAR,
+                                                        Campo
+                                                            fecha_Nacimiento,
+                                                                edad.           GETDATE())
+usuarios.TELEFONO        id_telefono      INT           Identificador de telefono.
+usuarios.TELEFONO        id_usuario       INT           Identificador de usuario.
+usuarios.TELEFONO        telefono         CHAR(10)      Campo telefono.
+usuarios.TELEFONO         REFERENCES         usuarios      Campo REFERENCES.
+movilidad.METODO_PAGO id_metodo_Pago INT                   Identificador de metodo Pago.
+movilidad.METODO_PAGO fecha_exp              DATE          Campo fecha exp.
+movilidad.METODO_PAGO fecha_inicio           DATE          Campo fecha inicio.
+movilidad.METODO_PAGO tipo_pago              CHAR(1)       Campo tipo pago.
+movilidad.TIPO_MEMBRESIA id_tipo_membresiaINT              Identificador de tipo membresia.
+movilidad.TIPO_MEMBRESIA tipo_membresia CHAR(1)            Campo tipo membresia.
+movilidad.TIPO_MEMBRESIA descripcion         VARCHAR(15) Campo descripcion.
+movilidad.TIPO_MEMBRESIA duracion_dias       NUMERIC(4,0) Campo duracion dias.
+movilidad.TIPO_MEMBRESIA tipo_Seguro         CHAR(1)       Campo tipo Seguro.
+movilidad.TIPO_MEMBRESIA tiempo_excedente DECIMAL(18,0) Campo tiempo excedente.
+movilidad.TIPO_MEMBRESIA costo_base          DECIMAL(10,2) Campo costo base.
+movilidad.TIPO_MEMBRESIA tarifa_excedente DECIMAL(10,2) Campo tarifa excedente.
+movilidad.TIPO_MEMBRESIA tipo_beneficio      CHAR(1)       Campo tipo beneficio.
+movilidad.SUSCRIPCION     id_suscripcion     INT           Identificador de suscripcion.
+movilidad.SUSCRIPCION     estado             CHAR(1)       Campo estado.
+movilidad.SUSCRIPCION     fecha_fin          DATE          Campo fecha fin.
+movilidad.SUSCRIPCION     fecha_inicio       DATE          Campo fecha inicio.
+movilidad.SUSCRIPCION     id_usuario         INT           Identificador de usuario.
+movilidad.SUSCRIPCION     id_metodo_pago INT               Identificador de metodo pago.
+movilidad.SUSCRIPCION     id_tipo_membresiaINT             Identificador de tipo membresia.
+movilidad.SUSCRIPCION     REFERENCES         usuarios      Campo REFERENCES.
+movilidad.SUSCRIPCION     REFERENCES         movilidad     Campo REFERENCES.
+movilidad.SUSCRIPCION     REFERENCES         movilidad     Campo REFERENCES.
+movilidad.TARJETA_MOVILIDAD
+                          id_tarjeta_movilidad
+                                             INT           Identificador de tarjeta movilidad.
+movilidad.TARJETA_MOVILIDAD
+                          id_tarjeta_reposicion
+                                             INT           Identificador de tarjeta reposicion.
+movilidad.TARJETA_MOVILIDAD
+                          id_usuario         INT           Identificador de usuario.
+movilidad.TARJETA_MOVILIDAD
+                          fecha_baja         DATE          Campo fecha baja.
+movilidad.TARJETA_MOVILIDAD
+                          saldo              DECIMAL(10,2) Campo saldo.
+movilidad.TARJETA_MOVILIDAD
+                          codigo_QR          VARBINARY(100)Campo codigo QR.
+movilidad.TARJETA_MOVILIDAD
+                          fecha_emision      DATE          Campo fecha emision.
+movilidad.TARJETA_MOVILIDAD
+                          activa             BIT           Campo activa.
+movilidad.TARJETA_MOVILIDAD
+                          tipo_emision       VARCHAR(20) Campo tipo emision.
+movilidad.TARJETA_MOVILIDAD
+                          REFERENCES         usuarios      Campo REFERENCES.
+movilidad.TARJETA_MOVILIDAD
+                          REFERENCES         movilidad     Campo REFERENCES.
+movilidad.ESTACION        id_estacion        INT           Identificador de estacion.
+movilidad.ESTACION        terminales_disponibles
+                                             INT           Campo terminales disponibles.
+movilidad.ESTACION        terminales_totales INT           Campo terminales totales.
+movilidad.ESTACION        nombre_estacion VARCHAR(20) Campo nombre estacion.
+movilidad.ESTACION        id_empleado        INT           Identificador de empleado.
+movilidad.ESTACION        REFERENCES         personal      Campo REFERENCES.
+movilidad.ESTACION        AND                terminales    Campo AND.
+movilidad.ESTACION        AND                terminales    Campo AND.
+movilidad.BICICLETA       id_bicicleta       INT           Identificador de bicicleta.
+movilidad.BICICLETA    modelo             CHAR(1)       Campo modelo.
+movilidad.BICICLETA    num_serie          NUMERIC(10,0) Campo num serie.
+movilidad.BICICLETA    id_estado_bici     INT           Identificador de estado bici.
+movilidad.BICICLETA    id_estacion        INT           Identificador de estacion.
+movilidad.BICICLETA    id_bicicleta_color TINYINT       Identificador de bicicleta color.
+movilidad.BICICLETA    REFERENCES         catalogo      Campo REFERENCES.
+movilidad.BICICLETA    REFERENCES         movilidad     Campo REFERENCES.
+movilidad.BICICLETA    REFERENCES         catalogo      Campo REFERENCES.
+movilidad.VIAJE        id_viaje           INT           Identificador de viaje.
+movilidad.VIAJE        costo              DECIMAL(10,2) Campo costo.
+movilidad.VIAJE        fecha              DATE          Campo fecha.
+movilidad.VIAJE        ruta               VARCHAR(60) Campo ruta.
+movilidad.VIAJE        hora_inicio        DATETIME      Campo hora inicio.
+movilidad.VIAJE        hora_fin           DATETIME      Campo hora fin.
+movilidad.VIAJE        duracion           AS DATEDIFF(MINUTE,
+                                                        Campohora_inicio,
+                                                                duracion. hora_fin)
+movilidad.VIAJE        num_referencia VARCHAR(20) Campo num referencia.
+movilidad.VIAJE        id_bicicleta       INT           Identificador de bicicleta.
+movilidad.VIAJE        id_estacion_inicio INT           Identificador de estacion inicio.
+movilidad.VIAJE        id_estacion_fin    INT           Identificador de estacion fin.
+movilidad.VIAJE        id_tarjeta_movilidad
+                                          INT           Identificador de tarjeta movilidad.
+movilidad.VIAJE        REFERENCES         movilidad     Campo REFERENCES.
+movilidad.VIAJE        REFERENCES         movilidad     Campo REFERENCES.
+movilidad.VIAJE        REFERENCES         movilidad     Campo REFERENCES.
+movilidad.VIAJE        REFERENCES         movilidad     Campo REFERENCES.
+incidentes.INCIDENTE   id_incidente       INT           Identificador de incidente.
+incidentes.INCIDENTE   calle              VARCHAR(30) Campo calle.
+incidentes.INCIDENTE   numero             NUMERIC(4,0) Campo numero.
+incidentes.INCIDENTE   codigo_postal      NUMERIC(5,0) Campo codigo postal.
+incidentes.INCIDENTE   fecha              DATE          Campo fecha.
+incidentes.INCIDENTE   latitud            VARCHAR(20) Campo latitud.
+incidentes.INCIDENTE   longitud           VARCHAR(20) Campo longitud.
+incidentes.INCIDENTE   id_viaje           INT           Identificador de viaje.
+incidentes.INCIDENTE   id_tipo_incidente INT            Identificador de tipo incidente.
+incidentes.INCIDENTE   id_empleado        INT           Identificador de empleado.
+incidentes.INCIDENTE   id_colonia         INT           Identificador de colonia.
+incidentes.INCIDENTE   REFERENCES         movilidad     Campo REFERENCES.
+incidentes.INCIDENTE   REFERENCES         catalogo      Campo REFERENCES.
+incidentes.INCIDENTE   REFERENCES         personal      Campo REFERENCES.
+incidentes.INCIDENTE   REFERENCES         personal      Campo REFERENCES.
+incidentes.ENCUESTA    id_encuesta        INT           Identificador de encuesta.
+incidentes.ENCUESTA    id_incidente       INT           Identificador de incidente.
+incidentes.ENCUESTA    puntuacion         NUMERIC(2,0) Campo puntuacion.
+incidentes.ENCUESTA    fecha              DATE          Campo fecha.
+incidentes.ENCUESTA    comentario         VARCHAR(120) Campo comentario.
+incidentes.ENCUESTA   REFERENCES        incidentes    Campo REFERENCES.
+reportes.TEMPORADA    id_temporada      INT           Identificador de temporada.
+reportes.TEMPORADA    nombre_temp       VARCHAR(15)   Campo nombre temp.
+reportes.REPORTE      id_reporte        INT           Identificador de reporte.
+reportes.REPORTE      fecha             DATE          Campo fecha.
+reportes.REPORTE      descripcion       VARCHAR(90)   Campo descripcion.
+reportes.REPORTE      bandera_incidente BIT           Campo bandera incidente.
+reportes.REPORTE      numero_incidentesNUMERIC(2,0)   Campo numero incidentes.
+reportes.REPORTE      id_empleado       INT           Identificador de empleado.
+reportes.REPORTE      id_temporada      INT           Identificador de temporada.
+reportes.REPORTE      REFERENCES        personal      Campo REFERENCES.
+reportes.REPORTE      REFERENCES        reportes      Campo REFERENCES.
+

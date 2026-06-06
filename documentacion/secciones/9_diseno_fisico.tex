@@ -1,0 +1,43 @@
+\section{Diseño Físico de la Base de Datos}
+
+La implementación física de la base de datos ECOBICI se realizó utilizando SQL Server. Durante esta etapa se definieron los esquemas, tablas, restricciones, usuarios, permisos y objetos programados necesarios para garantizar el correcto funcionamiento del sistema.
+
+El diseño físico fue desarrollado tomando como base el modelo relacional previamente definido, incorporando mecanismos que permiten asegurar la integridad de los datos, optimizar el acceso a la información y automatizar diversos procesos operativos.
+
+\subsection{Seguridad}
+
+La seguridad de la base de datos fue implementada mediante la creación de usuarios con distintos niveles de acceso, permitiendo controlar las operaciones que cada tipo de usuario puede realizar sobre la información almacenada.
+
+Se definieron perfiles orientados a consulta, gestión y administración, con el objetivo de aplicar el principio de privilegios mínimos y garantizar la protección de los datos del sistema.
+
+La creación de usuarios, asignación de permisos y configuración de seguridad se encuentran implementadas en el archivo \texttt{seguridad.sql}.
+
+\subsection{Creación de la Base de Datos}
+
+La estructura principal de la base de datos fue implementada en el archivo \texttt{creaBase.sql}. En este script se definieron los esquemas, tablas, llaves primarias, llaves foráneas y restricciones necesarias para garantizar la integridad de la información.
+
+Para facilitar la organización de los datos, las tablas fueron agrupadas en distintos esquemas de acuerdo con su función dentro del sistema:
+\begin{itemize}
+	\item \textbf{catalogo:} Catálogos utilizados por múltiples módulos del sistema.
+	\item \textbf{usuarios:} Información de usuarios y teléfonos de contacto.
+	\item \textbf{movilidad:} Gestión de membresías, bicicletas, estaciones y viajes.
+	\item \textbf{personal:} Información de empleados y recursos humanos.
+	\item \textbf{incidentes:} Registro de incidentes y encuestas de satisfacción.
+	\item \textbf{reportes:} Información relacionada con temporadas y reportes operativos.
+\end{itemize}
+
+Asimismo, se implementaron restricciones de integridad referencial mediante llaves foráneas, restricciones de dominio mediante cláusulas CHECK, validaciones de unicidad mediante restricciones UNIQUE y valores predeterminados mediante restricciones DEFAULT.
+
+\subsection{Objetos Programados}
+
+Con el propósito de automatizar procesos y facilitar la explotación de la información, se desarrollaron diversos objetos programados dentro de la base de datos.
+
+Entre los objetos implementados se encuentran:
+\begin{itemize}
+	\item Procedimientos almacenados para operaciones de inserción, actualización y consulta (operaciones ABC, reposición de tarjetas, recargas, etc.).
+	\item Funciones (UDFs) para realizar cálculos y obtener información derivada (edad, meses de membresía, tarifas excedentes).
+	\item Vistas para simplificar consultas frecuentes (tarifa adicional de viajes, planes activos, resumen de incidentes).
+	\item Triggers para automatizar validaciones y acciones relacionadas con modificaciones de datos.
+\end{itemize}
+
+La implementación de estos componentes se encuentra contenida en el archivo \texttt{dml.sql}, permitiendo centralizar la lógica de negocio dentro de la base de datos y mejorar la consistencia de las operaciones realizadas por el sistema.

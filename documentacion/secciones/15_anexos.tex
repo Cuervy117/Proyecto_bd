@@ -1,0 +1,287 @@
+\section{Anexos}
+\label{sec:anexos}
+
+Los siguientes documentos complementan la información presentada en esta documentación y contienen los elementos desarrollados durante la implementación del proyecto.
+
+\subsection{Anexo A. Diccionario de Datos}
+\label{sec:anexo_a}
+
+El siguiente listado describe de manera detallada las tablas, campos, tipos de datos y descripciones asociadas que conforman la base de datos para la gestión del sistema ECOBICI.
+
+\begingroup
+\scriptsize
+\renewcommand{\_}{\textunderscore\allowbreak}
+\begin{longtable}{|p{3.2cm}|p{2.7cm}|p{3.0cm}|p{6.0cm}|}
+	\hline
+	\textbf{Tabla} & \textbf{Campo} & \textbf{Tipo de dato} & \textbf{Descripción} \\ \hline
+	\endfirsthead
+	\hline
+	\textbf{Tabla} & \textbf{Campo} & \textbf{Tipo de dato} & \textbf{Descripción} \\ \hline
+	\endhead
+	\hline
+	\endfoot
+	\hline
+	\endlastfoot
+	
+	% catalogo.ALCALDIA
+	\texttt{catalogo.ALCALDIA} & \texttt{id\_alcaldia} & \texttt{INT} & Identificador único de alcaldía (Llave primaria). \\ \cline{2-4}
+	& \texttt{alcaldia} & \texttt{VARCHAR(22)} & Nombre de la alcaldía. \\ \hline
+	
+	% catalogo.BICICLETA_COLOR
+	\texttt{catalogo.BICICLETA\_COLOR} & \texttt{id\_bicicleta\_color} & \texttt{TINYINT} & Identificador único de color de bicicleta (Llave primaria). \\ \cline{2-4}
+	& \texttt{color} & \texttt{VARCHAR(18)} & Descripción del color. \\ \hline
+	
+	% catalogo.ESTADO_BICI
+	\texttt{catalogo.ESTADO\_BICI} & \texttt{id\_estado\_bici} & \texttt{INT} & Identificador único de estado de bicicleta (Llave primaria). \\ \cline{2-4}
+	& \texttt{codigo} & \texttt{CHAR(1)} & Código representativo de estado (e.g. F, D, B). \\ \cline{2-4}
+	& \texttt{descripcion} & \texttt{VARCHAR(20)} & Descripción larga del estado de la bicicleta. \\ \hline
+	
+	% catalogo.ESTADO_CIVIL
+	\texttt{catalogo.ESTADO\_CIVIL} & \texttt{id\_estado\_civil} & \texttt{INT} & Identificador único de estado civil (Llave primaria). \\ \cline{2-4}
+	& \texttt{codigo} & \texttt{CHAR(1)} & Código corto del estado civil (e.g. S, C, O). \\ \cline{2-4}
+	& \texttt{estado\_civil} & \texttt{VARCHAR(15)} & Nombre descriptivo del estado civil (e.g. Concubinato). \\ \cline{2-4}
+	& \texttt{vigente} & \texttt{BIT} & Indica si el estado civil sigue activo o vigente en el catálogo. \\ \hline
+	
+	% catalogo.CATALOGO_IDIOMAS
+	\texttt{catalogo.CATALOGO\_IDIOMAS} & \texttt{id\_idioma} & \texttt{INT} & Identificador único de idioma (Llave primaria). \\ \cline{2-4}
+	& \texttt{nombre\_idioma} & \texttt{VARCHAR(30)} & Nombre del idioma (e.g. Inglés, Francés). \\ \hline
+	
+	% catalogo.ESPECIALIDAD
+	\texttt{catalogo.ESPECIALIDAD} & \texttt{id\_especialidad} & \texttt{INT} & Identificador único de especialidad (Llave primaria). \\ \cline{2-4}
+	& \texttt{especialidad} & \texttt{VARCHAR(25)} & Nombre de la especialidad del mecánico. \\ \hline
+	
+	% catalogo.MOTIVO
+	\texttt{catalogo.MOTIVO} & \texttt{id\_motivo} & \texttt{INT} & Identificador único del motivo (Llave primaria). \\ \cline{2-4}
+	& \texttt{motivo\_falta} & \texttt{VARCHAR(30)} & Causa de falta justificada o no para empleados. \\ \hline
+	
+	% catalogo.TIPO_INCIDENTE
+	\texttt{catalogo.TIPO\_INCIDENTE} & \texttt{id\_tipo\_incidente} & \texttt{INT} & Identificador único del tipo de incidente (Llave primaria). \\ \cline{2-4}
+	& \texttt{nombre\_incidente} & \texttt{VARCHAR(30)} & Nombre corto del tipo de incidente vial o mecánico. \\ \cline{2-4}
+	& \texttt{descripcion} & \texttt{VARCHAR(80)} & Descripción del incidente. \\ \hline
+	
+	% personal.EMPLEADO
+	\texttt{personal.EMPLEADO} & \texttt{id\_empleado} & \texttt{INT} & Identificador único de empleado (Llave primaria). \\ \cline{2-4}
+	& \texttt{tipo\_empleado} & \texttt{VARCHAR(2)} & Código de tipo (A = Agente, R = Rondines, D = Administrador, M = Mantenimiento). \\ \cline{2-4}
+	& \texttt{genero} & \texttt{CHAR(1)} & Género del empleado (M, F). \\ \cline{2-4}
+	& \texttt{edad} & \texttt{INT (Calculado)} & Edad del empleado calculada a partir de su fecha de nacimiento. \\ \cline{2-4}
+	& \texttt{sueldo} & \texttt{DECIMAL(12,2)} & Sueldo mensual bruto del empleado. \\ \cline{2-4}
+	& \texttt{fecha\_nacimiento} & \texttt{DATE} & Fecha de nacimiento del empleado. \\ \cline{2-4}
+	& \texttt{telefono} & \texttt{NUMERIC(10,0)} & Número telefónico personal de contacto. \\ \cline{2-4}
+	& \texttt{RFC} & \texttt{CHAR(13)} & Registro Federal de Contribuyentes único. \\ \cline{2-4}
+	& \texttt{nombre\_pila} & \texttt{VARCHAR(30)} & Nombre o nombres de pila. \\ \cline{2-4}
+	& \texttt{ap\_paterno} & \texttt{VARCHAR(30)} & Apellido paterno. \\ \cline{2-4}
+	& \texttt{ap\_materno} & \texttt{VARCHAR(30)} & Apellido materno. \\ \cline{2-4}
+	& \texttt{id\_estado\_civil} & \texttt{INT} & Relación con catálogo de estados civiles (Llave foránea). \\ \hline
+	
+	% personal.ADMINISTRACION
+	\texttt{personal.ADMINISTRACION} & \texttt{id\_empleado} & \texttt{INT} & Identificador del empleado administrativo (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{profesion} & \texttt{VARCHAR(30)} & Profesión o carrera universitaria del empleado. \\ \cline{2-4}
+	& \texttt{ubicacion\_trabajo} & \texttt{VARCHAR(40)} & Nombre del área u oficina física asignada. \\ \hline
+	
+	% personal.AGENTE
+	\texttt{personal.AGENTE} & \texttt{id\_empleado} & \texttt{INT} & Identificador del agente de incidentes (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{zona\_asignada} & \texttt{VARCHAR(30)} & Zona vial asignada para su cobertura. \\ \cline{2-4}
+	& \texttt{vehiculo\_asignado} & \texttt{VARCHAR(20)} & Placa o código del vehículo de patrullaje asignado. \\ \hline
+	
+	% personal.RONDIN
+	\texttt{personal.RONDIN} & \texttt{id\_empleado} & \texttt{INT} & Identificador del personal de rondín (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{id\_empleado\_supervisor} & \texttt{INT} & Identificador del supervisor de rondín (Llave foránea a la misma tabla). \\ \hline
+	
+	% personal.MANTENIMIENTO
+	\texttt{personal.MANTENIMIENTO} & \texttt{id\_empleado} & \texttt{INT} & Identificador del mecánico de mantenimiento (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{id\_especialidad} & \texttt{INT} & Relación con especialidad (Llave foránea). \\ \hline
+	
+	% personal.COLONIA
+	\texttt{personal.COLONIA} & \texttt{id\_colonia} & \texttt{INT} & Identificador único de la colonia (Llave primaria). \\ \cline{2-4}
+	& \texttt{colonia} & \texttt{VARCHAR(20)} & Nombre oficial de la colonia. \\ \cline{2-4}
+	& \texttt{id\_alcaldia} & \texttt{INT} & Relación con alcaldía (Llave foránea). \\ \hline
+	
+	% personal.DOMICILIO
+	\texttt{personal.DOMICILIO} & \texttt{id\_empleado} & \texttt{INT} & Identificador del empleado (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{id\_domicilio} & \texttt{INT} & Identificador único de domicilio (Llave primaria). \\ \cline{2-4}
+	& \texttt{numero\_ext} & \texttt{NUMERIC(3,0)} & Número exterior del domicilio. \\ \cline{2-4}
+	& \texttt{numero\_int} & \texttt{NUMERIC(3,0)} & Número interior (opcional). \\ \cline{2-4}
+	& \texttt{calle} & \texttt{VARCHAR(30)} & Calle de residencia. \\ \cline{2-4}
+	& \texttt{id\_colonia} & \texttt{INT} & Relación con colonia (Llave foránea). \\ \hline
+	
+	% personal.IDIOMAS
+	\texttt{personal.IDIOMAS} & \texttt{id\_empleado} & \texttt{INT} & Identificador del empleado (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{id\_idioma} & \texttt{INT} & Relación con el catálogo de idiomas (Llave primaria / foránea). \\ \hline
+	
+	% personal.FALTA
+	\texttt{personal.FALTA} & \texttt{id\_empleado} & \texttt{INT} & Identificador del empleado faltante (Llave primaria / foránea). \\ \cline{2-4}
+	& \texttt{id\_falta} & \texttt{SMALLINT} & Consecutivo de falta individual por empleado (Llave primaria). \\ \cline{2-4}
+	& \texttt{fecha} & \texttt{DATE} & Fecha del ausentismo. \\ \cline{2-4}
+	& \texttt{id\_motivo} & \texttt{INT} & Relación con motivo de falta (Llave foránea). \\ \hline
+	
+	% personal.FUNCIONES
+	\texttt{personal.FUNCIONES} & \texttt{id\_funciones} & \texttt{INT} & Identificador único de la función del empleado (Llave primaria). \\ \cline{2-4}
+	& \texttt{id\_empleado} & \texttt{INT} & Relación con el empleado asignado (Llave foránea). \\ \cline{2-4}
+	& \texttt{nombre\_funcion} & \texttt{VARCHAR(30)} & Nombre descriptivo del puesto o función. \\ \hline
+	
+	% usuarios.USUARIO
+	\texttt{usuarios.USUARIO} & \texttt{id\_usuario} & \texttt{INT} & Identificador único de usuario del sistema (Llave primaria). \\ \cline{2-4}
+	& \texttt{correo} & \texttt{VARCHAR(30)} & Correo electrónico único del usuario. \\ \cline{2-4}
+	& \texttt{nombre} & \texttt{VARCHAR(40)} & Nombre o nombres de pila. \\ \cline{2-4}
+	& \texttt{ap\_paterno} & \texttt{VARCHAR(40)} & Apellido paterno. \\ \cline{2-4}
+	& \texttt{ap\_materno} & \texttt{VARCHAR(40)} & Apellido materno. \\ \cline{2-4}
+	& \texttt{codigo\_INE} & \texttt{CHAR(18)} & Código INE oficial de identificación del usuario. \\ \cline{2-4}
+	& \texttt{fecha\_nacimiento} & \texttt{DATE} & Fecha de nacimiento del usuario. \\ \cline{2-4}
+	& \texttt{genero} & \texttt{CHAR(1)} & Género del usuario (M o F). \\ \cline{2-4}
+	& \texttt{edad} & \texttt{INT (Calculado)} & Edad del usuario calculada a partir de su fecha de nacimiento. \\ \hline
+	
+	% usuarios.TELEFONO
+	\texttt{usuarios.TELEFONO} & \texttt{id\_telefono} & \texttt{INT} & Identificador único de teléfono (Llave primaria). \\ \cline{2-4}
+	& \texttt{id\_usuario} & \texttt{INT} & Relación con usuario (Llave foránea). \\ \cline{2-4}
+	& \texttt{telefono} & \texttt{CHAR(10)} & Número de teléfono de contacto (10 dígitos). \\ \hline
+	
+	% movilidad.METODO_PAGO
+	\texttt{movilidad.METODO\_PAGO} & \texttt{id\_metodo\_pago} & \texttt{INT} & Identificador único del método de pago (Llave primaria). \\ \cline{2-4}
+	& \texttt{fecha\_exp} & \texttt{DATE} & Fecha de expiración del medio de pago electrónico (e.g. Tarjeta). \\ \cline{2-4}
+	& \texttt{fecha\_inicio} & \texttt{DATE} & Fecha de registro inicial. \\ \cline{2-4}
+	& \texttt{tipo\_pago} & \texttt{CHAR(1)} & Clave representativa del tipo de pago (e.g. C = Crédito, D = Débito). \\ \hline
+	
+	% movilidad.TIPO_MEMBRESIA
+	\texttt{movilidad.TIPO\_MEMBRESIA} & \texttt{id\_tipo\_membresia} & \texttt{INT} & Identificador de tipo de membresía (Llave primaria). \\ \cline{2-4}
+	& \texttt{tipo\_membresia} & \texttt{CHAR(1)} & Código corto del tipo de membresía (B = Básica, I = Intermedia, P = Premium). \\ \cline{2-4}
+	& \texttt{descripcion} & \texttt{VARCHAR(15)} & Nombre descriptivo del plan de membresía. \\ \cline{2-4}
+	& \texttt{duracion\_dias} & \texttt{NUMERIC(4,0)} & Cantidad de días de vigencia de la suscripción. \\ \cline{2-4}
+	& \texttt{tipo\_seguro} & \texttt{CHAR(1)} & Categoría del seguro médico/vial incluido. \\ \cline{2-4}
+	& \texttt{tiempo\_excedente} & \texttt{DECIMAL(18,0)} & Tiempo libre de viaje permitido en minutos. \\ \cline{2-4}
+	& \texttt{costo\_base} & \texttt{DECIMAL(10,2)} & Costo fijo de contratación del plan. \\ \cline{2-4}
+	& \texttt{tarifa\_excedente} & \texttt{DECIMAL(10,2)} & Costo cobrado por cada minuto excedido. \\ \cline{2-4}
+	& \texttt{tipo\_beneficio} & \texttt{CHAR(1)} & Código interno de beneficios adicionales. \\ \hline
+	
+	% movilidad.SUSCRIPCION
+	\texttt{movilidad.SUSCRIPCION} & \texttt{id\_suscripcion} & \texttt{INT} & Identificador único de suscripción (Llave primaria). \\ \cline{2-4}
+	& \texttt{estado} & \texttt{CHAR(1)} & Estado de la suscripción (e.g. A = Activa, C = Cancelada). \\ \cline{2-4}
+	& \texttt{fecha\_fin} & \texttt{DATE} & Fecha en la que vence o finaliza la suscripción. \\ \cline{2-4}
+	& \texttt{fecha\_inicio} & \texttt{DATE} & Fecha de alta o renovación de la suscripción. \\ \cline{2-4}
+	& \texttt{id\_usuario} & \texttt{INT} & Relación con el usuario contratante (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_metodo\_pago} & \texttt{INT} & Relación con el medio de pago activo (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_tipo\_membresia} & \texttt{INT} & Relación con el tipo de membresía contratado (Llave foránea). \\ \hline
+	
+	% movilidad.TARJETA_MOVILIDAD
+	\texttt{movilidad.TARJETA\_MOVILIDAD} & \texttt{id\_tarjeta\_movilidad} & \texttt{INT} & Identificador físico único de la tarjeta de movilidad integrada (Llave primaria). \\ \cline{2-4}
+	& \texttt{id\_tarjeta\_reposicion} & \texttt{INT} & Enlace a la tarjeta anterior que fue reemplazada (Llave foránea a la misma tabla). \\ \cline{2-4}
+	& \texttt{id\_usuario} & \texttt{INT} & Relación con el usuario propietario (Llave foránea). \\ \cline{2-4}
+	& \texttt{fecha\_baja} & \texttt{DATE} & Fecha en la que se desactivó la tarjeta. \\ \cline{2-4}
+	& \texttt{saldo} & \texttt{DECIMAL(10,2)} & Saldo cargado disponible en la tarjeta. \\ \cline{2-4}
+	& \texttt{codigo\_QR} & \texttt{VARBINARY(100)} & Código binario del QR impreso en la tarjeta. \\ \cline{2-4}
+	& \texttt{fecha\_emision} & \texttt{DATE} & Fecha de expedición de la tarjeta. \\ \cline{2-4}
+	& \texttt{activa} & \texttt{BIT} & Indica si la tarjeta está operativa (1) o inactiva (0). \\ \cline{2-4}
+	& \texttt{tipo\_emision} & \texttt{VARCHAR(20)} & Tipo de expedición de la tarjeta (e.g. Primera vez, Reposición). \\ \hline
+	
+	% movilidad.ESTACION
+	\texttt{movilidad.ESTACION} & \texttt{id\_estacion} & \texttt{INT} & Identificador único de estación de servicio (Llave primaria). \\ \cline{2-4}
+	& \texttt{terminales\_disponibles} & \texttt{INT} & Puertos o anclajes libres para recibir bicicletas. \\ \cline{2-4}
+	& \texttt{terminales\_totales} & \texttt{INT} & Capacidad máxima de anclajes en la estación. \\ \cline{2-4}
+	& \texttt{nombre\_estacion} & \texttt{VARCHAR(20)} & Nombre público de la estación. \\ \cline{2-4}
+	& \texttt{id\_empleado} & \texttt{INT} & Mecánico de mantenimiento responsable asignado (Llave foránea). \\ \hline
+	
+	% movilidad.BICICLETA
+	\texttt{movilidad.BICICLETA} & \texttt{id\_bicicleta} & \texttt{INT} & Identificador único de bicicleta (Llave primaria). \\ \cline{2-4}
+	& \texttt{modelo} & \texttt{CHAR(1)} & Categoría de tamaño de la unidad (C = Chica, M = Mediana, G = Grande). \\ \cline{2-4}
+	& \texttt{num\_serie} & \texttt{NUMERIC(10,0)} & Número de serie grabado único de la bicicleta. \\ \cline{2-4}
+	& \texttt{id\_estado\_bici} & \texttt{INT} & Relación con catálogo de estados de bicicleta (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_estacion} & \texttt{INT} & Estación física actual donde se ancla la bicicleta (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_bicicleta\_color} & \texttt{TINYINT} & Relación con catálogo de colores de bicicleta (Llave foránea). \\ \hline
+	
+	% movilidad.VIAJE
+	\texttt{movilidad.VIAJE} & \texttt{id\_viaje} & \texttt{INT} & Identificador único del viaje (Llave primaria). \\ \cline{2-4}
+	& \texttt{costo} & \texttt{DECIMAL(10,2)} & Cargo final cobrado al usuario (base + excedente). \\ \cline{2-4}
+	& \texttt{fecha} & \texttt{DATE} & Fecha del recorrido. \\ \cline{2-4}
+	& \texttt{ruta} & \texttt{VARCHAR(60)} & Descripción de la trayectoria aproximada. \\ \cline{2-4}
+	& \texttt{hora\_inicio} & \texttt{DATETIME} & Hora en la que se liberó la bicicleta del anclaje. \\ \cline{2-4}
+	& \texttt{hora\_fin} & \texttt{DATETIME} & Hora en la que se aseguró la bicicleta en la estación de destino. \\ \cline{2-4}
+	& \texttt{duracion} & \texttt{INT (Calculado)} & Duración en minutos calculada a partir de las horas de inicio y fin. \\ \cline{2-4}
+	& \texttt{num\_referencia} & \texttt{VARCHAR(20)} & Folio o código de transacción bancaria / operativa. \\ \cline{2-4}
+	& \texttt{id\_bicicleta} & \texttt{INT} & Relación con la bicicleta prestada (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_estacion\_inicio} & \texttt{INT} & Estación origen (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_estacion\_fin} & \texttt{INT} & Estación destino (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_tarjeta\_movilidad} & \texttt{INT} & Tarjeta de movilidad con la que se inició el viaje (Llave foránea). \\ \hline
+	
+	% incidentes.INCIDENTE
+	\texttt{incidentes.INCIDENTE} & \texttt{id\_incidente} & \texttt{INT} & Identificador de reporte de incidente (Llave primaria). \\ \cline{2-4}
+	& \texttt{calle} & \texttt{VARCHAR(30)} & Vialidad donde ocurrió el incidente. \\ \cline{2-4}
+	& \texttt{numero} & \texttt{NUMERIC(4,0)} & Altura o número aproximado del lugar del incidente. \\ \cline{2-4}
+	& \texttt{codigo\_postal} & \texttt{NUMERIC(5,0)} & Código postal de la zona. \\ \cline{2-4}
+	& \texttt{fecha} & \texttt{DATE} & Fecha del reporte. \\ \cline{2-4}
+	& \texttt{latitud} & \texttt{VARCHAR(20)} & Coordenada de latitud geográfica. \\ \cline{2-4}
+	& \texttt{longitud} & \texttt{VARCHAR(20)} & Coordenada de longitud geográfica. \\ \cline{2-4}
+	& \texttt{id\_viaje} & \texttt{INT} & Relación con el viaje en el que se reportó el percance (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_tipo\_incidente} & \texttt{INT} & Relación con tipo de incidente (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_empleado} & \texttt{INT} & Agente de incidentes responsable de la atención (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_colonia} & \texttt{INT} & Relación con la colonia asociada (Llave foránea). \\ \hline
+	
+	% incidentes.ENCUESTA
+	\texttt{incidentes.ENCUESTA} & \texttt{id\_encuesta} & \texttt{INT} & Identificador de encuesta (Llave primaria). \\ \cline{2-4}
+	& \texttt{id\_incidente} & \texttt{INT} & Relación con el incidente calificado (Llave foránea). \\ \cline{2-4}
+	& \texttt{puntuacion} & \texttt{NUMERIC(2,0)} & Calificación asignada al agente (rango de 1 a 10). \\ \cline{2-4}
+	& \texttt{fecha} & \texttt{DATE} & Fecha de la encuesta. \\ \cline{2-4}
+	& \texttt{comentario} & \texttt{VARCHAR(120)} & Comentarios adicionales del usuario. \\ \hline
+	
+	% reportes.TEMPORADA
+	\texttt{reportes.TEMPORADA} & \texttt{id\_temporada} & \texttt{INT} & Identificador único de temporada del año (Llave primaria). \\ \cline{2-4}
+	& \texttt{nombre\_temp} & \texttt{VARCHAR(15)} & Nombre de la estación (e.g. Primavera, Invierno, Lluvias). \\ \hline
+	
+	% reportes.REPORTE
+	\texttt{reportes.REPORTE} & \texttt{id\_reporte} & \texttt{INT} & Identificador único de reporte operativo (Llave primaria). \\ \cline{2-4}
+	& \texttt{fecha} & \texttt{DATE} & Fecha en la que se generó el reporte. \\ \cline{2-4}
+	& \texttt{descripcion} & \texttt{VARCHAR(90)} & Descripción de las observaciones realizadas. \\ \cline{2-4}
+	& \texttt{bandera\_incidente} & \texttt{BIT} & Indica si se detectaron incidentes graves viales (1) o no (0). \\ \cline{2-4}
+	& \texttt{numero\_incidentes} & \texttt{NUMERIC(2,0)} & Número total de incidentes reportados en el día. \\ \cline{2-4}
+	& \texttt{id\_empleado} & \texttt{INT} & Empleado de rondines que genera el reporte (Llave foránea). \\ \cline{2-4}
+	& \texttt{id\_temporada} & \texttt{INT} & Relación con la temporada climática actual (Llave foránea). \\ \hline
+\end{longtable}
+\endgroup
+
+\newpage
+
+\subsection{Anexo B. Script de Seguridad}
+\label{sec:anexo_b}
+En este anexo se presenta la implementación de la capa de seguridad a nivel de base de datos, la cual define roles, usuarios y permisos.
+
+\inputencoding{cp1252}
+\lstinputlisting[style=sqlstyle]{../scripts/seguridad.sql}
+\inputencoding{utf8}
+
+\newpage
+
+\subsection{Anexo C. Script de Creación de la Base de Datos}
+\label{sec:anexo_c}
+En este anexo se incluye el script DDL encargado de crear la estructura lógica del sistema ECOBICI.
+
+\inputencoding{cp1252}
+\lstinputlisting[style=sqlstyle]{../scripts/creaBase.sql}
+\inputencoding{utf8}
+
+\newpage
+
+\subsection{Anexo D. Script de Objetos Programados}
+\label{sec:anexo_d}
+En este anexo se presenta la lógica programada (procedimientos almacenados, funciones, disparadores y vistas) del sistema.
+
+\inputencoding{cp1252}
+\lstinputlisting[style=sqlstyle]{../scripts/dml.sql}
+\inputencoding{utf8}
+
+\newpage
+
+\subsection{Anexo E. Script de Carga Inicial}
+\label{sec:anexo_e}
+En este anexo se incluye la carga de datos maestros e históricos iniciales que permiten el testeo del sistema.
+
+\inputencoding{cp1252}
+\lstinputlisting[style=sqlstyle]{../scripts/cargaInicial.sql}
+\inputencoding{utf8}
+
+\newpage
+
+\subsection{Anexo F. Script de Informes y Estadísticas}
+\label{sec:anexo_f}
+En este anexo se detallan las quince consultas analíticas ejecutadas sobre la base de datos de ECOBICI.
+
+\inputencoding{cp1252}
+\lstinputlisting[style=sqlstyle]{../scripts/informes.sql}
+\inputencoding{utf8}
