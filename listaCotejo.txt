@@ -1,3 +1,13 @@
+Instrucciones de entrega del proyecto finalDeberán entregar un único archivo en formato pdf por equipo. Los demás integrantes deberán marcar la tarea como "entregada" e indicar en los comentarios el nombre completo del compañero que subió el proyecto.El proyecto debe incluir lo siguiente:
+Documento PDF: Con toda la documentación del proyecto, incluyendo normalización, diccionario de datos y código.
+Archivos de modelado: Archivos finales en formato .dia y .dm1.
+Código y Scripts correspondientes: Deberán entregar las versiones finales de sus scripts (pueden corregir o actualizar lo que consideren necesario respecto a entregas previas).Los scripts obligatorios a entregar son:
+a. DCL: Script para la generación de usuarios. Debe llamarse seguridad.sql.
+b. DDL: Script para crear la base de datos. Debe llamarse creaBase.sql.
+c. DML (Transact-SQL): Script que contenga los disparadores (triggers) y vistas obligatorias, además de procedimientos almacenados y funciones si los requieren. Debe llamarse dml.sql.
+d. Consultas: Script para las estadísticas y/o informes solicitados. Debe llamarse informes.sql.
+e. Carga de información: Script con los INSERT necesarios para la carga de datos. Debe llamarse cargaInicial.sql.
+f. Validación de triggers: Script automatizado (validaTriggers.sql) que ejecute un escenario de prueba para comprobar el correcto funcionamiento de cada trigger, evitando al máximo la intervención manual.
 DISEÑO CONCEPTUAL
 * Se entregó archivo .dia (ultima versión)
 DISEÑO LOGICO 

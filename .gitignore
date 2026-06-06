@@ -1,1 +1,15 @@
 scripts/valida_sp_funciones.sql
+casoEstudio.txt
+listaCotejo.txt
+objetivos.md
+
+# Archivos auxiliares de compilación de LaTeX
+*.aux
+*.log
+*.toc
+*.lof
+*.lot
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
